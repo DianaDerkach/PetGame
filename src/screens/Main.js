@@ -1,10 +1,10 @@
 import React, { useReducer, useState } from "react";
 import { View, StyleSheet, Dimensions, Text } from "react-native";
 import GestureRecognizer from 'react-native-swipe-gestures';
-import {ScoreComponent} from '../components/Score/score.component';
-import { CharacterContainer } from '../components/Character/character.container';
-import { swipeLeft, swipeRight, swipeUp } from "../components/actions/swipeActions";
-import { QuestionsScreenContainer } from "../components/QuestionsScreen/questionsScreen.container";
+import {ScoreComponent} from '../old/Score/score.component';
+import { CharacterContainer } from '../old/Character/character.container';
+import { swipeLeft, swipeRight, swipeUp } from "../old/actions/swipeActions";
+import { QuestionsScreenContainer } from "../old/QuestionsScreen/questionsScreen.container";
 import { scoreReducer } from "../reducers/scoreReducer";
 import { characterReducer } from "../reducers/characterReducer";
 import { combineReducers, initialState } from "../reducers/combineReducers";

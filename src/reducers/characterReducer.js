@@ -1,4 +1,4 @@
-import { SWIPE_LEFT, SWIPE_RIGHT, SWIPE_UP, SWIPE_DOWN } from "../components/actions/swipeActions";
+import { SWIPE_LEFT, SWIPE_RIGHT, SWIPE_UP, SWIPE_DOWN } from "../old/actions/swipeActions";
 
 export const characterReducer = (state, action) => {
   switch (action.type) {

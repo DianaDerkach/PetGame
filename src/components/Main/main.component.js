@@ -69,13 +69,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     height: 184,
   },
+  borderRadius: {
+    borderBottomRightRadius: 40,
+    borderBottomLeftRadius: 40,
+  },
   categories: {
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
   },
-  borderRadius: {
-    borderBottomRightRadius: 40,
-    borderBottomLeftRadius: 40,
-  }
+
 })
