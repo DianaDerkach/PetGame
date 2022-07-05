@@ -1,6 +1,6 @@
 import React from "react";
 import { StyleSheet, Dimensions } from "react-native";
-import MainContainer from "./src/components/Main/main.container";
+import { MainContainer } from "./src/components/Main/main.container";
 
 const App = () => {
   return (
