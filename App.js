@@ -1,10 +1,11 @@
 import React from "react";
 import { StyleSheet, Dimensions } from "react-native";
 import { MainContainer } from "./src/components/Main/main.container";
+import { GameScreenContainer } from "./src/components/gameScreen/gameScreen.container";
 
 const App = () => {
   return (
-      <MainContainer/>
+      <GameScreenContainer/>
       );
 };
 

@@ -1,4 +1,4 @@
-import { DECREMENT, INCREMENT } from "../components/actions/scoreActions";
+import { DECREMENT, INCREMENT } from "../old/actions/scoreActions";
 
 export const scoreReducer = (state, action) => {
   switch(action.type) {
