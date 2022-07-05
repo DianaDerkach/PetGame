@@ -1,11 +1,10 @@
 import React from "react";
 import { StyleSheet, Dimensions } from "react-native";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { Main } from "./src/screens/Main";
+import MainContainer from "./src/components/Main/main.container";
 
 const App = () => {
   return (
-      <Main/>
+      <MainContainer/>
       );
 };
 
