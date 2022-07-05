@@ -1,22 +1,47 @@
-import React from "react";
-import { Image, Text, View, StyleSheet, ImageBackground } from "react-native";
+import React, { useEffect } from "react";
+import { Image, Text, View, StyleSheet, ImageBackground, FlatList } from "react-native";
+import Animated, {
+  withSpring,
+  interpolate,
+  useAnimatedStyle,
+} from "react-native-reanimated";
 import { CategoryCard } from "./components/CategoryCard";
+import { categories } from "../../data/categories";
+import SafeAreaView from "react-native/Libraries/Components/SafeAreaView/SafeAreaView";
 
 export const MainComponent = () => {
-  const lightBlue = require('../../assets/img/categoryBackgrounds/light-blue.png');
-  const lightViolet = require('../../assets/img/categoryBackgrounds/light-violet.png');
-  const blue = require('../../assets/img/categoryBackgrounds/light-blue.png');
+  const [counter, setCounter] = React.useState(1);
+  useEffect(() => {
+    counter > 0 && setTimeout(() => setCounter(counter - 1), 1000);
+  }, [counter]);
+  const headerAnimatedStyle = useAnimatedStyle(() => {
+    return {
+      transform: [
+        { translateY: withSpring(interpolate(counter, [1, 0], [-200,0]))},
+      ]
+    }
+  });
+
   return (
     <View style={styles.background}>
-        <ImageBackground source={require('../../assets/img/headerBackground.png')} imageStyle={styles.borderRadius} style={styles.header} resizeMode={"cover"}>
+      <Animated.View style={headerAnimatedStyle}>
+        <ImageBackground
+          source={require('../../assets/img/headerBackground.png')}
+          imageStyle={styles.borderRadius}
+          style={[styles.header]}
+          resizeMode={"cover"}>
           <Text style={styles.text}>Choose questions pack to play</Text>
           <Image source={require('../../assets/img/idea.png')} style={styles.image}/>
         </ImageBackground>
-      <View style={styles.categories}>
-        <CategoryCard text='JS questions' color={'#8EA3E8'} img={lightBlue}/>
-        <CategoryCard text='React questions' color={'#A069D7'} img={lightViolet}/>
-        <CategoryCard text='Redux questions' color={'#4F95D0'} img={blue}/>
-      </View>
+      </Animated.View>
+      <Animated.View style={[styles.categories]}>
+        <SafeAreaView>
+          <FlatList
+            data={categories}
+            renderItem={ ({item}) => <CategoryCard category={item} />}
+            />
+        </SafeAreaView>
+      </Animated.View>
     </View>
   );
 };

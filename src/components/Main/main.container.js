@@ -1,10 +1,9 @@
-import React from "react";
+import React, { useRef } from "react";
 import { MainComponent } from "./main.component";
 
-const MainContainer = () => {
+export const MainContainer = () => {
+
   return (
-    <MainComponent/>
+    <MainComponent />
   );
 };
-
-export default MainContainer;

@@ -1,14 +1,28 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { ImageBackground, Text, View, StyleSheet } from "react-native";
+import Animated, { interpolate, useAnimatedStyle, withDelay, withSpring, withTiming } from "react-native-reanimated";
 
-export const CategoryCard = ({text, color, img}) => {
+export const CategoryCard = ({category}) => {
+  const [counter, setCounter] = React.useState(1);
+  useEffect(() => {
+    counter > 0 && setTimeout(() => setCounter(counter - 1), 1000);
+  }, [counter]);
+  const categoryAnimatedStyle = useAnimatedStyle(() => {
+    return {
+      transform: [
+        { translateY:  withSpring(interpolate(counter, [1, 0], [700, 0]))}
+      ]
+    }
+  })
   return (
-    <ImageBackground style={styles.container} source={img} imageStyle={styles.borderRadius}>
-      <Text style={styles.title}>{text}</Text>
-      <View style={[styles.button]}>
-        <Text style={[styles.buttonText, { color: color }]}>Start</Text>
-      </View>
-    </ImageBackground>
+    <Animated.View style={categoryAnimatedStyle}>
+      <ImageBackground style={styles.container} source={category.img} imageStyle={styles.borderRadius}>
+        <Text style={styles.title}>{category.text}</Text>
+        <View style={[styles.button]}>
+          <Text style={[styles.buttonText, { color: category.color }]}>Start</Text>
+        </View>
+      </ImageBackground>
+    </Animated.View>
   );
 };
 
