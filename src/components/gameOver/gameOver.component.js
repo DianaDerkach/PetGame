@@ -1,7 +1,22 @@
 import React from "react";
 import { ImageBackground, Text, View, StyleSheet } from "react-native";
+import Animated, { useAnimatedStyle, useSharedValue, withRepeat, withTiming } from "react-native-reanimated";
 
 export const GameOverComponent = ({score}) => {
+  const animation = useSharedValue(1);
+  const scoreCircleAnimation = useAnimatedStyle(() => {
+    return {
+      transform: [
+        {
+          scale: withRepeat(withTiming(animation.value, {
+            duration: 1000
+          }, () => {
+            animation.value = 1.1;
+          }), -1, true)
+        }
+      ]
+    }
+  })
   return (
     <ImageBackground
       source={require('../../assets/img/Background.png')}
@@ -10,10 +25,10 @@ export const GameOverComponent = ({score}) => {
       <View style={styles.circlesContainer}>
         <View style={[styles.thirdCircle, styles.borderRadius]}>
           <View style={[styles.secondCircle, styles.borderRadius]}>
-            <View style={[styles.scoreCircle, styles.borderRadius]}>
+            <Animated.View style={[styles.scoreCircle, styles.borderRadius, scoreCircleAnimation]}>
               <Text style={[styles.title, styles.text]}>Your score</Text>
               <Text style={[styles.scoreText, styles.text]}>{score}</Text>
-            </View>
+            </Animated.View>
           </View>
         </View>
       </View>
