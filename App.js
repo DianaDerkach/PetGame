@@ -3,9 +3,11 @@ import { StyleSheet, Dimensions } from "react-native";
 import { MainContainer } from "./src/components/Main/main.container";
 import { GameScreenContainer } from "./src/components/gameScreen/gameScreen.container";
 
+import { GameOverContainer } from "./src/components/gameOver/gameOver.container";
+
 const App = () => {
   return (
-      <GameScreenContainer/>
+      <GameOverContainer/>
       );
 };
 
