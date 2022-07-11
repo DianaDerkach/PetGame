@@ -1,9 +1,14 @@
 import React from "react";
 import { ImageBackground, Text, View, StyleSheet, TouchableOpacity } from "react-native";
 import Animated, { useAnimatedStyle, useSharedValue, withRepeat, withTiming } from "react-native-reanimated";
-import { CommonActions } from "@react-navigation/native";
 
-export const GameOverComponent = ({navigation, score, category}) => {
+export const GameOverComponent = ({
+                                    navigation,
+                                    score,
+                                    category,
+                                    handleStartAgain,
+
+                                  }) => {
   const animation = useSharedValue(1);
   const scoreCircleAnimation = useAnimatedStyle(() => {
     return {
@@ -18,26 +23,6 @@ export const GameOverComponent = ({navigation, score, category}) => {
       ]
     }
   });
-
-  const handleStartAgain = () => {
-    navigation.dispatch(
-      CommonActions.reset({
-        index: 1,
-        routes: [
-          {name: 'QuizGame'},
-          {
-            name: 'Game',
-            params: {
-              questionNumber: 1,
-              navigation: navigation,
-              score: 0,
-              category: category
-            }
-          }
-        ]
-      })
-    )
-  }
 
   return (
     <ImageBackground
@@ -74,9 +59,6 @@ export const GameOverComponent = ({navigation, score, category}) => {
         Back to main screen
         </Text>
       </TouchableOpacity>
-
-
-
     </ImageBackground>
   );
 };

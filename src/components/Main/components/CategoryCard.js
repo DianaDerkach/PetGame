@@ -1,12 +1,14 @@
 import React, { useEffect } from "react";
 import { ImageBackground, Text, StyleSheet, TouchableOpacity } from "react-native";
-import Animated, { interpolate, useAnimatedStyle,  withSpring,  } from "react-native-reanimated";
+import Animated, { interpolate, useAnimatedStyle,  withSpring } from "react-native-reanimated";
 
 export const CategoryCard = ({category, navigation}) => {
   const [counter, setCounter] = React.useState(1);
+
   useEffect(() => {
     counter > 0 && setTimeout(() => setCounter(counter - 1), 1000);
   }, [counter]);
+
   const categoryAnimatedStyle = useAnimatedStyle(() => {
     return {
       transform: [
@@ -14,6 +16,7 @@ export const CategoryCard = ({category, navigation}) => {
       ]
     }
   })
+
   return (
     <Animated.View style={categoryAnimatedStyle}>
       <ImageBackground style={styles.container} source={category.img} imageStyle={styles.borderRadius}>

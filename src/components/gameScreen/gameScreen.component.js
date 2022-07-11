@@ -1,11 +1,10 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { ImageBackground, Text, View, StyleSheet, FlatList, TouchableOpacity } from "react-native";
 import Animated, { interpolate, useAnimatedStyle, withSpring } from "react-native-reanimated";
 import CircularProgress from 'react-native-circular-progress-indicator';
 import SafeAreaView from "react-native/Libraries/Components/SafeAreaView/SafeAreaView";
 
 export const GameScreenComponent = ({
-                                      navigation,
                                       category,
                                       score,
                                       questionNumber,
@@ -18,7 +17,6 @@ export const GameScreenComponent = ({
                                       navigateToGameOver,
                                       counter
                                     }) => {
-
 
   const answersAnimation = useAnimatedStyle(() => {
     return {
@@ -46,16 +44,12 @@ export const GameScreenComponent = ({
               maxValue={timerDuration}
               titleStyle={{fontWeight: 'bold'}}
               onAnimationComplete={() => {
-                if (questionNumber  === numberOfQuestions ) {
-                  navigation.navigate('GameOver', {
-                    navigation: navigation,
-                    category: category,
-                    score: score
-                  })}
-                else {
-                  handleNextQuestion(score);
+                 (questionNumber  === numberOfQuestions ) ?
+                  navigateToGameOver()
+                   :
+                  handleNextQuestion(score)
                 }
-              }}
+              }
               inActiveStrokeColor={'#b2b2d7'}
               activeStrokeColor={'#d9b1ff'}
               circleBackgroundColor={'#fff'}

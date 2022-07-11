@@ -53,7 +53,6 @@ export const GameScreenContainer = () => {
   return (
     <GameScreenComponent
       category={category}
-      navigation={navigation}
       score={score}
       questionNumber={questionNumber}
       handleNextQuestion={handleNextQuestion}
