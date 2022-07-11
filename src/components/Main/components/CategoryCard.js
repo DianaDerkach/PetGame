@@ -1,8 +1,8 @@
 import React, { useEffect } from "react";
-import { ImageBackground, Text, View, StyleSheet } from "react-native";
-import Animated, { interpolate, useAnimatedStyle, withDelay, withSpring, withTiming } from "react-native-reanimated";
+import { ImageBackground, Text, StyleSheet, TouchableOpacity } from "react-native";
+import Animated, { interpolate, useAnimatedStyle,  withSpring,  } from "react-native-reanimated";
 
-export const CategoryCard = ({category}) => {
+export const CategoryCard = ({category, navigation}) => {
   const [counter, setCounter] = React.useState(1);
   useEffect(() => {
     counter > 0 && setTimeout(() => setCounter(counter - 1), 1000);
@@ -18,9 +18,18 @@ export const CategoryCard = ({category}) => {
     <Animated.View style={categoryAnimatedStyle}>
       <ImageBackground style={styles.container} source={category.img} imageStyle={styles.borderRadius}>
         <Text style={styles.title}>{category.text}</Text>
-        <View style={[styles.button]}>
-          <Text style={[styles.buttonText, { color: category.color }]}>Start</Text>
-        </View>
+          <TouchableOpacity
+            style={[styles.button]}
+            onPress={() => {
+              navigation.navigate('Game', {
+                navigation: navigation,
+                category: category,
+                score: 0,
+                questionNumber: 1,
+              })
+            }}>
+            <Text style={[styles.buttonText, { color: category.color }]}>Start</Text>
+          </TouchableOpacity>
       </ImageBackground>
     </Animated.View>
   );
@@ -43,11 +52,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: 10,
     backgroundColor: '#FFF',
-    width: 58,
-    height: 20,
+    width: 100,
+    height: '25%',
   },
   buttonText: {
-    fontSize: 10,
+    fontSize: 12,
     fontFamily: 'Montserrat',
     fontWeight: 'bold',
   },

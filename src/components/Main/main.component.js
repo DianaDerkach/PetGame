@@ -9,7 +9,7 @@ import { CategoryCard } from "./components/CategoryCard";
 import { categories } from "../../data/categories";
 import SafeAreaView from "react-native/Libraries/Components/SafeAreaView/SafeAreaView";
 
-export const MainComponent = () => {
+export const MainComponent = ({navigation}) => {
   const [counter, setCounter] = React.useState(1);
   useEffect(() => {
     counter > 0 && setTimeout(() => setCounter(counter - 1), 1000);
@@ -38,7 +38,7 @@ export const MainComponent = () => {
         <SafeAreaView>
           <FlatList
             data={categories}
-            renderItem={ ({item}) => <CategoryCard category={item} />}
+            renderItem={ ({item}) => <CategoryCard category={item} navigation={navigation} />}
             />
         </SafeAreaView>
       </Animated.View>

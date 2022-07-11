@@ -1,9 +1,8 @@
 import React, { useRef } from "react";
 import { MainComponent } from "./main.component";
 
-export const MainContainer = () => {
-
+export const MainContainer = ({navigation}) => {
   return (
-    <MainComponent />
+    <MainComponent navigation={navigation} />
   );
 };
