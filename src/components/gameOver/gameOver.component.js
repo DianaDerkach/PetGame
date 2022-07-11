@@ -1,8 +1,9 @@
 import React from "react";
-import { ImageBackground, Text, View, StyleSheet } from "react-native";
+import { ImageBackground, Text, View, StyleSheet, TouchableOpacity } from "react-native";
 import Animated, { useAnimatedStyle, useSharedValue, withRepeat, withTiming } from "react-native-reanimated";
+import { CommonActions } from "@react-navigation/native";
 
-export const GameOverComponent = ({score}) => {
+export const GameOverComponent = ({navigation, score, category}) => {
   const animation = useSharedValue(1);
   const scoreCircleAnimation = useAnimatedStyle(() => {
     return {
@@ -16,7 +17,28 @@ export const GameOverComponent = ({score}) => {
         }
       ]
     }
-  })
+  });
+
+  const handleStartAgain = () => {
+    navigation.dispatch(
+      CommonActions.reset({
+        index: 1,
+        routes: [
+          {name: 'QuizGame'},
+          {
+            name: 'Game',
+            params: {
+              questionNumber: 1,
+              navigation: navigation,
+              score: 0,
+              category: category
+            }
+          }
+        ]
+      })
+    )
+  }
+
   return (
     <ImageBackground
       source={require('../../assets/img/Background.png')}
@@ -32,16 +54,26 @@ export const GameOverComponent = ({score}) => {
           </View>
         </View>
       </View>
-      <View style={[styles.startButton, styles.buttons, styles.borderRadius]}>
+      <TouchableOpacity
+        style={[styles.startButton, styles.buttons, styles.borderRadius]}
+        onPress={() => {
+          handleStartAgain();
+        }}
+      >
         <Text style={styles.startButtonText}>
         Start again
         </Text>
-      </View>
-      <View style={[styles.backButton, styles.buttons, styles.borderRadius]}>
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={[styles.backButton, styles.buttons, styles.borderRadius]}
+        onPress={() => {
+          navigation.navigate('QuizGame')
+        }}
+      >
         <Text style={styles.backButtonText}>
         Back to main screen
         </Text>
-      </View>
+      </TouchableOpacity>
 
 
 

@@ -1,14 +1,25 @@
 import React, { useEffect } from "react";
-import { ImageBackground, Text, View, StyleSheet, FlatList } from "react-native";
+import { ImageBackground, Text, View, StyleSheet, FlatList, TouchableOpacity } from "react-native";
 import Animated, { interpolate, useAnimatedStyle, withSpring } from "react-native-reanimated";
 import CircularProgress from 'react-native-circular-progress-indicator';
 import SafeAreaView from "react-native/Libraries/Components/SafeAreaView/SafeAreaView";
 
-export const GameScreenComponent = ({questions, questionNumber}) => {
-  const [counter, setCounter] = React.useState(1);
-  useEffect(() => {
-    counter > 0 && setTimeout(() => setCounter(counter - 1), 1000);
-  }, [counter]);
+export const GameScreenComponent = ({
+                                      navigation,
+                                      category,
+                                      score,
+                                      questionNumber,
+                                      handleNextQuestion,
+                                      numberOfQuestions,
+                                      currentQuestion,
+                                      currentRightAnswer,
+                                      currentTimeForAnswer,
+                                      timerDuration,
+                                      navigateToGameOver,
+                                      counter
+                                    }) => {
+
+
   const answersAnimation = useAnimatedStyle(() => {
     return {
       transform: [
@@ -16,52 +27,75 @@ export const GameScreenComponent = ({questions, questionNumber}) => {
       ]
     }
   });
+
   return (
     <View style={styles.container}>
       <ImageBackground
         source={require('../../assets/img/headerBackground.png')}
         imageStyle={styles.borderRadius}
-        style={[styles.header]}
-        resizeMode={"cover"}>
+        style={[styles.header]}>
       </ImageBackground>
-      <Animated.View style={[styles.questionBoard]}>
-        <View style={styles.timer}>
-          <CircularProgress
-            value={10}
-            radius={40}
-            duration={10000}
-            progressValueColor={'#9B6ACC'}
-            maxValue={10}
-            titleStyle={{fontWeight: 'bold'}}
-            onAnimationComplete={() => {
-              console.log('nextQuestion');
-            }}
-            inActiveStrokeColor={'#b2b2d7'}
-            activeStrokeColor={'#d9b1ff'}
-            circleBackgroundColor={'#fff'}
-          />
-        </View>
-        <View style={styles.textContainer}>
-          <Text style={styles.title}>Question {questionNumber}/{questions.length}</Text>
-          <Text style={styles.questionText}>{ questions[questionNumber].text }</Text>
-        </View>
-      </Animated.View>
-      <SafeAreaView style={styles.answerContainer}>
-        <Animated.View style={answersAnimation}>
-          <FlatList data={questions[questionNumber].answers}
-                    renderItem={ ({item}) => (
-                      <View style={styles.answer}>
-                        <Text>{item}</Text>
-                      </View>
-                    )}
-          />
+      <View style={styles.alignment}>
+        <Animated.View style={[styles.questionBoard]}>
+          <View style={styles.timer}>
+            <CircularProgress
+              value={timerDuration}
+              radius={40}
+              duration={currentTimeForAnswer * 1000 }
+              progressValueColor={'#9B6ACC'}
+              maxValue={timerDuration}
+              titleStyle={{fontWeight: 'bold'}}
+              onAnimationComplete={() => {
+                if (questionNumber  === numberOfQuestions ) {
+                  navigation.navigate('GameOver', {
+                    navigation: navigation,
+                    category: category,
+                    score: score
+                  })}
+                else {
+                  handleNextQuestion(score);
+                }
+              }}
+              inActiveStrokeColor={'#b2b2d7'}
+              activeStrokeColor={'#d9b1ff'}
+              circleBackgroundColor={'#fff'}
+            />
+          </View>
+          <View style={styles.textContainer}>
+            <Text style={styles.title}>Question {questionNumber}/{numberOfQuestions - 1}</Text>
+            <Text style={styles.questionText}>{currentQuestion}</Text>
+          </View>
         </Animated.View>
-      </SafeAreaView>
+        <SafeAreaView style={styles.answerContainer}>
+          <Animated.View style={answersAnimation}>
+            <FlatList data={category.questions[questionNumber - 1].answers}
+                      renderItem={ ({item}) => (
+                        <TouchableOpacity style={styles.answer} onPress={() => {
+                          if (questionNumber  === numberOfQuestions ) {
+                            navigateToGameOver();
+                            }
+                          else {
+                          (item === currentRightAnswer) ?
+                            handleNextQuestion(score + 1)
+                            :
+                            handleNextQuestion(score);
+                        }
+                        }}>
+                          <Text style={styles.answerText}>{item}</Text>
+                        </TouchableOpacity>
+                      )}
+            />
+          </Animated.View>
+        </SafeAreaView>
+      </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
+  answerText: {
+    color: '#000',
+  },
   container: {
     display: 'flex',
     flexDirection: 'column',
@@ -83,10 +117,14 @@ const styles = StyleSheet.create({
     position: 'relative',
     bottom: 40,
   },
+  alignment: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+  },
   questionBoard: {
-    position: 'absolute',
-    top: 150,
-    left: 50,
+    position: 'relative',
+    top: -30,
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
@@ -108,10 +146,10 @@ const styles = StyleSheet.create({
   questionText: {
     marginTop: 10,
     fontWeight: 'bold',
+    color: '#9B6ACC',
   },
   answerContainer: {
     position: 'relative',
-    top: 160,
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'center',
