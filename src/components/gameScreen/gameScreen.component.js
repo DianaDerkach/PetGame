@@ -3,6 +3,7 @@ import { ImageBackground, Text, View, StyleSheet, FlatList, TouchableOpacity } f
 import Animated, { interpolate, useAnimatedStyle, withSpring } from "react-native-reanimated";
 import CircularProgress from 'react-native-circular-progress-indicator';
 import SafeAreaView from "react-native/Libraries/Components/SafeAreaView/SafeAreaView";
+import { AnswerItem } from "./components/answerItem";
 
 export const GameScreenComponent = ({
                                       navigation,
@@ -69,21 +70,15 @@ export const GameScreenComponent = ({
         <SafeAreaView style={styles.answerContainer}>
           <Animated.View style={answersAnimation}>
             <FlatList data={category.questions[questionNumber - 1].answers}
-                      renderItem={ ({item}) => (
-                        <TouchableOpacity style={styles.answer} onPress={() => {
-                          if (questionNumber  === numberOfQuestions ) {
-                            navigateToGameOver();
-                            }
-                          else {
-                          (item === currentRightAnswer) ?
-                            handleNextQuestion(score + 1)
-                            :
-                            handleNextQuestion(score);
-                        }
-                        }}>
-                          <Text style={styles.answerText}>{item}</Text>
-                        </TouchableOpacity>
-                      )}
+                      renderItem={ ({item}) => <AnswerItem
+                        item={item}
+                        navigateToGameOver={navigateToGameOver}
+                        currentRightAnswer={currentRightAnswer}
+                        numberOfQuestions={numberOfQuestions}
+                        questionNumber={questionNumber}
+                        score={score}
+                        handleNextQuestion={handleNextQuestion}
+                      />}
             />
           </Animated.View>
         </SafeAreaView>
@@ -93,9 +88,6 @@ export const GameScreenComponent = ({
 };
 
 const styles = StyleSheet.create({
-  answerText: {
-    color: '#000',
-  },
   container: {
     display: 'flex',
     flexDirection: 'column',
@@ -155,19 +147,5 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     height: 400,
-  },
-  answer: {
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'center',
-    position: 'relative',
-    paddingLeft: 20,
-    paddingVertical: 10,
-    marginTop: 20,
-    width: 310,
-    height: 40,
-    backgroundColor: '#fff',
-    color: '#000',
-    borderRadius: 100,
   }
 })

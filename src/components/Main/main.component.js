@@ -8,6 +8,7 @@ import Animated, {
 import { CategoryCard } from "./components/CategoryCard";
 import { categories } from "../../data/categories";
 import SafeAreaView from "react-native/Libraries/Components/SafeAreaView/SafeAreaView";
+import { ScrollView } from "react-navigation";
 
 export const MainComponent = ({navigation}) => {
   const [counter, setCounter] = React.useState(1);
@@ -34,13 +35,13 @@ export const MainComponent = ({navigation}) => {
           <Image source={require('../../assets/img/idea.png')} style={styles.image}/>
         </ImageBackground>
       </Animated.View>
-      <Animated.View style={[styles.categories]}>
-        <SafeAreaView>
+      <Animated.View style={[styles.categories ]}>
           <FlatList
-            data={categories}
+            contentContainerStyle={styles.flatList}
+            bounces={true}
+            data={[...categories ]}
             renderItem={ ({item}) => <CategoryCard category={item} navigation={navigation} />}
-            />
-        </SafeAreaView>
+          />
       </Animated.View>
     </View>
   );
@@ -50,6 +51,9 @@ const styles = StyleSheet.create({
   background: {
     height: '100%',
     backgroundColor: '#F5F5F5',
+  },
+  flatList: {
+    flex: 1,
   },
   text: {
     fontSize: 21,
