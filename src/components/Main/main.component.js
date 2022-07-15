@@ -1,28 +1,16 @@
 import React, { useEffect } from "react";
-import { Image, Text, View, StyleSheet, ImageBackground, FlatList } from "react-native";
-import Animated, {
-  withSpring,
-  interpolate,
-  useAnimatedStyle,
-} from "react-native-reanimated";
-import { CategoryCard } from "./components/CategoryCard";
+import { Image, Text, ScrollView, StyleSheet, ImageBackground, FlatList, TouchableOpacity } from "react-native";
+import Animated from "react-native-reanimated";
 import { categories } from "../../data/categories";
 
 export const MainComponent = ({
-  navigation,
-  counter
+  navigateToBookmarks,
+  renderCategoryCard,
+  headerAnimatedStyle
 }) => {
 
-  const headerAnimatedStyle = useAnimatedStyle(() => {
-    return {
-      transform: [
-        { translateY: withSpring(interpolate(counter, [1, 0], [-200,0]))},
-      ]
-    }
-  });
-
   return (
-    <View style={styles.background}>
+    <ScrollView style={styles.background}>
       <Animated.View style={headerAnimatedStyle}>
         <ImageBackground
           source={require('../../assets/img/headerBackground.png')}
@@ -35,23 +23,22 @@ export const MainComponent = ({
       </Animated.View>
       <Animated.View style={[styles.categories]}>
           <FlatList
-            contentContainerStyle={styles.flatList}
             bounces={true}
             data={[...categories ]}
-            renderItem={ ({item}) => <CategoryCard category={item} navigation={navigation} />}
+            renderItem={ ({item}) => renderCategoryCard(item)}
           />
       </Animated.View>
-    </View>
+      <TouchableOpacity onPress={navigateToBookmarks} style={styles.bookmarkButton}>
+        <Image source={require('../../assets/img/bookmarkIcon.png')}/>
+        <Text style={styles.bookmarkButtonText}> Go to bookmarks </Text>
+      </TouchableOpacity>
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
   background: {
-    height: '100%',
     backgroundColor: '#F5F5F5',
-  },
-  flatList: {
-    flex: 1,
   },
   text: {
     fontSize: 21,
@@ -79,6 +66,25 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
+    marginBottom: 20,
   },
-
+  bookmarkButton: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    alignSelf: 'center',
+    borderRadius: 50,
+    backgroundColor: '#9B61D5',
+    paddingHorizontal: 30,
+    paddingVertical: 15,
+    width: '50%',
+    shadowColor: '#000',
+    elevation: 4,
+    marginBottom: 30,
+  },
+  bookmarkButtonText: {
+    fontSize: 18,
+    fontFamily: 'Montserrat',
+    color: '#FFF',
+  },
 })

@@ -1,33 +1,21 @@
 import React from "react";
 import { ImageBackground, Text, View, StyleSheet, FlatList } from "react-native";
-import Animated, { interpolate, useAnimatedStyle, withSpring } from "react-native-reanimated";
+import Animated from "react-native-reanimated";
 import CircularProgress from 'react-native-circular-progress-indicator';
 import SafeAreaView from "react-native/Libraries/Components/SafeAreaView/SafeAreaView";
-import { AnswerItem } from "./components/answerItem";
 
 export const GameScreenComponent = ({
-  navigation,
   category,
-  score,
   questionNumber,
-  handleNextQuestion,
   numberOfQuestions,
   currentQuestion,
-  currentRightAnswer,
   currentTimeForAnswer,
   timerDuration,
-  navigateToGameOver,
-  counter
+  answersAnimation,
+  onTimerAnimationComplete,
+  timerColors,
+  renderAnswerItem,
 }) => {
-
-
-  const answersAnimation = useAnimatedStyle(() => {
-    return {
-      transform: [
-        { translateY: withSpring(interpolate(counter, [1, 0], [400,0]))},
-      ]
-    }
-  });
 
   return (
     <View style={styles.container}>
@@ -42,24 +30,14 @@ export const GameScreenComponent = ({
             <CircularProgress
               value={timerDuration}
               radius={40}
-              duration={currentTimeForAnswer * 1000 }
+              duration={currentTimeForAnswer * 1000}
               progressValueColor={'#9B6ACC'}
               maxValue={timerDuration}
               titleStyle={{fontWeight: 'bold'}}
-              onAnimationComplete={() => {
-                if (questionNumber  === numberOfQuestions ) {
-                  navigation.navigate('GameOver', {
-                    navigation: navigation,
-                    category: category,
-                    score: score
-                  })}
-                else {
-                  handleNextQuestion(score);
-                }
-              }}
-              inActiveStrokeColor={'#b2b2d7'}
-              activeStrokeColor={'#d9b1ff'}
-              circleBackgroundColor={'#fff'}
+              onAnimationComplete={onTimerAnimationComplete}
+              inActiveStrokeColor={timerColors.inActiveStrokeColor}
+              activeStrokeColor={timerColors.activeStrokeColor}
+              circleBackgroundColor={timerColors.circleBackgroundColor}
             />
           </View>
           <View style={styles.textContainer}>
@@ -70,15 +48,7 @@ export const GameScreenComponent = ({
         <SafeAreaView style={styles.answerContainer}>
           <Animated.View style={answersAnimation}>
             <FlatList data={category.questions[questionNumber - 1].answers}
-                      renderItem={ ({item}) => <AnswerItem
-                        item={item}
-                        navigateToGameOver={navigateToGameOver}
-                        currentRightAnswer={currentRightAnswer}
-                        numberOfQuestions={numberOfQuestions}
-                        questionNumber={questionNumber}
-                        score={score}
-                        handleNextQuestion={handleNextQuestion}
-                      />}
+                      renderItem={ ({item}) => renderAnswerItem(item)}
             />
           </Animated.View>
         </SafeAreaView>

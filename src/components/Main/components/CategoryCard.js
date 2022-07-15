@@ -1,9 +1,11 @@
 import React, { useEffect } from "react";
 import { ImageBackground, Text, StyleSheet, TouchableOpacity } from "react-native";
 import Animated, { interpolate, useAnimatedStyle,  withSpring,  } from "react-native-reanimated";
+import { useNavigation } from "@react-navigation/native";
 
-export const CategoryCard = ({category, navigation}) => {
+export const CategoryCard = ({category}) => {
   const [counter, setCounter] = React.useState(1);
+  const navigation = useNavigation();
   useEffect(() => {
     counter > 0 && setTimeout(() => setCounter(counter - 1), 1000);
   }, [counter]);
@@ -22,13 +24,23 @@ export const CategoryCard = ({category, navigation}) => {
       questionNumber: 1,
     })
   }
+  const navigateToSetScreen = (title) => {
+    navigation.navigate('QuestionsSetScreen', {
+      navigation: navigation,
+      headerTitle: title,
+      titles: category.topics,
+      mainColor: category.color,
+      textColor: category.textColor,
+      img: category.img,
+    })
+  }
   return (
     <Animated.View style={categoryAnimatedStyle}>
       <ImageBackground style={styles.container} source={category.img} imageStyle={styles.borderRadius}>
         <Text style={styles.title}>{category.text}</Text>
           <TouchableOpacity
             style={[styles.button]}
-            onPress={() => navigateToGameScreen()}>
+            onPress={() => navigateToSetScreen('Choose topic to start')}>
             <Text style={[styles.buttonText, { color: category.color }]}>Start</Text>
           </TouchableOpacity>
       </ImageBackground>

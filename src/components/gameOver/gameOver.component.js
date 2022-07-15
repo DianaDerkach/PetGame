@@ -1,28 +1,14 @@
 import React from "react";
 import { ImageBackground, Text, View, StyleSheet, TouchableOpacity } from "react-native";
-import Animated, { useAnimatedStyle, useSharedValue, withRepeat, withTiming } from "react-native-reanimated";
-import { CommonActions } from "@react-navigation/native";
+import Animated from "react-native-reanimated";
+
 
 export const GameOverComponent = ({
-  navigation,
   score,
-  category,
   handleStartAgain,
+  scoreCircleAnimation,
+  navigateToGameScreen,
 }) => {
-  const animation = useSharedValue(1);
-  const scoreCircleAnimation = useAnimatedStyle(() => {
-    return {
-      transform: [
-        {
-          scale: withRepeat(withTiming(animation.value, {
-            duration: 1000
-          }, () => {
-            animation.value = 1.1;
-          }), -1, true)
-        }
-      ]
-    }
-  });
 
   return (
     <ImageBackground
@@ -49,15 +35,13 @@ export const GameOverComponent = ({
       </TouchableOpacity>
       <TouchableOpacity
         style={[styles.backButton, styles.buttons, styles.borderRadius]}
-        onPress={() => {
-          navigation.navigate('QuizGame');
-        }}
+        onPress={navigateToGameScreen}
       >
         <Text style={styles.backButtonText}>
-        Back to main screen
+          Back to main screen
         </Text>
       </TouchableOpacity>
-    </ImageBackground>
+     </ImageBackground>
   );
 };
 

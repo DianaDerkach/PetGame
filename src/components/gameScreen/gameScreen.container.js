@@ -1,9 +1,11 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { GameScreenComponent } from "./gameScreen.component";
 import { CommonActions, useRoute } from "@react-navigation/native";
+import { interpolate, useAnimatedStyle, withSpring } from "react-native-reanimated";
+import { AnswerItem } from "./components/answerItem";
 
 export const GameScreenContainer = () => {
-  const [counter, setCounter] = React.useState(1);
+  const [counter, setCounter] = useState(1);
 
   const route = useRoute()
   const {navigation, category, score, questionNumber} = route.params
@@ -12,16 +14,34 @@ export const GameScreenContainer = () => {
   const currentRightAnswer = category.questions[questionNumber - 1].rightAnswer;
   const currentTimeForAnswer = category.questions[questionNumber - 1].timeForAnswer;
   const timerDuration = category.questions[0].timeForAnswer;
+  const timerColors = {
+    inActiveStrokeColor: '#b2b2d7',
+    activeStrokeColor: '#d9b1ff',
+    circleBackgroundColor: '#fff',
+  }
 
   useEffect(() => {
-    counter > 0 && setTimeout(() => setCounter(counter - 1), 1000);
+    let timeout
+    if (counter > 0) {
+      timeout = setTimeout(() => setCounter(counter - 1), 1000);
+    }
+
+    return () => clearTimeout(timeout)
   }, [counter]);
 
   useEffect(() => {
     if (questionNumber  === numberOfQuestions ) {
       navigateToGameOver();
     }
-  }, [])
+  }, []);
+
+  const navigateToGameOver = () => {
+    navigation.navigate('GameOver', {
+      navigation: navigation,
+      category: category,
+      score: score
+    })
+  }
 
   const handleNextQuestion = (updatedScore) => {
     navigation.dispatch(
@@ -42,28 +62,52 @@ export const GameScreenContainer = () => {
       })
     )
   }
-  const navigateToGameOver = () => {
-    navigation.navigate('GameOver', {
-      navigation: navigation,
-      category: category,
-      score: score
-    })
+
+  const answersAnimation = useAnimatedStyle(() => {
+    return {
+      transform: [
+        { translateY: withSpring(interpolate(counter, [1, 0], [400,0]))},
+      ]
+    }
+  });
+
+  const onTimerAnimationComplete = () => {
+    if (questionNumber === numberOfQuestions) {
+      navigation.navigate('GameOver', {
+        navigation: navigation,
+        category: category,
+        score: score
+      })
+    } else {
+      handleNextQuestion(score);
+    }
+  }
+
+  const renderAnswerItem = (item) => {
+    return <AnswerItem
+      item={item}
+      navigateToGameOver={navigateToGameOver}
+      currentRightAnswer={currentRightAnswer}
+      numberOfQuestions={numberOfQuestions}
+      questionNumber={questionNumber}
+      score={score}
+      handleNextQuestion={handleNextQuestion}
+    />
   }
 
   return (
     <GameScreenComponent
       category={category}
       navigation={navigation}
-      score={score}
       questionNumber={questionNumber}
-      handleNextQuestion={handleNextQuestion}
       currentQuestion={currentQuestion}
-      currentRightAnswer={currentRightAnswer}
       currentTimeForAnswer={currentTimeForAnswer}
       timerDuration={timerDuration}
       numberOfQuestions={numberOfQuestions}
-      navigateToGameOver={navigateToGameOver}
-      counter={counter}
+      answersAnimation={answersAnimation}
+      onTimerAnimationComplete={onTimerAnimationComplete}
+      timerColors={timerColors}
+      renderAnswerItem={renderAnswerItem}
     />
   );
 };
