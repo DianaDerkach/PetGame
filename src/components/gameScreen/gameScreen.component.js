@@ -1,24 +1,24 @@
-import React, { useEffect } from "react";
-import { ImageBackground, Text, View, StyleSheet, FlatList, TouchableOpacity } from "react-native";
+import React from "react";
+import { ImageBackground, Text, View, StyleSheet, FlatList } from "react-native";
 import Animated, { interpolate, useAnimatedStyle, withSpring } from "react-native-reanimated";
 import CircularProgress from 'react-native-circular-progress-indicator';
 import SafeAreaView from "react-native/Libraries/Components/SafeAreaView/SafeAreaView";
 import { AnswerItem } from "./components/answerItem";
 
 export const GameScreenComponent = ({
-                                      navigation,
-                                      category,
-                                      score,
-                                      questionNumber,
-                                      handleNextQuestion,
-                                      numberOfQuestions,
-                                      currentQuestion,
-                                      currentRightAnswer,
-                                      currentTimeForAnswer,
-                                      timerDuration,
-                                      navigateToGameOver,
-                                      counter
-                                    }) => {
+  navigation,
+  category,
+  score,
+  questionNumber,
+  handleNextQuestion,
+  numberOfQuestions,
+  currentQuestion,
+  currentRightAnswer,
+  currentTimeForAnswer,
+  timerDuration,
+  navigateToGameOver,
+  counter
+}) => {
 
 
   const answersAnimation = useAnimatedStyle(() => {

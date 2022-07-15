@@ -14,20 +14,21 @@ export const CategoryCard = ({category, navigation}) => {
       ]
     }
   })
+  const navigateToGameScreen = () => {
+    navigation.navigate('Game', {
+      navigation: navigation,
+      category: category,
+      score: 0,
+      questionNumber: 1,
+    })
+  }
   return (
     <Animated.View style={categoryAnimatedStyle}>
       <ImageBackground style={styles.container} source={category.img} imageStyle={styles.borderRadius}>
         <Text style={styles.title}>{category.text}</Text>
           <TouchableOpacity
             style={[styles.button]}
-            onPress={() => {
-              navigation.navigate('Game', {
-                navigation: navigation,
-                category: category,
-                score: 0,
-                questionNumber: 1,
-              })
-            }}>
+            onPress={() => navigateToGameScreen()}>
             <Text style={[styles.buttonText, { color: category.color }]}>Start</Text>
           </TouchableOpacity>
       </ImageBackground>

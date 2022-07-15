@@ -7,14 +7,12 @@ import Animated, {
 } from "react-native-reanimated";
 import { CategoryCard } from "./components/CategoryCard";
 import { categories } from "../../data/categories";
-import SafeAreaView from "react-native/Libraries/Components/SafeAreaView/SafeAreaView";
-import { ScrollView } from "react-navigation";
 
-export const MainComponent = ({navigation}) => {
-  const [counter, setCounter] = React.useState(1);
-  useEffect(() => {
-    counter > 0 && setTimeout(() => setCounter(counter - 1), 1000);
-  }, [counter]);
+export const MainComponent = ({
+  navigation,
+  counter
+}) => {
+
   const headerAnimatedStyle = useAnimatedStyle(() => {
     return {
       transform: [
@@ -35,7 +33,7 @@ export const MainComponent = ({navigation}) => {
           <Image source={require('../../assets/img/idea.png')} style={styles.image}/>
         </ImageBackground>
       </Animated.View>
-      <Animated.View style={[styles.categories ]}>
+      <Animated.View style={[styles.categories]}>
           <FlatList
             contentContainerStyle={styles.flatList}
             bounces={true}

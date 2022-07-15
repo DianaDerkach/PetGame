@@ -3,7 +3,12 @@ import { ImageBackground, Text, View, StyleSheet, TouchableOpacity } from "react
 import Animated, { useAnimatedStyle, useSharedValue, withRepeat, withTiming } from "react-native-reanimated";
 import { CommonActions } from "@react-navigation/native";
 
-export const GameOverComponent = ({navigation, score, category}) => {
+export const GameOverComponent = ({
+  navigation,
+  score,
+  category,
+  handleStartAgain,
+}) => {
   const animation = useSharedValue(1);
   const scoreCircleAnimation = useAnimatedStyle(() => {
     return {
@@ -18,26 +23,6 @@ export const GameOverComponent = ({navigation, score, category}) => {
       ]
     }
   });
-
-  const handleStartAgain = () => {
-    navigation.dispatch(
-      CommonActions.reset({
-        index: 1,
-        routes: [
-          {name: 'QuizGame'},
-          {
-            name: 'Game',
-            params: {
-              questionNumber: 1,
-              navigation: navigation,
-              score: 0,
-              category: category
-            }
-          }
-        ]
-      })
-    )
-  }
 
   return (
     <ImageBackground
@@ -56,9 +41,7 @@ export const GameOverComponent = ({navigation, score, category}) => {
       </View>
       <TouchableOpacity
         style={[styles.startButton, styles.buttons, styles.borderRadius]}
-        onPress={() => {
-          handleStartAgain();
-        }}
+        onPress={() => handleStartAgain()}
       >
         <Text style={styles.startButtonText}>
         Start again
@@ -67,16 +50,13 @@ export const GameOverComponent = ({navigation, score, category}) => {
       <TouchableOpacity
         style={[styles.backButton, styles.buttons, styles.borderRadius]}
         onPress={() => {
-          navigation.navigate('QuizGame')
+          navigation.navigate('QuizGame');
         }}
       >
         <Text style={styles.backButtonText}>
         Back to main screen
         </Text>
       </TouchableOpacity>
-
-
-
     </ImageBackground>
   );
 };

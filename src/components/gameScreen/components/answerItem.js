@@ -2,19 +2,17 @@ import React, { useState } from "react";
 import { Text, TouchableOpacity, StyleSheet, View } from "react-native";
 
 export const AnswerItem = ({
-                             item,
-                             handleNextQuestion,
-                             currentRightAnswer,
-                             score,
-                           }) => {
+ item,
+ handleNextQuestion,
+ currentRightAnswer,
+ score,
+}) => {
   const [answerBackground, setAnswerBackground] = useState('#fff');
   const setAnswerItemBackground = () => {
     if (item === currentRightAnswer) {
       setAnswerBackground('#b2d092')
-      console.log('right');
       setTimeout(() => handleNextQuestion(score + 1), 500);
     } else {
-      console.log('wrong');
       setAnswerBackground('#ff6c6c');
       setTimeout(() => handleNextQuestion(score), 500);
     }

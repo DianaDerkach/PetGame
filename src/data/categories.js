@@ -1,15 +1,15 @@
 export const categories = [
   {
     id: 1,
-    text: 'JS questions',
-    color: '#8EA3E8',
-    img: require('../assets/img/categoryBackgrounds/light-blue.png'),
+    text: 'JavaScript questions',
+    color: '#E4BF86',
+    img: require('../assets/img/categoryBackgrounds/js_category.png'),
     questions: [
       {
         text: 'How much data types do you know?',
         answers: ['2', '5', '8', '10'],
         rightAnswer: '8',
-        timeForAnswer: 7,
+        timeForAnswer: 10,
       },
       {
         text: 'Choose the correct statement about const, let and var',
@@ -76,5 +76,50 @@ export const categories = [
         timeForAnswer: 0,
       },
       ]
-  }
+  },
+  {
+    id: 4,
+    text: 'TypeScript questions',
+    color: '#8EA3E8',
+    img: require('../assets/img/categoryBackgrounds/ts_category.png'),
+    questions: [
+      {
+        text: 'What is TypeScript?',
+        answers: ['JS library', 'Strongly typed programming language', 'JS Framework', 'Weakly typed programming language',],
+        rightAnswer: 'Strongly typed programming language',
+        timeForAnswer: 9,
+      },
+      {
+        text: 'What file tsconfig.json doesnt do?',
+        answers: ['Save project dependences', ''],
+        rightAnswer: 'none',
+        timeForAnswer: 0,
+      },
+      {
+        text: ' ',
+        answers: [''],
+        rightAnswer: 'none',
+        timeForAnswer: 0,
+      },
+      {
+        text: ' ',
+        answers: [''],
+        rightAnswer: 'none',
+        timeForAnswer: 0,
+      },
+      {
+        text: ' ',
+        answers: [''],
+        rightAnswer: 'none',
+        timeForAnswer: 0,
+      },
+
+      {
+        text: ' ',
+        answers: [''],
+        rightAnswer: 'none',
+        timeForAnswer: 0,
+      },
+    ]
+  },
 ]
