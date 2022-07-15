@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { MainComponent } from "./main.component";
+import { BookmarkScreenComponent } from "./bookmarkScreen.component";
+import { useRoute } from "@react-navigation/native";
 import { interpolate, useAnimatedStyle, withSpring } from "react-native-reanimated";
-import { CategoryCard } from "./components/CategoryCard";
+import { BookmarkItem } from "./components/bookmarkItem";
 
-export const MainContainer = ({navigation}) => {
+export const BookmarkScreenContainer = () => {
   const [counter, setCounter] = useState(1);
 
   useEffect(() => {
@@ -14,10 +15,6 @@ export const MainContainer = ({navigation}) => {
 
     return () => clearTimeout(timeout)
   }, [counter]);
-
-  const navigateToBookmarks = () => {
-    navigation.navigate('Bookmarks');
-  }
   const headerAnimatedStyle = useAnimatedStyle(() => {
     return {
       transform: [
@@ -25,17 +22,15 @@ export const MainContainer = ({navigation}) => {
       ]
     }
   });
-  const renderCategoryCard = (item) => {
-    return <CategoryCard category={item}/>
-  }
 
+  const renderBookmarkItem = (item) => {
+    console.log(item);
+    return <BookmarkItem bookmark={item}  />
+  }
   return (
-    <MainComponent
-      navigation={navigation}
-      counter={counter}
-      navigateToBookmarks={navigateToBookmarks}
-      renderCategoryCard={renderCategoryCard}
+    <BookmarkScreenComponent
       headerAnimatedStyle={headerAnimatedStyle}
+      renderBookmarkItem={renderBookmarkItem}
     />
   );
 };
