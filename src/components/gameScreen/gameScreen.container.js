@@ -3,12 +3,14 @@ import { GameScreenComponent } from "./gameScreen.component";
 import { CommonActions, useNavigation, useRoute } from "@react-navigation/native";
 import { interpolate, useAnimatedStyle, withSpring } from "react-native-reanimated";
 import { AnswerItem } from "./components/answerItem";
+import CircularProgress from "react-native-circular-progress-indicator";
+import { Text, TouchableOpacity, StyleSheet } from "react-native";
 
 export const GameScreenContainer = () => {
   const [counter, setCounter] = useState(1);
   const navigation = useNavigation();
   const route = useRoute()
-  const { category, score, questionNumber} = route.params
+  const { category, score, questionNumber, chosenMode } = route.params
   const numberOfQuestions = category.questions.length;
   const currentQuestion = category.questions[questionNumber - 1].text;
   const currentRightAnswer = category.questions[questionNumber - 1].rightAnswer;
@@ -41,6 +43,27 @@ export const GameScreenContainer = () => {
       category: category,
       score: score
     })
+  }
+
+  const timer = () => {
+    return <CircularProgress
+      value={timerDuration}
+      radius={40}
+      duration={currentTimeForAnswer * 1000}
+      progressValueColor={'#9B6ACC'}
+      maxValue={timerDuration}
+      titleStyle={{fontWeight: 'bold'}}
+      onAnimationComplete={onTimerAnimationComplete}
+      inActiveStrokeColor={timerColors.inActiveStrokeColor}
+      activeStrokeColor={timerColors.activeStrokeColor}
+      circleBackgroundColor={timerColors.circleBackgroundColor}
+    />
+  }
+
+  const nextButton = () => {
+    return <TouchableOpacity style={styles.nextButton}>
+      <Text style={styles.buttonText}>Next</Text>
+    </TouchableOpacity>
   }
 
   const handleNextQuestion = (updatedScore) => {
@@ -108,6 +131,31 @@ export const GameScreenContainer = () => {
       onTimerAnimationComplete={onTimerAnimationComplete}
       timerColors={timerColors}
       renderAnswerItem={renderAnswerItem}
+      chosenMode={chosenMode}
+      timer={timer}
+      nextButton={nextButton}
     />
   );
 };
+
+const styles = StyleSheet.create({
+  nextButton: {
+    backgroundColor: '#9B6ACC',
+    width: '50%',
+    textAlign: 'center',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 15,
+    borderRadius: 50,
+    position: 'relative',
+    top: -170,
+    shadowColor: '#5e457a',
+    shadowOffsetY: 20,
+    elevation: 8,
+  },
+  buttonText: {
+    color: '#fff',
+    fontFamily: 'Montserrat',
+  },
+});

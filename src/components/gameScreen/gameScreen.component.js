@@ -1,7 +1,6 @@
 import React from "react";
-import { ImageBackground, Text, View, StyleSheet, FlatList } from "react-native";
+import { ImageBackground, Text, View, StyleSheet, FlatList, TouchableOpacity } from "react-native";
 import Animated from "react-native-reanimated";
-import CircularProgress from 'react-native-circular-progress-indicator';
 import SafeAreaView from "react-native/Libraries/Components/SafeAreaView/SafeAreaView";
 
 export const GameScreenComponent = ({
@@ -9,12 +8,11 @@ export const GameScreenComponent = ({
   questionNumber,
   numberOfQuestions,
   currentQuestion,
-  currentTimeForAnswer,
-  timerDuration,
   answersAnimation,
-  onTimerAnimationComplete,
-  timerColors,
   renderAnswerItem,
+  chosenMode,
+  timer,
+  nextButton,
 }) => {
 
   return (
@@ -27,18 +25,7 @@ export const GameScreenComponent = ({
       <View style={styles.alignment}>
         <Animated.View style={[styles.questionBoard]}>
           <View style={styles.timer}>
-            <CircularProgress
-              value={timerDuration}
-              radius={40}
-              duration={currentTimeForAnswer * 1000}
-              progressValueColor={'#9B6ACC'}
-              maxValue={timerDuration}
-              titleStyle={{fontWeight: 'bold'}}
-              onAnimationComplete={onTimerAnimationComplete}
-              inActiveStrokeColor={timerColors.inActiveStrokeColor}
-              activeStrokeColor={timerColors.activeStrokeColor}
-              circleBackgroundColor={timerColors.circleBackgroundColor}
-            />
+            {(chosenMode === 'Hard') ? timer() : null}
           </View>
           <View style={styles.textContainer}>
             <Text style={styles.title}>Question {questionNumber}/{numberOfQuestions - 1}</Text>
@@ -52,16 +39,17 @@ export const GameScreenComponent = ({
             />
           </Animated.View>
         </SafeAreaView>
+        { (chosenMode === 'Learning') ? nextButton() : null }
       </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
+
   container: {
     display: 'flex',
     flexDirection: 'column',
-    height: '100%',
     backgroundColor: '#f5f5f5',
   },
   header: {
@@ -86,7 +74,7 @@ const styles = StyleSheet.create({
   },
   questionBoard: {
     position: 'relative',
-    top: -30,
+    top: -100,
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
@@ -112,6 +100,7 @@ const styles = StyleSheet.create({
   },
   answerContainer: {
     position: 'relative',
+    top: -50,
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'center',
