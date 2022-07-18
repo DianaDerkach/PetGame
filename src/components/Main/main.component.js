@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Image, Text, ScrollView, StyleSheet, ImageBackground, FlatList, TouchableOpacity } from "react-native";
 import Animated from "react-native-reanimated";
 import { categories } from "../../data/categories";

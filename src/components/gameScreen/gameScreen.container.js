@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { GameScreenComponent } from "./gameScreen.component";
-import { CommonActions, useRoute } from "@react-navigation/native";
+import { CommonActions, useNavigation, useRoute } from "@react-navigation/native";
 import { interpolate, useAnimatedStyle, withSpring } from "react-native-reanimated";
 import { AnswerItem } from "./components/answerItem";
 
 export const GameScreenContainer = () => {
   const [counter, setCounter] = useState(1);
-
+  const navigation = useNavigation();
   const route = useRoute()
-  const {navigation, category, score, questionNumber} = route.params
+  const { category, score, questionNumber} = route.params
   const numberOfQuestions = category.questions.length;
   const currentQuestion = category.questions[questionNumber - 1].text;
   const currentRightAnswer = category.questions[questionNumber - 1].rightAnswer;
