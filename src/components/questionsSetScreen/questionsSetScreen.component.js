@@ -7,6 +7,7 @@ export const QuestionsSetScreenComponent = ({
   img,
   renderItem
                                             }) => {
+
   return (
     <ImageBackground
       source={require('../../assets/img/white_background.png')}

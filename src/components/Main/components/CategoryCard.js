@@ -16,14 +16,7 @@ export const CategoryCard = ({category}) => {
       ]
     }
   })
-  const navigateToGameScreen = () => {
-    navigation.navigate('Game', {
-      navigation: navigation,
-      category: category,
-      score: 0,
-      questionNumber: 1,
-    })
-  }
+
   const navigateToSetScreen = (title) => {
     navigation.navigate('QuestionsSetScreen', {
       navigation: navigation,
@@ -32,6 +25,8 @@ export const CategoryCard = ({category}) => {
       mainColor: category.color,
       textColor: category.textColor,
       img: category.img,
+      category: category,
+      prevScreen: 'CategoryCard',
     })
   }
   return (
