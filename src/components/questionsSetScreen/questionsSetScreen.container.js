@@ -1,12 +1,15 @@
-import React from "react";
+import React, { useState } from "react";
 import { QuestionsSetScreenComponent } from "./questionsSetScreen.component";
 import { useRoute } from "@react-navigation/native";
 import { StyleSheet, Text, TouchableOpacity } from "react-native";
+import { ChooseMode } from "./components/chooseMode";
 
 export const QuestionsSetScreenContainer = ({navigation}) => {
   const route = useRoute();
   const { headerTitle, titles, mainColor, textColor, img, category, prevScreen } = route.params;
-
+  const [isChooseModeDialog, setIsChooseModeDialog] = useState(false);
+  const [currentTopic, setCurrentTopic] = useState();
+  const [item, setItem] = useState();
   const getTitle = (item) => {
     if (prevScreen === 'CategoryCard') {
       return item.item.name
@@ -29,6 +32,12 @@ export const QuestionsSetScreenContainer = ({navigation}) => {
     return titles.map((element) => element.name);
   }
 
+  const showChooseModeDialog = () => {
+    setIsChooseModeDialog(true);
+  }
+  const renderChooseMode = () => {
+    return <ChooseMode currentTopic={currentTopic} item={item} mainColor={textColor} headerBackground={img}/>
+  }
   const navigateToNextScreen = (item) => {
     if (prevScreen === 'CategoryCard') {
       navigation.push('QuestionsSetScreen',
@@ -43,22 +52,19 @@ export const QuestionsSetScreenContainer = ({navigation}) => {
         })
     }
     if (prevScreen === 'Topics') {
-      const currentTopic = category.topics.find((element) => element.name === item.item)
-      navigation.navigate('Game',
-        {
-          category: currentTopic.questionSets[item.index],
-          score: 0,
-          questionNumber: 1,
-        })
+      showChooseModeDialog()
+      setItem(item);
+      setCurrentTopic(category.topics.find((element) => element.name === item.item));
     }
   }
   return (
     <QuestionsSetScreenComponent
       renderItem={renderItem}
       img={img}
-      mainColor={mainColor}
       headerTitle={headerTitle}
       titles={titles}
+      isChooseModeDialog={isChooseModeDialog}
+      renderChooseMode={renderChooseMode}
     />
   );
 };

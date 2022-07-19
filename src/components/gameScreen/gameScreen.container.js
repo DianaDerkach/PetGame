@@ -1,19 +1,27 @@
 import React, { useEffect, useState } from "react";
-import { GameScreenComponent } from "./gameScreen.component";
+import { Text, TouchableOpacity, StyleSheet, View } from "react-native";
 import { CommonActions, useNavigation, useRoute } from "@react-navigation/native";
 import { interpolate, useAnimatedStyle, withSpring } from "react-native-reanimated";
+import CircularProgress from "react-native-circular-progress-indicator";
 import { AnswerItem } from "./components/answerItem";
+import { GameScreenComponent } from "./gameScreen.component";
+import { HelpDialog } from "./components/helpDialog";
 
 export const GameScreenContainer = () => {
   const [counter, setCounter] = useState(1);
+  const [currentScore, setCurrentScore] = useState();
+  const [showHelpDialog, setShowHelpDialog] = useState(false);
   const navigation = useNavigation();
   const route = useRoute()
-  const { category, score, questionNumber} = route.params
+  const { category, score, questionNumber, chosenMode, mainColor, headerBackground } = route.params
   const numberOfQuestions = category.questions.length;
   const currentQuestion = category.questions[questionNumber - 1].text;
   const currentRightAnswer = category.questions[questionNumber - 1].rightAnswer;
   const currentTimeForAnswer = category.questions[questionNumber - 1].timeForAnswer;
   const timerDuration = category.questions[0].timeForAnswer;
+  const questionIcon = require('../../assets/img/icons/questionIcon.png');
+  const bookmarkIcon = require('../../assets/img/icons/bookmarkIcon.png');
+
   const timerColors = {
     inActiveStrokeColor: '#b2b2d7',
     activeStrokeColor: '#d9b1ff',
@@ -39,30 +47,65 @@ export const GameScreenContainer = () => {
     navigation.navigate('GameOver', {
       navigation: navigation,
       category: category,
-      score: score
+      score: score,
+      chosenMode: chosenMode,
+      mainColor: mainColor
     })
   }
 
-  const handleNextQuestion = (updatedScore) => {
-    navigation.dispatch(
-      CommonActions.reset({
-        index: 1,
-        routes: [
-          { name: 'QuizGame' },
-          {
-            name: 'Game',
-            params: {
-              questionNumber: questionNumber + 1,
-              navigation: navigation,
-              category: category,
-              score: updatedScore,
-            }
-          }
-        ]
-      })
-    )
+  const timer = () => {
+    return <CircularProgress
+      value={timerDuration}
+      radius={40}
+      duration={currentTimeForAnswer * 1000}
+      progressValueColor={'#9B6ACC'}
+      maxValue={timerDuration}
+      titleStyle={{fontWeight: 'bold'}}
+      onAnimationComplete={onTimerAnimationComplete}
+      inActiveStrokeColor={timerColors.inActiveStrokeColor}
+      activeStrokeColor={timerColors.activeStrokeColor}
+      circleBackgroundColor={timerColors.circleBackgroundColor}
+    />
   }
 
+  const timerless = () => {
+    return <View style={styles.block}/>
+  }
+
+  const nextButton = () => {
+    return <TouchableOpacity style={[styles.nextButton, { backgroundColor: mainColor }]} onPress={() => handleNextQuestion(currentScore, true)}>
+      <Text style={ styles.buttonText }>Next</Text>
+    </TouchableOpacity>
+  }
+
+  const handleNextQuestion = (updatedScore, isNextButton) => {
+    setCurrentScore(updatedScore);
+    if ((chosenMode === 'Hard') || (isNextButton)) {
+      navigation.dispatch(
+        CommonActions.reset({
+          index: 1,
+          routes: [
+            { name: 'QuizGame' },
+            {
+              name: 'Game',
+              params: {
+                questionNumber: questionNumber + 1,
+                navigation: navigation,
+                category: category,
+                score: updatedScore,
+                chosenMode: chosenMode,
+                mainColor: mainColor
+              }
+            }
+          ]
+        })
+      )
+    }
+
+  }
+  const renderHelpDialog = () => {
+    return <HelpDialog setShowHelpDialog={setShowHelpDialog} mainColor={ mainColor }/>
+  }
   const answersAnimation = useAnimatedStyle(() => {
     return {
       transform: [
@@ -76,7 +119,9 @@ export const GameScreenContainer = () => {
       navigation.navigate('GameOver', {
         navigation: navigation,
         category: category,
-        score: score
+        score: score,
+        chosenMode: chosenMode,
+        mainColor: mainColor
       })
     } else {
       handleNextQuestion(score);
@@ -108,6 +153,42 @@ export const GameScreenContainer = () => {
       onTimerAnimationComplete={onTimerAnimationComplete}
       timerColors={timerColors}
       renderAnswerItem={renderAnswerItem}
+      chosenMode={chosenMode}
+      timer={timer}
+      nextButton={nextButton}
+      timerless={timerless}
+      mainColor={mainColor}
+      questionIcon={questionIcon}
+      bookmarkIcon={bookmarkIcon}
+      showHelpDialog={showHelpDialog}
+      renderHelpDialog={renderHelpDialog}
+      setShowHelpDialog={setShowHelpDialog}
+      headerBackground={headerBackground}
     />
   );
 };
+
+const styles = StyleSheet.create({
+  block: {
+    height: 60,
+    width: 60,
+  },
+  nextButton: {
+    width: '50%',
+    textAlign: 'center',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 15,
+    borderRadius: 50,
+    position: 'relative',
+    top: -170,
+    shadowColor: '#0a0a0a',
+    shadowOffsetY: 20,
+    elevation: 8,
+  },
+  buttonText: {
+    color: '#fff',
+    fontFamily: 'Montserrat',
+  },
+});

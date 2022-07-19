@@ -42,10 +42,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#9B61D5',
     paddingHorizontal: 35,
     paddingVertical: 10,
-    width: '35%',
+    width: '45%',
     marginTop: 10,
   },
   deleteButton: {
+    textAlign: 'center',
     color: '#fff',
   }
 })

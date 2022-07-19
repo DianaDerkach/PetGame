@@ -1,40 +1,45 @@
 import React from "react";
-import { ImageBackground, Text, StyleSheet, FlatList } from "react-native";
+import { ImageBackground, Text, StyleSheet, FlatList, Dimensions } from "react-native";
 
 export const QuestionsSetScreenComponent = ({
   headerTitle,
   titles,
   img,
-  renderItem
+  renderItem,
+  isChooseModeDialog,
+  renderChooseMode,
                                             }) => {
 
   return (
-    <ImageBackground
-      source={require('../../assets/img/white_background.png')}
-      styles={styles.container}
-    >
       <ImageBackground
-        source={img}
-        style={styles.header}
-        imageStyle={styles.borderRadius}
+        source={require('../../assets/img/white_background.png')}
+        resizeMode={'cover'}
+        style={styles.container}
       >
-        <Text style={styles.headerText}>{headerTitle}</Text>
+        { isChooseModeDialog ? renderChooseMode() : null }
+        <ImageBackground
+          source={img}
+          style={styles.header}
+          imageStyle={styles.borderRadius}
+        >
+          <Text style={styles.headerText}>{headerTitle}</Text>
+        </ImageBackground>
+        <FlatList
+          style={styles.item}
+          data={titles}
+          renderItem={(item) => renderItem(item)}
+        />
       </ImageBackground>
-      <FlatList
-        style={styles.item}
-        data={titles}
-        renderItem={(item) => renderItem(item)}
-      />
-    </ImageBackground>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
+    paddingHorizontal: 20,
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'center',
-    alignItems: 'center',
+    height: Dimensions.get('window').height,
   },
   header: {
     display: 'flex',
