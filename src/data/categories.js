@@ -24,6 +24,12 @@ export const categories = [
                 rightAnswer: 'const and let have block and functional field of view',
                 timeForAnswer: 7,
               },
+              {
+                text: '',
+                answers: [ ],
+                rightAnswer: ' ',
+                timeForAnswer: 0,
+              },
             ]
           },
           {

@@ -1,33 +1,36 @@
-import React, { useState } from "react";
+import React from "react";
 import { Dimensions, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
 export const ChooseMode = ({
  item,
- currentTopic
+ currentTopic,
+ mainColor,
+  headerBackground,
 }) => {
   const navigation = useNavigation();
   const navigateToGameScreen = (chosenMode) => {
-    console.log('current', item);
     navigation.navigate('Game',
       {
         category: currentTopic.questionSets[item.index],
         score: 0,
         questionNumber: 1,
         chosenMode: chosenMode,
+        mainColor: mainColor,
+        headerBackground: headerBackground
       })
   }
   return (
     <View style={styles.darkBackground}>
       <View style={styles.container}>
-        <Text style={styles.title}>Choose mode</Text>
+        <Text style={[styles.title, { color: mainColor }]}>Choose mode</Text>
         <View style={styles.textBox}>
-          <Text style={styles.modeDescription}>
+          <Text style={[styles.modeDescription, { color: mainColor }]}>
             Learning mode - mode without timer,
             with opportunity to read theory about
             current question
           </Text>
-          <Text style={styles.modeDescription}>
+          <Text style={[styles.modeDescription, { color: mainColor }]}>
             Hard mode - you have only 10 seconds
             to answer the question
           </Text>
@@ -37,12 +40,12 @@ export const ChooseMode = ({
             style={[styles.learningButton, styles.button]}
             onPress={() => navigateToGameScreen('Learning')}
           >
-            <Text style={styles.learningText}>
+            <Text style={{ color: mainColor }}>
               Learning
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
-            style={[styles.hardButton, styles.button]}
+            style={[{backgroundColor: mainColor}, styles.button]}
             onPress={() => navigateToGameScreen('Hard')}
           >
             <Text style={styles.hardText}>
@@ -113,9 +116,7 @@ const styles = StyleSheet.create({
   learningButton: {
     backgroundColor: '#fff',
   },
-  hardButton: {
-    backgroundColor: '#9B6ACC',
-  },
+
   hardText: {
     color: '#fff',
     fontFamily: 'Montserrat',

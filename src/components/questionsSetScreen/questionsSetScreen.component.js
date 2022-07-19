@@ -1,6 +1,5 @@
 import React from "react";
 import { ImageBackground, Text, StyleSheet, FlatList, Dimensions } from "react-native";
-import { ChooseMode } from "./components/chooseMode";
 
 export const QuestionsSetScreenComponent = ({
   headerTitle,
@@ -8,10 +7,7 @@ export const QuestionsSetScreenComponent = ({
   img,
   renderItem,
   isChooseModeDialog,
-  navigateToNextScreen,
-  showChooseModeDialog,
-  currentTopic,
-  item
+  renderChooseMode,
                                             }) => {
 
   return (
@@ -20,7 +16,7 @@ export const QuestionsSetScreenComponent = ({
         resizeMode={'cover'}
         style={styles.container}
       >
-        { isChooseModeDialog ? <ChooseMode currentTopic={currentTopic} item={item}/> : null }
+        { isChooseModeDialog ? renderChooseMode() : null }
         <ImageBackground
           source={img}
           style={styles.header}

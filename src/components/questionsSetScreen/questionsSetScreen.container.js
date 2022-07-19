@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { QuestionsSetScreenComponent } from "./questionsSetScreen.component";
 import { useRoute } from "@react-navigation/native";
 import { StyleSheet, Text, TouchableOpacity } from "react-native";
+import { ChooseMode } from "./components/chooseMode";
 
 export const QuestionsSetScreenContainer = ({navigation}) => {
   const route = useRoute();
@@ -34,7 +35,9 @@ export const QuestionsSetScreenContainer = ({navigation}) => {
   const showChooseModeDialog = () => {
     setIsChooseModeDialog(true);
   }
-
+  const renderChooseMode = () => {
+    return <ChooseMode currentTopic={currentTopic} item={item} mainColor={textColor} headerBackground={img}/>
+  }
   const navigateToNextScreen = (item) => {
     if (prevScreen === 'CategoryCard') {
       navigation.push('QuestionsSetScreen',
@@ -58,14 +61,10 @@ export const QuestionsSetScreenContainer = ({navigation}) => {
     <QuestionsSetScreenComponent
       renderItem={renderItem}
       img={img}
-      mainColor={mainColor}
       headerTitle={headerTitle}
       titles={titles}
       isChooseModeDialog={isChooseModeDialog}
-      navigateToNextScreen={navigateToNextScreen}
-      showChooseModeDialog={showChooseModeDialog}
-      currentTopic={currentTopic}
-      item={item}
+      renderChooseMode={renderChooseMode}
     />
   );
 };

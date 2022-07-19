@@ -8,6 +8,7 @@ export const GameOverComponent = ({
   handleStartAgain,
   scoreCircleAnimation,
   navigateToGameScreen,
+  mainColor,
 }) => {
 
   return (
@@ -19,8 +20,8 @@ export const GameOverComponent = ({
         <View style={[styles.thirdCircle, styles.borderRadius]}>
           <View style={[styles.secondCircle, styles.borderRadius]}>
             <Animated.View style={[styles.scoreCircle, styles.borderRadius, scoreCircleAnimation]}>
-              <Text style={[styles.title, styles.text]}>Your score</Text>
-              <Text style={[styles.scoreText, styles.text]}>{score}</Text>
+              <Text style={[styles.title, styles.text, {color: mainColor}]}>Your score</Text>
+              <Text style={[styles.scoreText, styles.text, {color: mainColor}]}>{score}</Text>
             </Animated.View>
           </View>
         </View>
@@ -29,12 +30,12 @@ export const GameOverComponent = ({
         style={[styles.startButton, styles.buttons, styles.borderRadius]}
         onPress={() => handleStartAgain()}
       >
-        <Text style={styles.startButtonText}>
+        <Text style={[styles.startButtonText, { color: mainColor}]}>
         Start again
         </Text>
       </TouchableOpacity>
       <TouchableOpacity
-        style={[styles.backButton, styles.buttons, styles.borderRadius]}
+        style={[styles.backButton, styles.buttons, styles.borderRadius, { backgroundColor: mainColor }]}
         onPress={navigateToGameScreen}
       >
         <Text style={styles.backButtonText}>
@@ -72,13 +73,12 @@ const styles = StyleSheet.create({
     height: '80%',
     backgroundColor: '#fff',
     elevation: 10,
-    shadowColor: '#673996',
+    shadowColor: 'rgba(9,9,9,0.24)',
 
   },
   text: {
     fontFamily: 'Montserrat',
     fontWeight: 'bold',
-    color: '#9b61d5',
     textAlign: 'center',
   },
   title: {
@@ -93,9 +93,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: '75%',
     height: '80%',
-    backgroundColor: '#C6A6E6',
     elevation: 10,
-    shadowColor: '#7e49b4',
+    shadowColor: 'rgba(10,10,10,0.48)',
   },
   thirdCircle: {
     display: 'flex',
@@ -127,7 +126,6 @@ const styles = StyleSheet.create({
     fontWeight: 15,
   },
   startButtonText: {
-    color: '#9b61d5',
     fontWeight: 'bold',
   },
   backButtonText: {

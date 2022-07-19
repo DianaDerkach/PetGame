@@ -2,6 +2,7 @@ import React from "react";
 import { ImageBackground, Text, View, StyleSheet, FlatList, TouchableOpacity } from "react-native";
 import Animated from "react-native-reanimated";
 import SafeAreaView from "react-native/Libraries/Components/SafeAreaView/SafeAreaView";
+import { CustomButton } from "./components/customButton";
 
 export const GameScreenComponent = ({
   category,
@@ -13,23 +14,37 @@ export const GameScreenComponent = ({
   chosenMode,
   timer,
   nextButton,
+  timerless,
+  mainColor,
+  questionIcon,
+  bookmarkIcon,
+  headerBackground,
+  showHelpDialog,
+  addToBookmarks,
+  renderHelpDialog,
+  setShowHelpDialog,
 }) => {
 
   return (
     <View style={styles.container}>
+      {showHelpDialog ? renderHelpDialog() : null}
       <ImageBackground
-        source={require('../../assets/img/headerBackground.png')}
+        source={headerBackground}
         imageStyle={styles.borderRadius}
         style={[styles.header]}>
       </ImageBackground>
       <View style={styles.alignment}>
         <Animated.View style={[styles.questionBoard]}>
-          <View style={styles.timer}>
-            {(chosenMode === 'Hard') ? timer() : null}
+          <View style={styles.customButtonsContainer}>
+            <CustomButton img={questionIcon} color={mainColor} onTouch={() => setShowHelpDialog(true)}/>
+            <View style={styles.timer}>
+              {(chosenMode === 'Hard') ? timer() : timerless()}
+            </View>
+            <CustomButton img={bookmarkIcon} color={mainColor} onTouch={addToBookmarks}/>
           </View>
           <View style={styles.textContainer}>
-            <Text style={styles.title}>Question {questionNumber}/{numberOfQuestions - 1}</Text>
-            <Text style={styles.questionText}>{currentQuestion}</Text>
+            <Text style={[styles.title, { color: mainColor}]}>Question {questionNumber}/{numberOfQuestions - 1}</Text>
+            <Text style={[styles.questionText, { color: mainColor}]}>{currentQuestion}</Text>
           </View>
         </Animated.View>
         <SafeAreaView style={styles.answerContainer}>
@@ -46,7 +61,6 @@ export const GameScreenComponent = ({
 };
 
 const styles = StyleSheet.create({
-
   container: {
     display: 'flex',
     flexDirection: 'column',
@@ -56,12 +70,15 @@ const styles = StyleSheet.create({
     height: 184,
   },
   title: {
-    color: '#9B6ACC',
     fontWeight: 'bold',
   },
   borderRadius: {
     borderBottomRightRadius: 40,
     borderBottomLeftRadius: 40,
+  },
+  customButtonsContainer: {
+    display: 'flex',
+    flexDirection: 'row',
   },
   timer: {
     position: 'relative',
@@ -96,7 +113,6 @@ const styles = StyleSheet.create({
   questionText: {
     marginTop: 10,
     fontWeight: 'bold',
-    color: '#9B6ACC',
   },
   answerContainer: {
     position: 'relative',
