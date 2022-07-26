@@ -2,10 +2,14 @@ import React, { useEffect } from "react";
 import { ImageBackground, Text, StyleSheet, TouchableOpacity } from "react-native";
 import Animated, { interpolate, useAnimatedStyle,  withSpring,  } from "react-native-reanimated";
 import { useNavigation } from "@react-navigation/native";
+import { useApi } from "../../../utils/api";
+
 
 export const CategoryCard = ({category}) => {
   const [counter, setCounter] = React.useState(1);
   const navigation = useNavigation();
+  const api = useApi('http://localhost:1339/');
+
   useEffect(() => {
     counter > 0 && setTimeout(() => setCounter(counter - 1), 1000);
   }, [counter]);
@@ -21,17 +25,19 @@ export const CategoryCard = ({category}) => {
     navigation.navigate('QuestionsSetScreen', {
       navigation: navigation,
       headerTitle: title,
-      titles: category.topics,
+      categoryTopics: category.topics,
       mainColor: category.color,
       textColor: category.textColor,
-      img: category.img,
+      img: getImg(),
       category: category,
       prevScreen: 'CategoryCard',
     })
   }
+  const getImg = () => api.host + category.img.formats.thumbnail.url;
+
   return (
     <Animated.View style={categoryAnimatedStyle}>
-      <ImageBackground style={styles.container} source={category.img} imageStyle={styles.borderRadius}>
+      <ImageBackground style={styles.container} source={{ uri: getImg() }} imageStyle={styles.borderRadius}>
         <Text style={styles.title}>{category.text}</Text>
           <TouchableOpacity
             style={[styles.button]}
@@ -65,7 +71,6 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     fontSize: 12,
-    fontFamily: 'Montserrat',
     fontWeight: 'bold',
   },
   title: {

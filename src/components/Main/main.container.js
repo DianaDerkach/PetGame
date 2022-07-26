@@ -2,9 +2,16 @@ import React, { useEffect, useState } from "react";
 import { MainComponent } from "./main.component";
 import { interpolate, useAnimatedStyle, withSpring } from "react-native-reanimated";
 import { CategoryCard } from "./components/CategoryCard";
+import { useApi } from "../../utils/api";
 
 export const MainContainer = ({navigation}) => {
   const [counter, setCounter] = useState(1);
+  const [categories, setCategories] = useState();
+  const api = useApi('http://localhost:1339/');
+
+  useEffect(() => {
+    api.categories().then(setCategories)
+  }, [])
 
   useEffect(() => {
     let timeout
@@ -25,8 +32,8 @@ export const MainContainer = ({navigation}) => {
       ]
     }
   });
-  const renderCategoryCard = (item) => {
-    return <CategoryCard category={item}/>
+  const renderCategoryCard = (category) => {
+    return <CategoryCard category={category} key={category.id}/>
   }
 
   return (
@@ -36,6 +43,7 @@ export const MainContainer = ({navigation}) => {
       navigateToBookmarks={navigateToBookmarks}
       renderCategoryCard={renderCategoryCard}
       headerAnimatedStyle={headerAnimatedStyle}
+      categories={categories}
     />
   );
 };

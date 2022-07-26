@@ -13,12 +13,12 @@ export const GameScreenContainer = () => {
   const [showHelpDialog, setShowHelpDialog] = useState(false);
   const navigation = useNavigation();
   const route = useRoute()
-  const { category, score, questionNumber, chosenMode, mainColor, headerBackground } = route.params
-  const numberOfQuestions = category.questions.length;
-  const currentQuestion = category.questions[questionNumber - 1].text;
-  const currentRightAnswer = category.questions[questionNumber - 1].rightAnswer;
-  const currentTimeForAnswer = category.questions[questionNumber - 1].timeForAnswer;
-  const timerDuration = category.questions[0].timeForAnswer;
+  const { chosenQuestionsSet, score, questionNumber, chosenMode, mainColor, headerBackground } = route.params
+  const numberOfQuestions = chosenQuestionsSet.questions.length;
+  const currentQuestion = chosenQuestionsSet.questions[questionNumber - 1].text;
+  const currentRightAnswer = chosenQuestionsSet.questions[questionNumber - 1].rightAnswer;
+  const currentTimeForAnswer = chosenQuestionsSet.questions[questionNumber - 1].timeForAnswer;
+  const timerDuration = chosenQuestionsSet.questions[0].timeForAnswer;
   const questionIcon = require('../../assets/img/icons/questionIcon.png');
   const bookmarkIcon = require('../../assets/img/icons/bookmarkIcon.png');
 
@@ -29,6 +29,13 @@ export const GameScreenContainer = () => {
   }
 
   useEffect(() => {
+    console.log('chosenQuestionsSet.questions', chosenQuestionsSet);
+    if (questionNumber  === numberOfQuestions ) {
+      navigateToGameOver();
+    }
+  }, []);
+
+  useEffect(() => {
     let timeout
     if (counter > 0) {
       timeout = setTimeout(() => setCounter(counter - 1), 1000);
@@ -37,16 +44,11 @@ export const GameScreenContainer = () => {
     return () => clearTimeout(timeout)
   }, [counter]);
 
-  useEffect(() => {
-    if (questionNumber  === numberOfQuestions ) {
-      navigateToGameOver();
-    }
-  }, []);
 
   const navigateToGameOver = () => {
     navigation.navigate('GameOver', {
       navigation: navigation,
-      category: category,
+      category: chosenQuestionsSet,
       score: score,
       chosenMode: chosenMode,
       mainColor: mainColor
@@ -91,10 +93,11 @@ export const GameScreenContainer = () => {
               params: {
                 questionNumber: questionNumber + 1,
                 navigation: navigation,
-                category: category,
+                category: chosenQuestionsSet,
                 score: updatedScore,
                 chosenMode: chosenMode,
-                mainColor: mainColor
+                mainColor: mainColor,
+                headerBackground: headerBackground
               }
             }
           ]
@@ -118,7 +121,7 @@ export const GameScreenContainer = () => {
     if (questionNumber === numberOfQuestions) {
       navigation.navigate('GameOver', {
         navigation: navigation,
-        category: category,
+        category: chosenQuestionsSet,
         score: score,
         chosenMode: chosenMode,
         mainColor: mainColor
@@ -142,7 +145,7 @@ export const GameScreenContainer = () => {
 
   return (
     <GameScreenComponent
-      category={category}
+      chosenQuestionsSet={chosenQuestionsSet}
       navigation={navigation}
       questionNumber={questionNumber}
       currentQuestion={currentQuestion}
@@ -189,6 +192,5 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: '#fff',
-    fontFamily: 'Montserrat',
   },
 });

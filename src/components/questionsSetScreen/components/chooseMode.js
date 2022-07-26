@@ -3,16 +3,17 @@ import { Dimensions, StyleSheet, Text, TouchableOpacity, View } from "react-nati
 import { useNavigation } from "@react-navigation/native";
 
 export const ChooseMode = ({
- item,
- currentTopic,
- mainColor,
+  chosenQuestionsSet,
+  mainColor,
   headerBackground,
+                             questionsSets
 }) => {
   const navigation = useNavigation();
   const navigateToGameScreen = (chosenMode) => {
+    console.log('chosenQuestionsSet in navigateToGameScreen', chosenQuestionsSet);
     navigation.navigate('Game',
       {
-        category: currentTopic.questionSets[item.index],
+        chosenQuestionsSet: chosenQuestionsSet,
         score: 0,
         questionNumber: 1,
         chosenMode: chosenMode,
@@ -79,7 +80,6 @@ const styles = StyleSheet.create({
     borderRadius: 20,
   },
   title: {
-    fontFamily: 'Montserrat',
     fontWeight: 'bold',
     fontSize: 25,
     marginBottom: 20,
@@ -119,10 +119,8 @@ const styles = StyleSheet.create({
 
   hardText: {
     color: '#fff',
-    fontFamily: 'Montserrat',
   },
   learningText: {
     color: '#9B6ACC',
-    fontFamily: 'Montserrat',
   },
 })

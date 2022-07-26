@@ -3,7 +3,7 @@ import { ImageBackground, Text, StyleSheet, FlatList, Dimensions } from "react-n
 
 export const QuestionsSetScreenComponent = ({
   headerTitle,
-  titles,
+  categoryTopics,
   img,
   renderItem,
   isChooseModeDialog,
@@ -18,7 +18,7 @@ export const QuestionsSetScreenComponent = ({
       >
         { isChooseModeDialog ? renderChooseMode() : null }
         <ImageBackground
-          source={img}
+          source={{ uri: img }}
           style={styles.header}
           imageStyle={styles.borderRadius}
         >
@@ -26,8 +26,8 @@ export const QuestionsSetScreenComponent = ({
         </ImageBackground>
         <FlatList
           style={styles.item}
-          data={titles}
-          renderItem={(item) => renderItem(item)}
+          data={categoryTopics}
+          renderItem={(categoryTopic) => renderItem(categoryTopic)}
         />
       </ImageBackground>
   );

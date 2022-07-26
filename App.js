@@ -6,20 +6,23 @@ import { GameOverContainer } from "./src/components/gameOver/gameOver.container"
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { BookmarkScreenContainer } from "./src/components/bookmarkScreen/bookmarkScreen.container";
 import { QuestionsSetScreenContainer } from "./src/components/questionsSetScreen/questionsSetScreen.container";
+import { ApiProvider } from "./src/utils/api";
 
 const Stack = createNativeStackNavigator();
 
 const App = () => {
   return (
-    <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen name='QuizGame' component={MainContainer}/>
-        <Stack.Screen name='Game' component={GameScreenContainer} />
-        <Stack.Screen name='GameOver' component={GameOverContainer} />
-        <Stack.Screen name='Bookmarks' component={BookmarkScreenContainer} />
-        <Stack.Screen name='QuestionsSetScreen' component={QuestionsSetScreenContainer} />
-      </Stack.Navigator>
-     </NavigationContainer>
+    <ApiProvider host={'http://localhost:1339'}>
+      <NavigationContainer>
+        <Stack.Navigator>
+          <Stack.Screen name='QuizGame' component={MainContainer}/>
+          <Stack.Screen name='Game' component={GameScreenContainer} />
+          <Stack.Screen name='GameOver' component={GameOverContainer} />
+          <Stack.Screen name='Bookmarks' component={BookmarkScreenContainer} />
+          <Stack.Screen name='QuestionsSetScreen' component={QuestionsSetScreenContainer} />
+        </Stack.Navigator>
+       </NavigationContainer>
+    </ApiProvider>
       );
 };
 

@@ -5,7 +5,7 @@ import SafeAreaView from "react-native/Libraries/Components/SafeAreaView/SafeAre
 import { CustomButton } from "./components/customButton";
 
 export const GameScreenComponent = ({
-  category,
+  chosenQuestionsSet,
   questionNumber,
   numberOfQuestions,
   currentQuestion,
@@ -49,7 +49,7 @@ export const GameScreenComponent = ({
         </Animated.View>
         <SafeAreaView style={styles.answerContainer}>
           <Animated.View style={answersAnimation}>
-            <FlatList data={category.questions[questionNumber - 1].answers}
+            <FlatList data={chosenQuestionsSet.questions[questionNumber - 1].answers}
                       renderItem={ ({item}) => renderAnswerItem(item)}
             />
           </Animated.View>
