@@ -1,23 +1,13 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { FlatList, ImageBackground, StyleSheet, Text, View } from "react-native";
 import Animated from "react-native-reanimated";
+import { useApi } from "../../utils/api";
 
-export const BookmarkScreenComponent = ({headerAnimatedStyle, renderBookmarkItem}) => {
-
-  const bookmarks = [
-    {
-      category: 'JS questions',
-      question: 'How much types of data do you know?',
-      answers: ['5', '12', '8', '9'],
-      rightAnswer: '8',
-    },
-    {
-      category: 'TS questions',
-      question: 'How much types of data do you know?',
-      answers: ['5', '12', '9'],
-      rightAnswer: '8',
-    },
-  ]
+export const BookmarkScreenComponent = ({
+  headerAnimatedStyle,
+  renderBookmarkItem,
+  bookmarks,
+}) => {
   return (
     <View style={styles.container}>
       <ImageBackground
@@ -35,7 +25,7 @@ export const BookmarkScreenComponent = ({headerAnimatedStyle, renderBookmarkItem
         <FlatList
           data={bookmarks}
           bounces={true}
-          renderItem={ (item) => renderBookmarkItem(item) }
+          renderItem={ renderBookmarkItem }
         />
       </ImageBackground>
     </View>

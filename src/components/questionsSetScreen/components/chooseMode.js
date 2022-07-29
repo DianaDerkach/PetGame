@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Dimensions, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import { useApi } from "../../../utils/api";
 
 export const ChooseMode = ({
   chosenQuestionsSet,
@@ -9,8 +10,13 @@ export const ChooseMode = ({
                              questionsSets
 }) => {
   const navigation = useNavigation();
+  const api = useApi('http://localhost:1339/');
+  const [questions, setQuestions] = useState([]);
+  useEffect(() => {
+    api.questions(chosenQuestionsSet.name).then((questions) => setQuestions(questions));
+  }, [])
+
   const navigateToGameScreen = (chosenMode) => {
-    console.log('chosenQuestionsSet in navigateToGameScreen', chosenQuestionsSet);
     navigation.navigate('Game',
       {
         chosenQuestionsSet: chosenQuestionsSet,
@@ -18,7 +24,8 @@ export const ChooseMode = ({
         questionNumber: 1,
         chosenMode: chosenMode,
         mainColor: mainColor,
-        headerBackground: headerBackground
+        headerBackground: headerBackground,
+        questions: questions,
       })
   }
   return (
@@ -92,7 +99,7 @@ const styles = StyleSheet.create({
   modeDescription: {
     fontSize: 12,
     marginBottom: 10,
-    color: '#9B61D5',
+     color: '#9B61D5',
   },
   buttonsBox: {
     display: 'flex',

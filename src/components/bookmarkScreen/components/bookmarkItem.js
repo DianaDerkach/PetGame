@@ -1,20 +1,24 @@
-import React from "react";
-import { Text, View, StyleSheet, FlatList, TouchableOpacity } from "react-native";
+import React, { useContext, useState } from "react";
+import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
+import { BookmarksContext } from "../../../utils/bookmarks";
+import { useApi } from "../../../utils/api";
 
-export const BookmarkItem = ({bookmark}) => {
-  const renderAnswers = (item) => {
-    return <Text style={styles.text}>{item.item}</Text>
+export const BookmarkItem = ({bookmark, setDeletingStatus}) => {
+  const [bookmarks, setBookmarks] = useContext(BookmarksContext);
+  const api = useApi();
+
+  const deleteBookmark = () => {
+    setBookmarks(bookmarks.filter((bookmarkItem) => bookmark.item.question !== bookmarkItem.question));
+    api.deleteBookmark(bookmark.item.question).then((status) => setDeletingStatus(status)).catch((err) => console.log('deleteBookmark error', err))
+
   }
+
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>{bookmark.item.category}</Text>
-      <Text style={styles.text}>{bookmark.item.question}</Text>
-      <FlatList
-        data={bookmark.item.answers}
-        renderItem={(item) => renderAnswers(item)}
-      />
+      <Text style={[styles.text, styles.question]}>{bookmark.item.question}</Text>
+      <Text style={styles.text}>{bookmark.item.help}</Text>
       <Text style={styles.text}>{'Right answer: ' + bookmark.item.rightAnswer}</Text>
-      <TouchableOpacity style={styles.button} >
+      <TouchableOpacity style={styles.button} onPress={deleteBookmark}>
         <Text style={styles.deleteButton}>Delete</Text>
       </TouchableOpacity>
     </View>
@@ -34,8 +38,8 @@ const styles = StyleSheet.create({
   },
   text: {
     color: '#9B61D5',
-    textAlign: 'center',
-    marginBottom: 5,
+    textAlign: 'left',
+    marginBottom: 10,
   },
   button: {
     borderRadius: 50,
@@ -48,5 +52,8 @@ const styles = StyleSheet.create({
   deleteButton: {
     textAlign: 'center',
     color: '#fff',
+  },
+  question: {
+    fontWeight: 'bold',
   }
 })

@@ -77,7 +77,6 @@ const styles = StyleSheet.create({
 
   },
   text: {
-    fontFamily: 'Montserrat',
     fontWeight: 'bold',
     textAlign: 'center',
   },

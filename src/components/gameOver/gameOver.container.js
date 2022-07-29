@@ -5,7 +5,7 @@ import { useAnimatedStyle, useSharedValue, withRepeat, withTiming } from "react-
 
 export const GameOverContainer = () => {
   const route = useRoute();
-  const { navigation, score, category, chosenMode, mainColor } = route.params;
+  const { navigation, score, chosenQuestionsSet, chosenMode, mainColor, questions } = route.params;
   const animation = useSharedValue(1);
   const handleStartAgain = () => {
     navigation.dispatch(
@@ -19,9 +19,10 @@ export const GameOverContainer = () => {
               questionNumber: 1,
               navigation: navigation,
               score: 0,
-              category: category,
+              chosenQuestionsSet: chosenQuestionsSet,
               chosenMode: chosenMode,
               mainColor: mainColor,
+              questions: questions,
             }
           }
         ]
@@ -50,8 +51,6 @@ export const GameOverContainer = () => {
   return (
     <GameOverComponent
       score={score}
-      navigation={navigation}
-      category={category}
       handleStartAgain={handleStartAgain}
       scoreCircleAnimation={scoreCircleAnimation}
       navigateToGameScreen={navigateToGameScreen}

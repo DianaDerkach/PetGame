@@ -73,6 +73,5 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: '#fff',
-    fontFamily: 'Montserrat',
   }
 })

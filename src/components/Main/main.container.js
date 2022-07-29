@@ -7,10 +7,10 @@ import { useApi } from "../../utils/api";
 export const MainContainer = ({navigation}) => {
   const [counter, setCounter] = useState(1);
   const [categories, setCategories] = useState();
-  const api = useApi('http://localhost:1339/');
+  const api = useApi();
 
   useEffect(() => {
-    api.categories().then(setCategories)
+    api.categories().then(setCategories);
   }, [])
 
   useEffect(() => {

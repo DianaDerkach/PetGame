@@ -2,14 +2,14 @@ import React, { useState } from "react";
 import { Text, TouchableOpacity, StyleSheet, View } from "react-native";
 
 export const AnswerItem = ({
- item,
+ answer,
  handleNextQuestion,
  currentRightAnswer,
  score,
 }) => {
   const [answerBackground, setAnswerBackground] = useState('#fff');
   const setAnswerItemBackground = () => {
-    if (item === currentRightAnswer) {
+    if (answer === currentRightAnswer) {
       setAnswerBackground('#b2d092')
       setTimeout(() => handleNextQuestion(score + 1), 500);
     } else {
@@ -19,7 +19,7 @@ export const AnswerItem = ({
   }
   return (
     <TouchableOpacity style={[styles.answer]} onPress={setAnswerItemBackground}>
-      <Text style={[styles.answerText]}>{item}</Text>
+      <Text style={[styles.answerText]}>{answer}</Text>
       <View style={[styles.answerFeedback, {backgroundColor: answerBackground}]}></View>
     </TouchableOpacity>
   );
@@ -45,7 +45,6 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     marginTop: 20,
     width: 310,
-    height: 40,
     backgroundColor: '#fff',
     color: '#000',
     borderRadius: 100,

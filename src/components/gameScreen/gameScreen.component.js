@@ -20,9 +20,10 @@ export const GameScreenComponent = ({
   bookmarkIcon,
   headerBackground,
   showHelpDialog,
-  addToBookmarks,
+  bookmarkSetter,
   renderHelpDialog,
   setShowHelpDialog,
+  answers,
 }) => {
 
   return (
@@ -40,7 +41,7 @@ export const GameScreenComponent = ({
             <View style={styles.timer}>
               {(chosenMode === 'Hard') ? timer() : timerless()}
             </View>
-            <CustomButton img={bookmarkIcon} color={mainColor} onTouch={addToBookmarks}/>
+            <CustomButton img={bookmarkIcon} color={mainColor} onTouch={bookmarkSetter}/>
           </View>
           <View style={styles.textContainer}>
             <Text style={[styles.title, { color: mainColor}]}>Question {questionNumber}/{numberOfQuestions - 1}</Text>
@@ -49,8 +50,8 @@ export const GameScreenComponent = ({
         </Animated.View>
         <SafeAreaView style={styles.answerContainer}>
           <Animated.View style={answersAnimation}>
-            <FlatList data={chosenQuestionsSet.questions[questionNumber - 1].answers}
-                      renderItem={ ({item}) => renderAnswerItem(item)}
+            <FlatList data={answers}
+                      renderItem={ (answer) => renderAnswerItem(answer.item)}
             />
           </Animated.View>
         </SafeAreaView>

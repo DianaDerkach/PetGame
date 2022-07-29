@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Text, TouchableOpacity, StyleSheet, View } from "react-native";
 import { CommonActions, useNavigation, useRoute } from "@react-navigation/native";
 import { interpolate, useAnimatedStyle, withSpring } from "react-native-reanimated";
@@ -6,14 +6,18 @@ import CircularProgress from "react-native-circular-progress-indicator";
 import { AnswerItem } from "./components/answerItem";
 import { GameScreenComponent } from "./gameScreen.component";
 import { HelpDialog } from "./components/helpDialog";
+import { useApi } from "../../utils/api";
+import { BookmarksContext } from "../../utils/bookmarks";
 
 export const GameScreenContainer = () => {
   const [counter, setCounter] = useState(1);
   const [currentScore, setCurrentScore] = useState();
   const [showHelpDialog, setShowHelpDialog] = useState(false);
+  const [currentAnswers, setCurrentAnswers] = useState([]);
+  const [filteredQuestion, setFilteredQuestion] = useState([]);
   const navigation = useNavigation();
   const route = useRoute()
-  const { chosenQuestionsSet, score, questionNumber, chosenMode, mainColor, headerBackground } = route.params
+  const { chosenQuestionsSet, score, questionNumber, chosenMode, mainColor, headerBackground, questions } = route.params
   const numberOfQuestions = chosenQuestionsSet.questions.length;
   const currentQuestion = chosenQuestionsSet.questions[questionNumber - 1].text;
   const currentRightAnswer = chosenQuestionsSet.questions[questionNumber - 1].rightAnswer;
@@ -21,15 +25,14 @@ export const GameScreenContainer = () => {
   const timerDuration = chosenQuestionsSet.questions[0].timeForAnswer;
   const questionIcon = require('../../assets/img/icons/questionIcon.png');
   const bookmarkIcon = require('../../assets/img/icons/bookmarkIcon.png');
-
-  const timerColors = {
-    inActiveStrokeColor: '#b2b2d7',
-    activeStrokeColor: '#d9b1ff',
-    circleBackgroundColor: '#fff',
-  }
+  const [bookmarks, setBookmarks] = useContext(BookmarksContext);
+  const api = useApi();
 
   useEffect(() => {
-    console.log('chosenQuestionsSet.questions', chosenQuestionsSet);
+    const filteredQuestion = questions.data.filter((questionItem) => questionItem.text === currentQuestion);
+    const slicedAnswers = Object.values(filteredQuestion[0].answers[0]).slice(3);
+    setFilteredQuestion(filteredQuestion);
+    setCurrentAnswers(slicedAnswers);
     if (questionNumber  === numberOfQuestions ) {
       navigateToGameOver();
     }
@@ -44,14 +47,47 @@ export const GameScreenContainer = () => {
     return () => clearTimeout(timeout)
   }, [counter]);
 
+  const timerColors = {
+    inActiveStrokeColor: '#b2b2d7',
+    activeStrokeColor: '#d9b1ff',
+    circleBackgroundColor: '#fff',
+  }
+  const handleNextQuestion = (updatedScore, isNextButton) => {
+    setCurrentScore(updatedScore);
+    if ((chosenMode === 'Hard') || (isNextButton)) {
+      navigation.dispatch(
+        CommonActions.reset({
+          index: 1,
+          routes: [
+            { name: 'QuizGame' },
+            {
+              name: 'Game',
+              params: {
+                questionNumber: questionNumber + 1,
+                navigation: navigation,
+                chosenQuestionsSet: chosenQuestionsSet,
+                score: updatedScore,
+                chosenMode: chosenMode,
+                mainColor: mainColor,
+                headerBackground: headerBackground,
+                questions: questions,
+              }
+            }
+          ]
+        })
+      )
+    }
+
+  }
 
   const navigateToGameOver = () => {
     navigation.navigate('GameOver', {
       navigation: navigation,
-      category: chosenQuestionsSet,
+      chosenQuestionsSet: chosenQuestionsSet,
       score: score,
       chosenMode: chosenMode,
-      mainColor: mainColor
+      mainColor: mainColor,
+      questions: questions
     })
   }
 
@@ -73,41 +109,22 @@ export const GameScreenContainer = () => {
   const timerless = () => {
     return <View style={styles.block}/>
   }
-
+  const bookmarkSetter = () => {
+    api.setBookmark({
+      question: currentQuestion,
+      help: filteredQuestion[0].help,
+      rightAnswer: filteredQuestion[0].rightAnswer,
+    }).then()
+      .catch( (e) => console.log('bookmark add error', e));
+  }
   const nextButton = () => {
     return <TouchableOpacity style={[styles.nextButton, { backgroundColor: mainColor }]} onPress={() => handleNextQuestion(currentScore, true)}>
       <Text style={ styles.buttonText }>Next</Text>
     </TouchableOpacity>
   }
 
-  const handleNextQuestion = (updatedScore, isNextButton) => {
-    setCurrentScore(updatedScore);
-    if ((chosenMode === 'Hard') || (isNextButton)) {
-      navigation.dispatch(
-        CommonActions.reset({
-          index: 1,
-          routes: [
-            { name: 'QuizGame' },
-            {
-              name: 'Game',
-              params: {
-                questionNumber: questionNumber + 1,
-                navigation: navigation,
-                category: chosenQuestionsSet,
-                score: updatedScore,
-                chosenMode: chosenMode,
-                mainColor: mainColor,
-                headerBackground: headerBackground
-              }
-            }
-          ]
-        })
-      )
-    }
-
-  }
   const renderHelpDialog = () => {
-    return <HelpDialog setShowHelpDialog={setShowHelpDialog} mainColor={ mainColor }/>
+    return <HelpDialog setShowHelpDialog={setShowHelpDialog} mainColor={ mainColor } theory={filteredQuestion[0].help}/>
   }
   const answersAnimation = useAnimatedStyle(() => {
     return {
@@ -131,9 +148,9 @@ export const GameScreenContainer = () => {
     }
   }
 
-  const renderAnswerItem = (item) => {
+  const renderAnswerItem = (answer) => {
     return <AnswerItem
-      item={item}
+      answer={answer}
       navigateToGameOver={navigateToGameOver}
       currentRightAnswer={currentRightAnswer}
       numberOfQuestions={numberOfQuestions}
@@ -167,6 +184,8 @@ export const GameScreenContainer = () => {
       renderHelpDialog={renderHelpDialog}
       setShowHelpDialog={setShowHelpDialog}
       headerBackground={headerBackground}
+      answers={currentAnswers}
+      bookmarkSetter={bookmarkSetter}
     />
   );
 };

@@ -1,11 +1,21 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { BookmarkScreenComponent } from "./bookmarkScreen.component";
-import { useRoute } from "@react-navigation/native";
 import { interpolate, useAnimatedStyle, withSpring } from "react-native-reanimated";
 import { BookmarkItem } from "./components/bookmarkItem";
+import { Text } from "react-native";
+import { BookmarksContext } from "../../utils/bookmarks";
+import { useApi } from "../../utils/api";
 
 export const BookmarkScreenContainer = () => {
   const [counter, setCounter] = useState(1);
+  const [bookmarks, setBookmarks] = useContext(BookmarksContext);
+  const api = useApi();
+
+  useEffect( () => {
+    api.getBookmarks()
+      .then(setBookmarks)
+      .catch((e) => console.log('getBookmark error ', e));
+  }, []);
 
   useEffect(() => {
     let timeout
@@ -22,15 +32,21 @@ export const BookmarkScreenContainer = () => {
       ]
     }
   });
-
-  const renderBookmarkItem = (item) => {
-    console.log(item);
-    return <BookmarkItem bookmark={item}  />
+  const showDeletingStatus = () => {
+    return (
+      <Text>Bookmark deleted successfully</Text>
+    )
+  }
+  const renderBookmarkItem = (bookmark) => {
+    console.log('in renderBookmarkItem', bookmark);
+    return <BookmarkItem bookmark={bookmark} />
   }
   return (
     <BookmarkScreenComponent
       headerAnimatedStyle={headerAnimatedStyle}
       renderBookmarkItem={renderBookmarkItem}
+      bookmarks={bookmarks}
+      showDeletingStatus={showDeletingStatus}
     />
   );
 };
