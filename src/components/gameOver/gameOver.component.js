@@ -1,5 +1,5 @@
 import React from "react";
-import { ImageBackground, Text, View, StyleSheet, TouchableOpacity } from "react-native";
+import { ImageBackground, Text, View, StyleSheet, TouchableOpacity, Dimensions } from "react-native";
 import Animated from "react-native-reanimated";
 
 
@@ -69,8 +69,8 @@ const styles = StyleSheet.create({
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    width: '80%',
-    height: '80%',
+    width: Dimensions.get('window').width / 3,
+    height: Dimensions.get('window').width / 3,
     backgroundColor: '#fff',
     elevation: 10,
     shadowColor: 'rgba(9,9,9,0.24)',
@@ -99,8 +99,8 @@ const styles = StyleSheet.create({
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    width: '54%',
-    height: '60%',
+    width: Dimensions.get('window').width / 3 + 80,
+    height: Dimensions.get('window').width / 3 + 80,
     backgroundColor: '#C6A6E6',
     elevation: 4,
     shadowColor: '#B286DF',

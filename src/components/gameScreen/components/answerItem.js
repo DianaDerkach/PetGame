@@ -37,10 +37,10 @@ const styles = StyleSheet.create({
     color: '#000',
   },
   answer: {
-    display: 'flex',
-    flexDirection: 'column',
+    // display: 'flex',
+    // flexDirection: 'column',
     justifyContent: 'center',
-    position: 'relative',
+    // position: 'relative',
     paddingLeft: 20,
     paddingVertical: 10,
     marginTop: 20,

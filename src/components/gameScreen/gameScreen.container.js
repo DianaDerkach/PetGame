@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Text, TouchableOpacity, StyleSheet, View } from "react-native";
 import { CommonActions, useNavigation, useRoute } from "@react-navigation/native";
 import { interpolate, useAnimatedStyle, withSpring } from "react-native-reanimated";
@@ -7,7 +7,6 @@ import { AnswerItem } from "./components/answerItem";
 import { GameScreenComponent } from "./gameScreen.component";
 import { HelpDialog } from "./components/helpDialog";
 import { useApi } from "../../utils/api";
-import { BookmarksContext } from "../../utils/bookmarks";
 
 export const GameScreenContainer = () => {
   const [counter, setCounter] = useState(1);
@@ -25,7 +24,7 @@ export const GameScreenContainer = () => {
   const timerDuration = chosenQuestionsSet.questions[0].timeForAnswer;
   const questionIcon = require('../../assets/img/icons/questionIcon.png');
   const bookmarkIcon = require('../../assets/img/icons/bookmarkIcon.png');
-  const [bookmarks, setBookmarks] = useContext(BookmarksContext);
+  const [bookmarkAddingStatus, setBookmarkAddingStatus] = useState(undefined);
   const api = useApi();
 
   useEffect(() => {
@@ -114,7 +113,7 @@ export const GameScreenContainer = () => {
       question: currentQuestion,
       help: filteredQuestion[0].help,
       rightAnswer: filteredQuestion[0].rightAnswer,
-    }).then()
+    }).then(setBookmarkAddingStatus)
       .catch( (e) => console.log('bookmark add error', e));
   }
   const nextButton = () => {
@@ -150,7 +149,7 @@ export const GameScreenContainer = () => {
 
   const renderAnswerItem = (answer) => {
     return <AnswerItem
-      answer={answer}
+      answer={answer.item}
       navigateToGameOver={navigateToGameOver}
       currentRightAnswer={currentRightAnswer}
       numberOfQuestions={numberOfQuestions}
@@ -186,6 +185,7 @@ export const GameScreenContainer = () => {
       headerBackground={headerBackground}
       answers={currentAnswers}
       bookmarkSetter={bookmarkSetter}
+      bookmarkAddingStatus={bookmarkAddingStatus}
     />
   );
 };
@@ -196,7 +196,7 @@ const styles = StyleSheet.create({
     width: 60,
   },
   nextButton: {
-    width: '50%',
+    width: 300,
     textAlign: 'center',
     display: 'flex',
     justifyContent: 'center',
@@ -204,10 +204,10 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
     borderRadius: 50,
     position: 'relative',
-    top: -170,
     shadowColor: '#0a0a0a',
     shadowOffsetY: 20,
     elevation: 8,
+    marginVertical: 40,
   },
   buttonText: {
     color: '#fff',

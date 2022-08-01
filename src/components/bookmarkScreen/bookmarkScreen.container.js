@@ -38,7 +38,6 @@ export const BookmarkScreenContainer = () => {
     )
   }
   const renderBookmarkItem = (bookmark) => {
-    console.log('in renderBookmarkItem', bookmark);
     return <BookmarkItem bookmark={bookmark} />
   }
   return (

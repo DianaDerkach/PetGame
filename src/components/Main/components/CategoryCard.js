@@ -37,14 +37,12 @@ export const CategoryCard = ({category}) => {
 
   return (
     <Animated.View style={categoryAnimatedStyle}>
-      <ImageBackground style={styles.container} source={{ uri: getImg() }} imageStyle={styles.borderRadius}>
-        <Text style={styles.title}>{category.text}</Text>
-          <TouchableOpacity
-            style={[styles.button]}
-            onPress={() => navigateToSetScreen('Choose topic to start')}>
-            <Text style={[styles.buttonText, { color: category.color }]}>Start</Text>
-          </TouchableOpacity>
-      </ImageBackground>
+      <TouchableOpacity
+      onPress={() => navigateToSetScreen('Choose topic to start')}>
+        <ImageBackground style={styles.container} source={{ uri: getImg() }} imageStyle={styles.borderRadius}>
+          <Text style={styles.title}>{category.text}</Text>
+        </ImageBackground>
+      </TouchableOpacity>
     </Animated.View>
   );
 };

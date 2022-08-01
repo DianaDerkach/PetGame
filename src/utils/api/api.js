@@ -7,7 +7,6 @@ export class Api {
   }
 
   categories = async () => {
-    console.log('in categoties back');
     return fetcher(`${this.api}/categories?populate=*`);
   };
   questionsSets = async () => fetcher(`${this.api}/questions-sets?populate=*`);
@@ -15,8 +14,7 @@ export class Api {
 
   getBookmarks = async () => {
     try {
-      const bookmarks = await AsyncStorage.getItem('bookmarks')
-      console.log('getBookmarks success');
+      const bookmarks = await AsyncStorage.getItem('bookmarks');
       return JSON.parse(bookmarks);
   } catch(e) {
       console.log('getBookmarks error', e);
@@ -40,11 +38,17 @@ export class Api {
         help: newBookmark.help,
       };
       const oldValue = await this.getBookmarks() || [];
-      await AsyncStorage.setItem('bookmarks', JSON.stringify([
-        ...oldValue,
-        value
-      ]));
-      console.log('bookmark successfully sets!');
+      const checkExistingValue = oldValue.find((question) => question.question === newBookmark.question);
+      if (checkExistingValue === undefined) {
+        await AsyncStorage.setItem('bookmarks', JSON.stringify([
+          ...oldValue,
+          value
+        ]));
+        return 'Question was successfully added!'
+      } else {
+        return 'Question already exists'
+      }
+
     } catch(e) {
       console.log('setBookmark error ', e);
     }
