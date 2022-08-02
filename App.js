@@ -1,32 +1,26 @@
 import React, { useState } from "react";
 import { NavigationContainer } from '@react-navigation/native';
-import { MainContainer } from "./src/components/Main/main.container";
-import { GameScreenContainer } from "./src/components/gameScreen/gameScreen.container";
-import { GameOverContainer } from "./src/components/gameOver/gameOver.container";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import {ErrorBoundary} from 'react-error-boundary';
 import { BookmarkScreenContainer } from "./src/components/bookmarkScreen/bookmarkScreen.container";
 import { QuestionsSetScreenContainer } from "./src/components/questionsSetScreen/questionsSetScreen.container";
+import { GameScreenContainer } from "./src/components/gameScreen/gameScreen.container";
 import { ApiProvider } from "./src/utils/api";
+import { GameOverContainer } from "./src/components/gameOver/gameOver.container";
+import { MainContainer } from "./src/components/Main/main.container";
 import { BookmarksContext } from "./src/utils/bookmarks";
-import {ErrorBoundary} from 'react-error-boundary'
-import { Text, TouchableOpacity, View } from "react-native";
+import { ErrorBoundaryUi } from "./src/components/errorBoundary/errorBoundaryUi";
 
 const Stack = createNativeStackNavigator();
 
-const ErrorComponentUi = ({error, resetErrorBoundary}) => {
-  return (
-    <View style={{height: '100%', backgroundColor: '#cbbdbd', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center',}}>
-      <Text>Some error is special for you, my friend: {error} </Text>
-      <TouchableOpacity onPress={resetErrorBoundary}></TouchableOpacity>
-    </View>
-  )
-}
 
 const App = () => {
   const [bookmarks, setBookmarks] = useState([]);
+  const BASE_URL = 'http://192.168.100.106:1339';
+
   return (
-    <ErrorBoundary FallbackComponent={() => ErrorComponentUi(ErrorBoundary)}>
-      <ApiProvider host={'http://192.168.100.106:1339'}>
+    <ErrorBoundary FallbackComponent={ErrorBoundaryUi}>
+      <ApiProvider host={BASE_URL}>
         <BookmarksContext.Provider value={[bookmarks, setBookmarks]}>
           <NavigationContainer>
             <Stack.Navigator>

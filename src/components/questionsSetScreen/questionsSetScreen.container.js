@@ -1,37 +1,35 @@
-import React, { useEffect, useState } from "react";
-import { QuestionsSetScreenComponent } from "./questionsSetScreen.component";
-import { useRoute } from "@react-navigation/native";
-import { StyleSheet, Text, TouchableOpacity } from "react-native";
-import { ChooseMode } from "./components/chooseMode";
-import { useApi } from "../../utils/api";
+import React, {useEffect, useState} from 'react';
+import {StyleSheet, Text, TouchableOpacity} from 'react-native';
+import {useRoute} from '@react-navigation/native';
+import {QuestionsSetScreenComponent} from './questionsSetScreen.component';
+import {ChooseMode} from './components/chooseMode';
+import {useApi} from '../../utils/api';
 
 export const QuestionsSetScreenContainer = ({navigation}) => {
   const route = useRoute();
-  const { headerTitle, categoryTopics, mainColor, textColor, img, category, prevScreen } = route.params;
+  const {headerTitle, categoryTopics, mainColor, textColor, img, category, prevScreen} = route.params;
   const [isChooseModeDialog, setIsChooseModeDialog] = useState(false);
   const [questionsSets, setQuestionsSets] = useState([]);
   const [chosenQuestionsSet, setChosenQuestionsSet] = useState();
-  const api = useApi('http://localhost:1339/');
+  const api = useApi();
 
   useEffect(() => {
-    api.questionsSets().then( (questionSets) => {
-     return setQuestionsSets(questionSets.data);
-    });
+    api.questionsSets().then( (questionSets) =>  setQuestionsSets(questionSets.data));
   }, []);
 
   const renderItem = (categoryTopic) => {
     const title = categoryTopic.item.name;
     return (
       <TouchableOpacity style={[styles.item, {backgroundColor: mainColor}]} onPress={() => {
-        navigateToNextScreen(categoryTopic)
+        navigateToNextScreen(categoryTopic);
       }}>
         <Text style={{color: textColor}}>{title}</Text>
-      </TouchableOpacity>)
-  }
+      </TouchableOpacity>);
+  };
 
   const getQuestionsSetsNames = (categoryTopic) => {
-    return questionsSets.filter((questionsSet) => questionsSet.topic.name === categoryTopic.item.name)
-  }
+    return questionsSets.filter((questionsSet) => questionsSet.topic.name === categoryTopic.item.name);
+  };
 
   const navigateToNextScreen = (categoryTopic) => {
     if (prevScreen === 'CategoryCard') {
@@ -39,28 +37,31 @@ export const QuestionsSetScreenContainer = ({navigation}) => {
         {
           headerTitle: 'Choose question set',
           categoryTopics: getQuestionsSetsNames(categoryTopic),
-          mainColor: mainColor,
-          textColor: textColor,
-          img: img,
+          mainColor,
+          textColor,
+          img,
           category: questionsSets,
-          prevScreen: 'Topics'
-        })
+          prevScreen: 'Topics',
+        });
     }
     if (prevScreen === 'Topics') {
       showChooseModeDialog();
-      setChosenQuestionsSet(category.find((questionsSet) => {
-        return questionsSet.name === categoryTopic.item.name;
-      }));
+      const defineChosenQuestionsSet = category.find((questionsSet) => questionsSet.name === categoryTopic.item.name);
+      if (defineChosenQuestionsSet) {
+        setChosenQuestionsSet(defineChosenQuestionsSet);
+      } else {
+        throw new Error ('error in defining chosen questions set');
+      }
     }
-  }
+  };
 
   const showChooseModeDialog = () => {
     setIsChooseModeDialog(true);
-  }
+  };
 
   const renderChooseMode = () => {
-    return <ChooseMode chosenQuestionsSet={chosenQuestionsSet} mainColor={textColor} headerBackground={img}/>
-  }
+    return <ChooseMode chosenQuestionsSet={chosenQuestionsSet} mainColor={textColor} headerBackground={img}/>;
+  };
 
   return (
     <QuestionsSetScreenComponent
@@ -79,6 +80,6 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
     paddingHorizontal: 10,
     borderRadius: 10,
-    marginBottom: 20
-  }
-})
+    marginBottom: 20,
+  },
+});

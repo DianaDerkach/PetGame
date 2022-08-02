@@ -1,12 +1,12 @@
-import React from "react";
-import { Image, Text, ScrollView, StyleSheet, ImageBackground, TouchableOpacity } from "react-native";
-import Animated from "react-native-reanimated";
+import React from 'react';
+import {Image, Text, ScrollView, StyleSheet, ImageBackground, TouchableOpacity} from 'react-native';
+import Animated from 'react-native-reanimated';
 
 export const MainComponent = ({
   navigateToBookmarks,
   renderCategoryCard,
   headerAnimatedStyle,
-  categories
+  categories,
 }) => {
 
   return (
@@ -16,7 +16,7 @@ export const MainComponent = ({
           source={require('../../assets/img/Background.png')}
           imageStyle={styles.borderRadius}
           style={[styles.header]}
-          resizeMode={"cover"}>
+          resizeMode={'cover'}>
           <Text style={styles.text}>Choose questions pack to play</Text>
           <Image source={require('../../assets/img/idea.png')} style={styles.image}/>
         </ImageBackground>
@@ -81,4 +81,4 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: '#FFF',
   },
-})
+});

@@ -1,17 +1,19 @@
-import React, { useContext, useState } from "react";
-import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
-import { BookmarksContext } from "../../../utils/bookmarks";
-import { useApi } from "../../../utils/api";
+import React, {useContext} from 'react';
+import {Text, View, StyleSheet, TouchableOpacity} from 'react-native';
+import {BookmarksContext} from '../../../utils/bookmarks';
+import {useApi} from '../../../utils/api';
 
 export const BookmarkItem = ({bookmark, setDeletingStatus}) => {
   const [bookmarks, setBookmarks] = useContext(BookmarksContext);
   const api = useApi();
 
   const deleteBookmark = () => {
-    setBookmarks(bookmarks.filter((bookmarkItem) => bookmark.item.question !== bookmarkItem.question));
-    api.deleteBookmark(bookmark.item.question).then((status) => setDeletingStatus(status)).catch((err) => console.log('deleteBookmark error', err))
+    api.deleteBookmark(bookmark.item.question).then((status) => {
+      setBookmarks(bookmarks.filter((bookmarkItem) => bookmark.item.question !== bookmarkItem.question));
+      setDeletingStatus(status);
+    }).catch((err) => console.log('deleteBookmark error', err));
 
-  }
+  };
 
   return (
     <View style={styles.container}>
@@ -55,5 +57,5 @@ const styles = StyleSheet.create({
   },
   question: {
     fontWeight: 'bold',
-  }
-})
+  },
+});

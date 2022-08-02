@@ -1,10 +1,10 @@
-import React, { useContext, useEffect, useState } from "react";
-import { BookmarkScreenComponent } from "./bookmarkScreen.component";
-import { interpolate, useAnimatedStyle, withSpring } from "react-native-reanimated";
-import { BookmarkItem } from "./components/bookmarkItem";
-import { Text } from "react-native";
-import { BookmarksContext } from "../../utils/bookmarks";
-import { useApi } from "../../utils/api";
+import React, {useContext, useEffect, useState} from 'react';
+import {Text} from 'react-native';
+import {interpolate, useAnimatedStyle, withSpring} from 'react-native-reanimated';
+import {BookmarkScreenComponent} from './bookmarkScreen.component';
+import {BookmarkItem} from './components/bookmarkItem';
+import {BookmarksContext} from '../../utils/bookmarks';
+import {useApi} from '../../utils/api';
 
 export const BookmarkScreenContainer = () => {
   const [counter, setCounter] = useState(1);
@@ -18,28 +18,26 @@ export const BookmarkScreenContainer = () => {
   }, []);
 
   useEffect(() => {
-    let timeout
+    let timeout;
     if (counter > 0) {
       timeout = setTimeout(() => setCounter(counter - 1), 1000);
     }
 
-    return () => clearTimeout(timeout)
+    return () => clearTimeout(timeout);
   }, [counter]);
   const headerAnimatedStyle = useAnimatedStyle(() => {
     return {
       transform: [
-        { translateY: withSpring(interpolate(counter, [1, 0], [-200,0]))},
-      ]
-    }
+        {translateY: withSpring(interpolate(counter, [1, 0], [-200,0]))},
+      ],
+    };
   });
   const showDeletingStatus = () => {
-    return (
-      <Text>Bookmark deleted successfully</Text>
-    )
-  }
+    return <Text>Bookmark deleted successfully</Text>;
+  };
   const renderBookmarkItem = (bookmark) => {
-    return <BookmarkItem bookmark={bookmark} />
-  }
+    return <BookmarkItem bookmark={bookmark} />;
+  };
   return (
     <BookmarkScreenComponent
       headerAnimatedStyle={headerAnimatedStyle}

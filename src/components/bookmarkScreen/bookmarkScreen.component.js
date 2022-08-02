@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from "react";
-import { FlatList, ImageBackground, StyleSheet, Text, View } from "react-native";
-import Animated from "react-native-reanimated";
-import { useApi } from "../../utils/api";
+import React from 'react';
+import {FlatList, ImageBackground, StyleSheet, Text, View} from 'react-native';
+import Animated from 'react-native-reanimated';
 
 export const BookmarkScreenComponent = ({
   headerAnimatedStyle,
@@ -18,7 +17,7 @@ export const BookmarkScreenComponent = ({
             source={require('../../assets/img/headerBackground.png')}
             imageStyle={styles.borderRadius}
             style={[styles.header]}
-            resizeMode={"cover"}>
+            resizeMode={'cover'}>
             <Text style={styles.text}>Bookmarks</Text>
           </ImageBackground>
         </Animated.View>
@@ -56,11 +55,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     height: 184,
-    width: '100%'
+    width: '100%',
   },
   borderRadius: {
     borderBottomRightRadius: 40,
     borderBottomLeftRadius: 40,
   },
 
-})
+});

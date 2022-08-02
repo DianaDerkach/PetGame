@@ -1,44 +1,43 @@
-import React, { useEffect, useState } from "react";
-import { Dimensions, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { useNavigation } from "@react-navigation/native";
-import { useApi } from "../../../utils/api";
+import React, {useEffect, useState} from 'react';
+import {Dimensions, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {useNavigation} from '@react-navigation/native';
+import {useApi} from '../../../utils/api';
 
 export const ChooseMode = ({
   chosenQuestionsSet,
   mainColor,
   headerBackground,
-                             questionsSets
 }) => {
   const navigation = useNavigation();
-  const api = useApi('http://localhost:1339/');
+  const api = useApi();
   const [questions, setQuestions] = useState([]);
   useEffect(() => {
-    api.questions(chosenQuestionsSet.name).then((questions) => setQuestions(questions));
-  }, [])
+    api.questions(chosenQuestionsSet.name).then(setQuestions);
+  }, []);
 
   const navigateToGameScreen = (chosenMode) => {
     navigation.navigate('Game',
       {
-        chosenQuestionsSet: chosenQuestionsSet,
+        chosenQuestionsSet,
         score: 0,
         questionNumber: 1,
-        chosenMode: chosenMode,
-        mainColor: mainColor,
-        headerBackground: headerBackground,
-        questions: questions,
-      })
-  }
+        chosenMode,
+        mainColor,
+        headerBackground,
+        questions,
+      });
+  };
   return (
     <View style={styles.darkBackground}>
       <View style={styles.container}>
-        <Text style={[styles.title, { color: mainColor }]}>Choose mode</Text>
+        <Text style={[styles.title, {color: mainColor}]}>Choose mode</Text>
         <View style={styles.textBox}>
-          <Text style={[styles.modeDescription, { color: mainColor }]}>
+          <Text style={[styles.modeDescription, {color: mainColor}]}>
             Learning mode - mode without timer,
             with opportunity to read theory about
             current question
           </Text>
-          <Text style={[styles.modeDescription, { color: mainColor }]}>
+          <Text style={[styles.modeDescription, {color: mainColor}]}>
             Hard mode - you have only 10 seconds
             to answer the question
           </Text>
@@ -48,7 +47,7 @@ export const ChooseMode = ({
             style={[styles.learningButton, styles.button]}
             onPress={() => navigateToGameScreen('Learning')}
           >
-            <Text style={{ color: mainColor }}>
+            <Text style={{color: mainColor}}>
               Learning
             </Text>
           </TouchableOpacity>
@@ -99,7 +98,7 @@ const styles = StyleSheet.create({
   modeDescription: {
     fontSize: 12,
     marginBottom: 10,
-     color: '#9B61D5',
+    color: '#9B61D5',
   },
   buttonsBox: {
     display: 'flex',
@@ -130,4 +129,4 @@ const styles = StyleSheet.create({
   learningText: {
     color: '#9B6ACC',
   },
-})
+});

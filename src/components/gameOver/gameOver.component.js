@@ -1,6 +1,6 @@
-import React from "react";
-import { ImageBackground, Text, View, StyleSheet, TouchableOpacity, Dimensions } from "react-native";
-import Animated from "react-native-reanimated";
+import React from 'react';
+import {ImageBackground, Text, View, StyleSheet, TouchableOpacity, Dimensions} from 'react-native';
+import Animated from 'react-native-reanimated';
 
 
 export const GameOverComponent = ({
@@ -28,21 +28,21 @@ export const GameOverComponent = ({
       </View>
       <TouchableOpacity
         style={[styles.startButton, styles.buttons, styles.borderRadius]}
-        onPress={() => handleStartAgain()}
+        onPress={handleStartAgain}
       >
-        <Text style={[styles.startButtonText, { color: mainColor}]}>
+        <Text style={[styles.startButtonText, {color: mainColor}]}>
         Start again
         </Text>
       </TouchableOpacity>
       <TouchableOpacity
-        style={[styles.backButton, styles.buttons, styles.borderRadius, { backgroundColor: mainColor }]}
+        style={[styles.backButton, styles.buttons, styles.borderRadius, {backgroundColor: mainColor}]}
         onPress={navigateToGameScreen}
       >
         <Text style={styles.backButtonText}>
           Back to main screen
         </Text>
       </TouchableOpacity>
-     </ImageBackground>
+    </ImageBackground>
   );
 };
 
@@ -129,5 +129,5 @@ const styles = StyleSheet.create({
   },
   backButtonText: {
     color: '#fff',
- },
-})
+  },
+});

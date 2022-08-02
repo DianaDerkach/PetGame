@@ -8,7 +8,7 @@ import { useApi } from "../../../utils/api";
 export const CategoryCard = ({category}) => {
   const [counter, setCounter] = React.useState(1);
   const navigation = useNavigation();
-  const api = useApi('http://localhost:1339/');
+  const api = useApi();
 
   useEffect(() => {
     counter > 0 && setTimeout(() => setCounter(counter - 1), 1000);
@@ -37,8 +37,7 @@ export const CategoryCard = ({category}) => {
 
   return (
     <Animated.View style={categoryAnimatedStyle}>
-      <TouchableOpacity
-      onPress={() => navigateToSetScreen('Choose topic to start')}>
+      <TouchableOpacity onPress={() => navigateToSetScreen('Choose topic to start')}>
         <ImageBackground style={styles.container} source={{ uri: getImg() }} imageStyle={styles.borderRadius}>
           <Text style={styles.title}>{category.text}</Text>
         </ImageBackground>

@@ -1,7 +1,7 @@
-import React from "react";
-import { Text, View, StyleSheet, FlatList } from "react-native";
-import Animated from "react-native-reanimated";
-import { CustomButton } from "./components/customButton";
+import React from 'react';
+import {Text, View, StyleSheet, FlatList} from 'react-native';
+import Animated from 'react-native-reanimated';
+import {CustomButton} from './components/customButton';
 
 export const GameScreenComponent = ({
   questionNumber,
@@ -21,7 +21,7 @@ export const GameScreenComponent = ({
   renderHelpDialog,
   setShowHelpDialog,
   answers,
-  bookmarkAddingStatus
+  bookmarkAddingStatus,
 }) => {
 
   return (
@@ -40,12 +40,12 @@ export const GameScreenComponent = ({
             <CustomButton img={bookmarkIcon} color={mainColor} onTouch={bookmarkSetter} buttonType={'bookmark'}/>
           </View>
           <View style={styles.textContainer}>
-            <Text style={[styles.title, { color: mainColor}]}>Question {questionNumber}/{numberOfQuestions - 1}</Text>
-            <Text style={[styles.questionText, { color: mainColor}]}>{currentQuestion}</Text>
+            <Text style={[styles.title, {color: mainColor}]}>Question {questionNumber}/{numberOfQuestions - 1}</Text>
+            <Text style={[styles.questionText, {color: mainColor}]}>{currentQuestion}</Text>
           </View>
         </Animated.View>
         <View style={styles.answerContainer}>
-          <Animated.View style={[answersAnimation, {flex: 1}]}>
+          <Animated.View style={answersAnimation}>
             <FlatList
               data={answers}
               renderItem={renderAnswerItem}
@@ -112,7 +112,7 @@ const styles = StyleSheet.create({
     bottom: 25,
   },
   questionText: {
-     marginTop: 10,
+    marginTop: 10,
     fontWeight: 'bold',
   },
   answerContainer: {
@@ -122,6 +122,5 @@ const styles = StyleSheet.create({
   tooltip: {
     color: 'black',
     textAlign: 'center',
-  }
-
-})
+  },
+});

@@ -1,12 +1,12 @@
-import React, { useRef } from "react";
-import { StyleSheet, Image, TouchableOpacity, Animated } from "react-native";
-import tick from '../../../assets/img/icons/tick.png'
+import React, {useRef} from 'react';
+import {StyleSheet, TouchableOpacity, Animated} from 'react-native';
+import tick from '../../../assets/img/icons/tick.png';
 export const CustomButton = ({
   color,
   img,
   onTouch,
-  buttonType
-                           }) => {
+  buttonType,
+}) => {
   const bookmarkScale = useRef(new Animated.Value(1)).current;
   const tickScale = useRef(new Animated.Value(0)).current;
 
@@ -25,17 +25,19 @@ export const CustomButton = ({
       speed: 5,
       useNativeDriver: true,
     }).start();
-  }
+  };
+
+  const onBookmarkButton = () => {
+    onTouch();
+    decreasing();
+    increasing();
+  };
 
   return (
-      <TouchableOpacity style={[styles.background, {backgroundColor: color}]} onPress={ () => {
-        onTouch();
-        decreasing();
-        increasing();
-      }}>
-        <Animated.Image source={img} style={buttonType === 'bookmark' ? { transform: [{scale: bookmarkScale}] } : null}/>
-        {buttonType === 'bookmark' ? <Animated.Image source={tick} style={[styles.bookmarkAdded, {transform: [{scale: tickScale}]}]}/> : <></>}
-      </TouchableOpacity>
+    <TouchableOpacity style={[styles.background, {backgroundColor: color}]} onPress={onBookmarkButton}>
+      <Animated.Image source={img} style={buttonType === 'bookmark' && {transform: [{scale: bookmarkScale}]}}/>
+      {buttonType === 'bookmark' && <Animated.Image source={tick} style={[styles.bookmarkAdded, {transform: [{scale: tickScale}]}]}/>}
+    </TouchableOpacity>
   );
 };
 
@@ -59,5 +61,5 @@ const styles = StyleSheet.create({
   },
   bookmarkAdded: {
     position: 'absolute',
-  }
-})
+  },
+});

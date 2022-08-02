@@ -1,21 +1,24 @@
-import React from "react";
-import { View, StyleSheet, Text, TouchableOpacity, Dimensions } from "react-native";
+import React from 'react';
+import {View, StyleSheet, Text, TouchableOpacity, Dimensions} from 'react-native';
 
 export const HelpDialog = ({
   theory,
-  setShowHelpDialog,
-  mainColor
-                           }) => {
+  mainColor,
+  onCloseHelpDialog,
+}) => {
+
   return (
     <View style={styles.darkBackground}>
       <View style={styles.container}>
-        <Text style={[styles.title, { color: mainColor }]}>
+        <Text style={[styles.title, {color: mainColor}]}>
           Help
         </Text>
-        <Text style={[styles.theory, { color: mainColor }]}>
+        <Text style={[styles.theory, {color: mainColor}]}>
           {theory}
         </Text>
-        <TouchableOpacity style={[styles.button, { backgroundColor: mainColor }]} onPress={() => setShowHelpDialog(false)}>
+        <TouchableOpacity
+          style={[styles.button, {backgroundColor: mainColor}]}
+          onPress={onCloseHelpDialog}>
           <Text style={styles.buttonText}>
             Continue
           </Text>
@@ -73,5 +76,5 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: '#fff',
-  }
-})
+  },
+});
