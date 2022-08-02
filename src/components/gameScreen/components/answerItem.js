@@ -1,25 +1,29 @@
-import React, { useState } from "react";
-import { Text, TouchableOpacity, StyleSheet, View } from "react-native";
+import React, {useState} from 'react';
+import {Text, TouchableOpacity, StyleSheet, View} from 'react-native';
+
+const rightAnswerColor = '#b2d092';
+const wrongAnswerColor = '#ff6c6c';
 
 export const AnswerItem = ({
- item,
- handleNextQuestion,
- currentRightAnswer,
- score,
+  answer,
+  handleNextQuestion,
+  currentRightAnswer,
+  score,
 }) => {
   const [answerBackground, setAnswerBackground] = useState('#fff');
+
   const setAnswerItemBackground = () => {
-    if (item === currentRightAnswer) {
-      setAnswerBackground('#b2d092')
+    if (answer === currentRightAnswer) {
+      setAnswerBackground(rightAnswerColor);
       setTimeout(() => handleNextQuestion(score + 1), 500);
     } else {
-      setAnswerBackground('#ff6c6c');
+      setAnswerBackground(wrongAnswerColor);
       setTimeout(() => handleNextQuestion(score), 500);
     }
-  }
+  };
   return (
     <TouchableOpacity style={[styles.answer]} onPress={setAnswerItemBackground}>
-      <Text style={[styles.answerText]}>{item}</Text>
+      <Text style={[styles.answerText]}>{answer}</Text>
       <View style={[styles.answerFeedback, {backgroundColor: answerBackground}]}></View>
     </TouchableOpacity>
   );
@@ -37,18 +41,13 @@ const styles = StyleSheet.create({
     color: '#000',
   },
   answer: {
-    display: 'flex',
-    flexDirection: 'column',
     justifyContent: 'center',
-    position: 'relative',
     paddingLeft: 20,
     paddingVertical: 10,
     marginTop: 20,
     width: 310,
-    height: 40,
     backgroundColor: '#fff',
     color: '#000',
     borderRadius: 100,
-  }
-
-})
+  },
+});

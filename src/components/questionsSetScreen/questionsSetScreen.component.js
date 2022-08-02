@@ -1,35 +1,35 @@
-import React from "react";
-import { ImageBackground, Text, StyleSheet, FlatList, Dimensions } from "react-native";
+import React from 'react';
+import {ImageBackground, Text, StyleSheet, FlatList, Dimensions} from 'react-native';
 
 export const QuestionsSetScreenComponent = ({
   headerTitle,
-  titles,
+  categoryTopics,
   img,
   renderItem,
   isChooseModeDialog,
   renderChooseMode,
-                                            }) => {
+}) => {
 
   return (
+    <ImageBackground
+      source={require('../../assets/img/white_background.png')}
+      resizeMode={'cover'}
+      style={styles.container}
+    >
+      { isChooseModeDialog ? renderChooseMode() : null }
       <ImageBackground
-        source={require('../../assets/img/white_background.png')}
-        resizeMode={'cover'}
-        style={styles.container}
+        source={{uri: img}}
+        style={styles.header}
+        imageStyle={styles.borderRadius}
       >
-        { isChooseModeDialog ? renderChooseMode() : null }
-        <ImageBackground
-          source={img}
-          style={styles.header}
-          imageStyle={styles.borderRadius}
-        >
-          <Text style={styles.headerText}>{headerTitle}</Text>
-        </ImageBackground>
-        <FlatList
-          style={styles.item}
-          data={titles}
-          renderItem={(item) => renderItem(item)}
-        />
+        <Text style={styles.headerText}>{headerTitle}</Text>
       </ImageBackground>
+      <FlatList
+        style={styles.item}
+        data={categoryTopics}
+        renderItem={renderItem}
+      />
+    </ImageBackground>
   );
 };
 
@@ -60,6 +60,6 @@ const styles = StyleSheet.create({
   item: {
     paddingVertical: 20,
     paddingHorizontal: 10,
-  }
+  },
 
 });

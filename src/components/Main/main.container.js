@@ -1,33 +1,40 @@
-import React, { useEffect, useState } from "react";
-import { MainComponent } from "./main.component";
-import { interpolate, useAnimatedStyle, withSpring } from "react-native-reanimated";
-import { CategoryCard } from "./components/CategoryCard";
+import React, {useEffect, useState} from 'react';
+import {interpolate, useAnimatedStyle, withSpring} from 'react-native-reanimated';
+import {useApi} from '../../utils/api';
+import {MainComponent} from './main.component';
+import {CategoryCard} from './components/CategoryCard';
 
 export const MainContainer = ({navigation}) => {
   const [counter, setCounter] = useState(1);
+  const [categories, setCategories] = useState();
+  const api = useApi();
 
   useEffect(() => {
-    let timeout
+    api.categories().then(setCategories);
+  }, []);
+
+  useEffect(() => {
+    let timeout;
     if (counter > 0) {
       timeout = setTimeout(() => setCounter(counter - 1), 1000);
     }
 
-    return () => clearTimeout(timeout)
+    return () => clearTimeout(timeout);
   }, [counter]);
 
   const navigateToBookmarks = () => {
     navigation.navigate('Bookmarks');
-  }
+  };
   const headerAnimatedStyle = useAnimatedStyle(() => {
     return {
       transform: [
-        { translateY: withSpring(interpolate(counter, [1, 0], [-200,0]))},
-      ]
-    }
+        {translateY: withSpring(interpolate(counter, [1, 0], [-200,0]))},
+      ],
+    };
   });
-  const renderCategoryCard = (item) => {
-    return <CategoryCard category={item}/>
-  }
+  const renderCategoryCard = (category) => {
+    return <CategoryCard category={category} key={category.id}/>;
+  };
 
   return (
     <MainComponent
@@ -36,6 +43,7 @@ export const MainContainer = ({navigation}) => {
       navigateToBookmarks={navigateToBookmarks}
       renderCategoryCard={renderCategoryCard}
       headerAnimatedStyle={headerAnimatedStyle}
+      categories={categories}
     />
   );
 };

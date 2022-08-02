@@ -1,23 +1,12 @@
-import React from "react";
-import { FlatList, ImageBackground, StyleSheet, Text, View } from "react-native";
-import Animated from "react-native-reanimated";
+import React from 'react';
+import {FlatList, ImageBackground, StyleSheet, Text, View} from 'react-native';
+import Animated from 'react-native-reanimated';
 
-export const BookmarkScreenComponent = ({headerAnimatedStyle, renderBookmarkItem}) => {
-
-  const bookmarks = [
-    {
-      category: 'JS questions',
-      question: 'How much types of data do you know?',
-      answers: ['5', '12', '8', '9'],
-      rightAnswer: '8',
-    },
-    {
-      category: 'TS questions',
-      question: 'How much types of data do you know?',
-      answers: ['5', '12', '9'],
-      rightAnswer: '8',
-    },
-  ]
+export const BookmarkScreenComponent = ({
+  headerAnimatedStyle,
+  renderBookmarkItem,
+  bookmarks,
+}) => {
   return (
     <View style={styles.container}>
       <ImageBackground
@@ -28,14 +17,14 @@ export const BookmarkScreenComponent = ({headerAnimatedStyle, renderBookmarkItem
             source={require('../../assets/img/headerBackground.png')}
             imageStyle={styles.borderRadius}
             style={[styles.header]}
-            resizeMode={"cover"}>
+            resizeMode={'cover'}>
             <Text style={styles.text}>Bookmarks</Text>
           </ImageBackground>
         </Animated.View>
         <FlatList
           data={bookmarks}
           bounces={true}
-          renderItem={ (item) => renderBookmarkItem(item) }
+          renderItem={ renderBookmarkItem }
         />
       </ImageBackground>
     </View>
@@ -55,7 +44,6 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 30,
     fontWeight: 'bold',
-    fontFamily: 'Montserrat',
     color: '#FFF',
     width: 200,
     textAlign: 'center',
@@ -67,11 +55,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     height: 184,
-    width: '100%'
+    width: '100%',
   },
   borderRadius: {
     borderBottomRightRadius: 40,
     borderBottomLeftRadius: 40,
   },
 
-})
+});

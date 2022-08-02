@@ -1,11 +1,9 @@
-import React from "react";
-import { ImageBackground, Text, View, StyleSheet, FlatList, TouchableOpacity } from "react-native";
-import Animated from "react-native-reanimated";
-import SafeAreaView from "react-native/Libraries/Components/SafeAreaView/SafeAreaView";
-import { CustomButton } from "./components/customButton";
+import React from 'react';
+import {Text, View, StyleSheet, FlatList} from 'react-native';
+import Animated from 'react-native-reanimated';
+import {CustomButton} from './components/customButton';
 
 export const GameScreenComponent = ({
-  category,
   questionNumber,
   numberOfQuestions,
   currentQuestion,
@@ -18,21 +16,20 @@ export const GameScreenComponent = ({
   mainColor,
   questionIcon,
   bookmarkIcon,
-  headerBackground,
   showHelpDialog,
-  addToBookmarks,
+  bookmarkSetter,
   renderHelpDialog,
   setShowHelpDialog,
+  answers,
+  bookmarkAddingStatus,
 }) => {
 
   return (
     <View style={styles.container}>
-      {showHelpDialog ? renderHelpDialog() : null}
-      <ImageBackground
-        source={headerBackground}
-        imageStyle={styles.borderRadius}
-        style={[styles.header]}>
-      </ImageBackground>
+      {
+        showHelpDialog && renderHelpDialog()
+      }
+      <Text style={styles.tooltip}>{bookmarkAddingStatus}</Text>
       <View style={styles.alignment}>
         <Animated.View style={[styles.questionBoard]}>
           <View style={styles.customButtonsContainer}>
@@ -40,21 +37,22 @@ export const GameScreenComponent = ({
             <View style={styles.timer}>
               {(chosenMode === 'Hard') ? timer() : timerless()}
             </View>
-            <CustomButton img={bookmarkIcon} color={mainColor} onTouch={addToBookmarks}/>
+            <CustomButton img={bookmarkIcon} color={mainColor} onTouch={bookmarkSetter} buttonType={'bookmark'}/>
           </View>
           <View style={styles.textContainer}>
-            <Text style={[styles.title, { color: mainColor}]}>Question {questionNumber}/{numberOfQuestions - 1}</Text>
-            <Text style={[styles.questionText, { color: mainColor}]}>{currentQuestion}</Text>
+            <Text style={[styles.title, {color: mainColor}]}>Question {questionNumber}/{numberOfQuestions - 1}</Text>
+            <Text style={[styles.questionText, {color: mainColor}]}>{currentQuestion}</Text>
           </View>
         </Animated.View>
-        <SafeAreaView style={styles.answerContainer}>
+        <View style={styles.answerContainer}>
           <Animated.View style={answersAnimation}>
-            <FlatList data={category.questions[questionNumber - 1].answers}
-                      renderItem={ ({item}) => renderAnswerItem(item)}
+            <FlatList
+              data={answers}
+              renderItem={renderAnswerItem}
             />
           </Animated.View>
-        </SafeAreaView>
-        { (chosenMode === 'Learning') ? nextButton() : null }
+          { (chosenMode === 'Learning') && nextButton() }
+        </View>
       </View>
     </View>
   );
@@ -64,10 +62,11 @@ const styles = StyleSheet.create({
   container: {
     display: 'flex',
     flexDirection: 'column',
+    alignItems: 'center',
     backgroundColor: '#f5f5f5',
   },
   header: {
-    height: 184,
+    height: 50,
   },
   title: {
     fontWeight: 'bold',
@@ -91,10 +90,11 @@ const styles = StyleSheet.create({
   },
   questionBoard: {
     position: 'relative',
-    top: -100,
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
+    justifyContent: 'flex-start',
+    paddingHorizontal: 15,
     width: 308,
     height: 172,
     borderRadius: 25,
@@ -102,6 +102,7 @@ const styles = StyleSheet.create({
     shadowColor: '#5e457a',
     shadowOffsetY: 20,
     elevation: 8,
+    marginTop: 60,
   },
   textContainer: {
     display: 'flex',
@@ -115,12 +116,11 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   answerContainer: {
-    position: 'relative',
-    top: -50,
-    display: 'flex',
+    flex: 1,
     flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'center',
-    height: 400,
-  }
-})
+  },
+  tooltip: {
+    color: 'black',
+    textAlign: 'center',
+  },
+});

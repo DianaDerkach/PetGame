@@ -1,32 +1,28 @@
-import React from "react";
-import { Image, Text, ScrollView, StyleSheet, ImageBackground, FlatList, TouchableOpacity } from "react-native";
-import Animated from "react-native-reanimated";
-import { categories } from "../../data/categories";
+import React from 'react';
+import {Image, Text, ScrollView, StyleSheet, ImageBackground, TouchableOpacity} from 'react-native';
+import Animated from 'react-native-reanimated';
 
 export const MainComponent = ({
   navigateToBookmarks,
   renderCategoryCard,
-  headerAnimatedStyle
+  headerAnimatedStyle,
+  categories,
 }) => {
 
   return (
     <ScrollView style={styles.background}>
       <Animated.View style={headerAnimatedStyle}>
         <ImageBackground
-          source={require('../../assets/img/headerBackground.png')}
+          source={require('../../assets/img/Background.png')}
           imageStyle={styles.borderRadius}
           style={[styles.header]}
-          resizeMode={"cover"}>
+          resizeMode={'cover'}>
           <Text style={styles.text}>Choose questions pack to play</Text>
           <Image source={require('../../assets/img/idea.png')} style={styles.image}/>
         </ImageBackground>
       </Animated.View>
       <Animated.View style={[styles.categories]}>
-          <FlatList
-            bounces={true}
-            data={[...categories ]}
-            renderItem={ ({item}) => renderCategoryCard(item)}
-          />
+        {categories?.data.map((item) => renderCategoryCard(item))}
       </Animated.View>
       <TouchableOpacity onPress={navigateToBookmarks} style={styles.bookmarkButton}>
         <Image source={require('../../assets/img/bookmarkIcon.png')}/>
@@ -43,7 +39,6 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 21,
     fontWeight: 'bold',
-    fontFamily: 'Montserrat',
     color: '#FFF',
     width: 200,
   },
@@ -84,7 +79,6 @@ const styles = StyleSheet.create({
   },
   bookmarkButtonText: {
     fontSize: 18,
-    fontFamily: 'Montserrat',
     color: '#FFF',
   },
-})
+});
