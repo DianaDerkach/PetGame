@@ -47,6 +47,7 @@ export const GameScreenComponent = ({
         <View style={styles.answerContainer}>
           <Animated.View style={answersAnimation}>
             <FlatList
+              keyExtractor={(answer, index) => index}
               data={answers}
               renderItem={renderAnswerItem}
             />

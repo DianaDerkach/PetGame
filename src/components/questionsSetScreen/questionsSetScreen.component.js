@@ -25,6 +25,7 @@ export const QuestionsSetScreenComponent = ({
         <Text style={styles.headerText}>{headerTitle}</Text>
       </ImageBackground>
       <FlatList
+        keyExtractor={(topic) => topic.id}
         style={styles.item}
         data={categoryTopics}
         renderItem={renderItem}
