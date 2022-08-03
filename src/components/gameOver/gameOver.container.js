@@ -1,5 +1,5 @@
 import React from 'react';
-import {CommonActions, useRoute} from '@react-navigation/native';
+import {useRoute} from '@react-navigation/native';
 import {useAnimatedStyle, useSharedValue, withRepeat, withTiming} from 'react-native-reanimated';
 import {GameOverComponent} from './gameOver.component';
 

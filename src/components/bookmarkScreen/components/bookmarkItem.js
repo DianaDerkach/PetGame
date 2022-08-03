@@ -1,7 +1,7 @@
 import React, {useContext} from 'react';
 import {Text, View, StyleSheet, TouchableOpacity} from 'react-native';
 import {BookmarksContext} from '../../../utils/bookmarks';
-import AsyncStorageService from "../../../utils/asyncStorage/asyncStorageService";
+import AsyncStorageService from '../../../utils/asyncStorage/asyncStorageService';
 
 export const BookmarkItem = ({bookmark, setDeletingStatus}) => {
   const [bookmarks, setBookmarks] = useContext(BookmarksContext);

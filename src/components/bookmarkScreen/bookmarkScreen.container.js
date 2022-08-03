@@ -4,7 +4,7 @@ import {interpolate, useAnimatedStyle, withSpring} from 'react-native-reanimated
 import {BookmarkScreenComponent} from './bookmarkScreen.component';
 import {BookmarkItem} from './components/bookmarkItem';
 import {BookmarksContext} from '../../utils/bookmarks';
-import AsyncStorageService from "../../utils/asyncStorage/asyncStorageService";
+import AsyncStorageService from '../../utils/asyncStorage/asyncStorageService';
 
 export const BookmarkScreenContainer = () => {
   const [counter, setCounter] = useState(1);

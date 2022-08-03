@@ -7,7 +7,7 @@ import {AnswerItem} from './components/answerItem';
 import {GameScreenComponent} from './gameScreen.component';
 import {HelpDialog} from './components/helpDialog';
 import {useApi} from '../../utils/api';
-import AsyncStorageService from "../../utils/asyncStorage/asyncStorageService";
+import AsyncStorageService from '../../utils/asyncStorage/asyncStorageService';
 
 const timerColors = {
   inActiveStrokeColor: '#b2b2d7',
