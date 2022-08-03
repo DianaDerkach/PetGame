@@ -1,42 +1,59 @@
-import React, {useRef} from 'react';
-import {StyleSheet, TouchableOpacity, Animated} from 'react-native';
+import React from "react";
+import {StyleSheet, TouchableOpacity} from 'react-native';
+import Animated, { useAnimatedStyle, useSharedValue, withSpring, withTiming } from "react-native-reanimated";
 import tick from '../../../assets/img/icons/tick.png';
 export const CustomButton = ({
   color,
   img,
   onTouch,
   buttonType,
+  isBookmarkSet,
+  setButtonPressed
 }) => {
-  const bookmarkScale = useRef(new Animated.Value(1)).current;
-  const tickScale = useRef(new Animated.Value(0)).current;
+  const bookmarkScale = useSharedValue(1);
+  const bookmarkOpacity = useSharedValue(1);
+  const tickScale = useSharedValue(0);
+  const tickOpacity = useSharedValue(0);
 
-  const decreasing = () => {
-    Animated.timing(bookmarkScale, {
-      toValue: 0,
-      duration: 600,
-      useNativeDriver: true,
-    }).start();
-  };
+  const decreasingAnimation = useAnimatedStyle(() => {
+    return {
+      opacity: bookmarkOpacity.value,
+      transform: [{
+        scale: bookmarkScale.value,
+      }]
 
-  const increasing = () => {
-    Animated.spring(tickScale, {
-      toValue: 1,
-      bounciness: 20,
-      speed: 5,
-      useNativeDriver: true,
-    }).start();
-  };
+    }
+  });
+
+  const increasingAnimation = useAnimatedStyle(() => {
+    return {
+      opacity: tickOpacity.value,
+      transform: [{
+        scale: tickScale.value,
+      }]
+    }
+  });
 
   const onBookmarkButton = () => {
+    setButtonPressed(true);
     onTouch();
-    decreasing();
-    increasing();
+    bookmarkScale.value = withTiming(0, { duration: 900 });
+    bookmarkOpacity.value = withTiming(0, { duration: 600 });
+    tickScale.value = withSpring(1, { duration: 5000, damping: 6 });
+    tickOpacity.value = withTiming(1, { duration: 500 });
+
   };
 
   return (
-    <TouchableOpacity style={[styles.background, {backgroundColor: color}]} onPress={onBookmarkButton}>
-      <Animated.Image source={img} style={buttonType === 'bookmark' && {transform: [{scale: bookmarkScale}]}}/>
-      {buttonType === 'bookmark' && <Animated.Image source={tick} style={[styles.bookmarkAdded, {transform: [{scale: tickScale}]}]}/>}
+    <TouchableOpacity
+      style={[styles.background, {backgroundColor: color}]}
+      onPress={buttonType === 'bookmark' ? onBookmarkButton : onTouch}>
+      <Animated.Image source={img} style={buttonType === 'bookmark' && decreasingAnimation}/>
+      {buttonType === 'bookmark' &&
+        <Animated.Image
+          source={tick}
+          style={[styles.bookmarkAdded, increasingAnimation]}
+        />}
     </TouchableOpacity>
   );
 };
@@ -60,6 +77,6 @@ const styles = StyleSheet.create({
     marginHorizontal: 15,
   },
   bookmarkAdded: {
-    position: 'absolute',
+    position: 'absolute'
   },
 });

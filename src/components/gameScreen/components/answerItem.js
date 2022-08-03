@@ -42,7 +42,7 @@ const styles = StyleSheet.create({
   },
   answer: {
     justifyContent: 'center',
-    paddingLeft: 20,
+    paddingHorizontal: 20,
     paddingVertical: 10,
     marginTop: 20,
     width: 310,

@@ -1,12 +1,12 @@
 import React, {useEffect, useState} from 'react';
 import {Text, TouchableOpacity, StyleSheet, View} from 'react-native';
 import {CommonActions, useNavigation, useRoute} from '@react-navigation/native';
-import {interpolate, useAnimatedStyle, withSpring} from 'react-native-reanimated';
+import {useAnimatedStyle, useSharedValue, withSpring} from "react-native-reanimated";
 import CircularProgress from 'react-native-circular-progress-indicator';
 import {AnswerItem} from './components/answerItem';
 import {GameScreenComponent} from './gameScreen.component';
 import {HelpDialog} from './components/helpDialog';
-import {useApi} from '../../utils/api';
+import AsyncStorageService from '../../utils/asyncStorage/asyncStorageService';
 
 const timerColors = {
   inActiveStrokeColor: '#b2b2d7',
@@ -15,10 +15,9 @@ const timerColors = {
 };
 
 export const GameScreenContainer = () => {
-  const [counter, setCounter] = useState(1);
-  const [currentScore, setCurrentScore] = useState();
   const [showHelpDialog, setShowHelpDialog] = useState(false);
   const [currentAnswers, setCurrentAnswers] = useState([]);
+  const [currentScore, setCurrentScore] = useState(0);
   const [filteredQuestion, setFilteredQuestion] = useState([]);
   const navigation = useNavigation();
   const route = useRoute();
@@ -30,27 +29,21 @@ export const GameScreenContainer = () => {
   const timerDuration = chosenQuestionsSet.questions[0].timeForAnswer;
   const questionIcon = require('../../assets/img/icons/questionIcon.png');
   const bookmarkIcon = require('../../assets/img/icons/bookmarkIcon.png');
-  const [bookmarkAddingStatus, setBookmarkAddingStatus] = useState(undefined);
-  const api = useApi();
-
+  const [isBookmarkSet, setIsBookmarkSet] = useState(false);
+  const [isButtonPressed, setIsButtonPressed] = useState(false);
+  const translateX = useSharedValue(400)
   useEffect(() => {
     const filteredQuestion = questions.data.filter((questionItem) => questionItem.text === currentQuestion);
     const slicedAnswers = Object.values(filteredQuestion[0].answers[0]).slice(3);
+    setCurrentScore(score)
     setFilteredQuestion(filteredQuestion);
     setCurrentAnswers(slicedAnswers);
     if (questionNumber  === numberOfQuestions ) {
       navigateToGameOver();
     }
+
+    translateX.value = withSpring(0);
   }, []);
-
-  useEffect(() => {
-    let timeout;
-    if (counter > 0) {
-      timeout = setTimeout(() => setCounter(counter - 1), 1000);
-    }
-
-    return () => clearTimeout(timeout);
-  }, [counter]);
 
   const handleNextQuestion = (updatedScore, isNextButton) => {
     setCurrentScore(updatedScore);
@@ -81,6 +74,14 @@ export const GameScreenContainer = () => {
 
   const onCloseHelpDialog = () => setShowHelpDialog(false);
 
+  const renderBookmarkStatus = () => {
+   return (
+       <Text style={styles.tooltip}>
+         {isBookmarkSet ? 'Question was added to bookmarks successfully!' : 'Question already exists'}
+       </Text>
+     )
+  }
+
   const navigateToGameOver = () => {
     navigation.navigate('GameOver', {
       navigation: navigation,
@@ -110,21 +111,29 @@ export const GameScreenContainer = () => {
   const timerless = () => {
     return <View style={styles.block}/>;
   };
+
   const bookmarkSetter = () => {
-    api.setBookmark({
+    AsyncStorageService.setBookmark({
       question: currentQuestion,
       help: filteredQuestion[0].help,
       rightAnswer: filteredQuestion[0].rightAnswer,
-    }).then(setBookmarkAddingStatus)
+    }).then(setIsBookmarkSet)
       .catch( (e) => console.log('bookmark add error', e));
   };
+
+  const onNextQuestionButton = () => {
+    handleNextQuestion(currentScore, true)
+  }
+
   const nextButton = () => {
-    return <TouchableOpacity
+    return (
+      <TouchableOpacity
       style={[styles.nextButton, {backgroundColor: mainColor}]}
-      onPress={() => handleNextQuestion(currentScore, true)}
-    >
-      <Text style={ styles.buttonText }>Next</Text>
-    </TouchableOpacity>;
+      onPress={onNextQuestionButton}
+      >
+        <Text style={styles.buttonText}>Next</Text>
+      </TouchableOpacity>
+    )
   };
 
   const renderHelpDialog = () => {
@@ -138,7 +147,7 @@ export const GameScreenContainer = () => {
     return {
       flex: 1,
       transform: [
-        {translateY: withSpring(interpolate(counter, [1, 0], [400,0]))},
+        {translateX: translateX.value},
       ],
     };
   });
@@ -156,6 +165,7 @@ export const GameScreenContainer = () => {
       handleNextQuestion(score);
     }
   };
+  const onOpenHelpDialog = () => setShowHelpDialog(true);
 
   const renderAnswerItem = (answer) => {
     return <AnswerItem
@@ -195,7 +205,11 @@ export const GameScreenContainer = () => {
       headerBackground={headerBackground}
       answers={currentAnswers}
       bookmarkSetter={bookmarkSetter}
-      bookmarkAddingStatus={bookmarkAddingStatus}
+      isBookmarkSet={isBookmarkSet}
+      renderBookmarkStatus={renderBookmarkStatus}
+      setIsButtonPressed={setIsButtonPressed}
+      isButtonPressed={isButtonPressed}
+      onOpenHelpDialog={onOpenHelpDialog}
     />
   );
 };
@@ -217,9 +231,13 @@ const styles = StyleSheet.create({
     shadowColor: '#0a0a0a',
     shadowOffsetY: 20,
     elevation: 8,
-    marginVertical: 40,
+    marginBottom: 80,
   },
   buttonText: {
     color: '#fff',
+  },
+  tooltip: {
+    color: 'black',
+    textAlign: 'center',
   },
 });

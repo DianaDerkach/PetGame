@@ -1,5 +1,5 @@
 import React from 'react';
-import {CommonActions, useRoute} from '@react-navigation/native';
+import {useRoute} from '@react-navigation/native';
 import {useAnimatedStyle, useSharedValue, withRepeat, withTiming} from 'react-native-reanimated';
 import {GameOverComponent} from './gameOver.component';
 
@@ -7,28 +7,19 @@ export const GameOverContainer = () => {
   const route = useRoute();
   const {navigation, score, chosenQuestionsSet, chosenMode, mainColor, questions} = route.params;
   const animation = useSharedValue(1);
+
   const handleStartAgain = () => {
-    navigation.dispatch(
-      CommonActions.reset({
-        index: 1,
-        routes: [
-          {name: 'QuizGame'},
-          {
-            name: 'Game',
-            params: {
-              questionNumber: 1,
-              navigation,
-              score: 0,
-              chosenQuestionsSet,
-              chosenMode,
-              mainColor,
-              questions,
-            },
-          },
-        ],
-      }),
-    );
-  };
+    navigation.push('Game',
+      {
+        questionNumber: 1,
+        navigation,
+        score: 0,
+        chosenQuestionsSet,
+        chosenMode,
+        mainColor,
+        questions,
+      })
+  }
 
   const navigateToGameScreen = () => {
     navigation.navigate('QuizGame');

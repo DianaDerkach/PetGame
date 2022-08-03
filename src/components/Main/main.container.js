@@ -1,26 +1,18 @@
 import React, {useEffect, useState} from 'react';
-import {interpolate, useAnimatedStyle, withSpring} from 'react-native-reanimated';
+import { interpolate, useAnimatedStyle, useSharedValue, withSpring } from "react-native-reanimated";
 import {useApi} from '../../utils/api';
 import {MainComponent} from './main.component';
 import {CategoryCard} from './components/CategoryCard';
 
 export const MainContainer = ({navigation}) => {
-  const [counter, setCounter] = useState(1);
   const [categories, setCategories] = useState();
+  const translateY = useSharedValue(-200);
   const api = useApi();
 
   useEffect(() => {
     api.categories().then(setCategories);
+    translateY.value = withSpring(0, {duration: 400, damping: 10})
   }, []);
-
-  useEffect(() => {
-    let timeout;
-    if (counter > 0) {
-      timeout = setTimeout(() => setCounter(counter - 1), 1000);
-    }
-
-    return () => clearTimeout(timeout);
-  }, [counter]);
 
   const navigateToBookmarks = () => {
     navigation.navigate('Bookmarks');
@@ -28,7 +20,9 @@ export const MainContainer = ({navigation}) => {
   const headerAnimatedStyle = useAnimatedStyle(() => {
     return {
       transform: [
-        {translateY: withSpring(interpolate(counter, [1, 0], [-200,0]))},
+        {
+          translateY: translateY.value,
+        },
       ],
     };
   });
@@ -39,7 +33,6 @@ export const MainContainer = ({navigation}) => {
   return (
     <MainComponent
       navigation={navigation}
-      counter={counter}
       navigateToBookmarks={navigateToBookmarks}
       renderCategoryCard={renderCategoryCard}
       headerAnimatedStyle={headerAnimatedStyle}

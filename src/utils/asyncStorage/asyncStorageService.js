@@ -1,6 +1,6 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export class AsyncStorageService {
+class AsyncStorageService {
   constructor() {
   }
 
@@ -35,15 +35,11 @@ export class AsyncStorageService {
           ...oldBookmarks,
           bookmark
         ]));
-        return 'Question was successfully added!'
-      } else {
-        return 'Question already exists'
-      }
-
+        return true;
+      } else return false;
     } catch(e) {
       console.log('setBookmark error ', e);
     }
-
   }
 
   deleteBookmark = async (question) => {
@@ -57,3 +53,5 @@ export class AsyncStorageService {
     }
   }
 }
+
+export default AsyncStorageService = new AsyncStorageService();
