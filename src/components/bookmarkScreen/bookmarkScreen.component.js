@@ -22,9 +22,10 @@ export const BookmarkScreenComponent = ({
           </ImageBackground>
         </Animated.View>
         <FlatList
+          keyExtractor={bookmark => bookmark.question}
           data={bookmarks}
           bounces={true}
-          renderItem={ renderBookmarkItem }
+          renderItem={renderBookmarkItem}
         />
       </ImageBackground>
     </View>

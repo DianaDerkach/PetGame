@@ -4,15 +4,14 @@ import {interpolate, useAnimatedStyle, withSpring} from 'react-native-reanimated
 import {BookmarkScreenComponent} from './bookmarkScreen.component';
 import {BookmarkItem} from './components/bookmarkItem';
 import {BookmarksContext} from '../../utils/bookmarks';
-import {useApi} from '../../utils/api';
+import AsyncStorageService from "../../utils/asyncStorage/asyncStorageService";
 
 export const BookmarkScreenContainer = () => {
   const [counter, setCounter] = useState(1);
   const [bookmarks, setBookmarks] = useContext(BookmarksContext);
-  const api = useApi();
 
   useEffect( () => {
-    api.getBookmarks()
+    AsyncStorageService.getBookmarks()
       .then(setBookmarks)
       .catch((e) => console.log('getBookmark error ', e));
   }, []);

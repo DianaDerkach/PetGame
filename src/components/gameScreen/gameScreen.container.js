@@ -7,6 +7,7 @@ import {AnswerItem} from './components/answerItem';
 import {GameScreenComponent} from './gameScreen.component';
 import {HelpDialog} from './components/helpDialog';
 import {useApi} from '../../utils/api';
+import AsyncStorageService from "../../utils/asyncStorage/asyncStorageService";
 
 const timerColors = {
   inActiveStrokeColor: '#b2b2d7',
@@ -16,9 +17,9 @@ const timerColors = {
 
 export const GameScreenContainer = () => {
   const [counter, setCounter] = useState(1);
-  const [currentScore, setCurrentScore] = useState();
   const [showHelpDialog, setShowHelpDialog] = useState(false);
   const [currentAnswers, setCurrentAnswers] = useState([]);
+  const [currentScore, setCurrentScore] = useState(0);
   const [filteredQuestion, setFilteredQuestion] = useState([]);
   const navigation = useNavigation();
   const route = useRoute();
@@ -36,6 +37,7 @@ export const GameScreenContainer = () => {
   useEffect(() => {
     const filteredQuestion = questions.data.filter((questionItem) => questionItem.text === currentQuestion);
     const slicedAnswers = Object.values(filteredQuestion[0].answers[0]).slice(3);
+    setCurrentScore(score)
     setFilteredQuestion(filteredQuestion);
     setCurrentAnswers(slicedAnswers);
     if (questionNumber  === numberOfQuestions ) {
@@ -111,7 +113,7 @@ export const GameScreenContainer = () => {
     return <View style={styles.block}/>;
   };
   const bookmarkSetter = () => {
-    api.setBookmark({
+    AsyncStorageService.setBookmark({
       question: currentQuestion,
       help: filteredQuestion[0].help,
       rightAnswer: filteredQuestion[0].rightAnswer,
@@ -119,9 +121,12 @@ export const GameScreenContainer = () => {
       .catch( (e) => console.log('bookmark add error', e));
   };
   const nextButton = () => {
+    const onNextQuestionButton = () => {
+      handleNextQuestion(currentScore, true)
+    }
     return <TouchableOpacity
       style={[styles.nextButton, {backgroundColor: mainColor}]}
-      onPress={() => handleNextQuestion(currentScore, true)}
+      onPress={onNextQuestionButton}
     >
       <Text style={ styles.buttonText }>Next</Text>
     </TouchableOpacity>;
@@ -217,7 +222,7 @@ const styles = StyleSheet.create({
     shadowColor: '#0a0a0a',
     shadowOffsetY: 20,
     elevation: 8,
-    marginVertical: 40,
+    marginBottom: 80,
   },
   buttonText: {
     color: '#fff',
