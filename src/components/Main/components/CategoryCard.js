@@ -1,22 +1,29 @@
 import React, { useEffect } from "react";
 import { ImageBackground, Text, StyleSheet, TouchableOpacity } from "react-native";
-import Animated, { interpolate, useAnimatedStyle,  withSpring,  } from "react-native-reanimated";
 import { useNavigation } from "@react-navigation/native";
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withSpring,
+} from "react-native-reanimated";
 import { useApi } from "../../../utils/api";
 
 
 export const CategoryCard = ({category}) => {
-  const [counter, setCounter] = React.useState(1);
+  const translateY = useSharedValue(-400);
   const navigation = useNavigation();
   const api = useApi();
 
-  useEffect(() => {
-    counter > 0 && setTimeout(() => setCounter(counter - 1), 1000);
-  }, [counter]);
+    useEffect(() => {
+      translateY.value = withSpring(0, {duration: 500, damping: 10})
+    },[])
+
   const categoryAnimatedStyle = useAnimatedStyle(() => {
     return {
       transform: [
-        { translateY:  withSpring(interpolate(counter, [1, 0], [700, 0]))}
+        {
+          translateY: translateY.value
+        }
       ]
     }
   })

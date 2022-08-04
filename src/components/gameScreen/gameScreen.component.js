@@ -19,25 +19,37 @@ export const GameScreenComponent = ({
   showHelpDialog,
   bookmarkSetter,
   renderHelpDialog,
-  setShowHelpDialog,
+  onOpenHelpDialog,
   answers,
-  bookmarkAddingStatus,
+  isBookmarkSet,
+  renderBookmarkStatus,
+  setIsButtonPressed,
+  isButtonPressed
 }) => {
-
   return (
     <View style={styles.container}>
-      {
-        showHelpDialog && renderHelpDialog()
-      }
-      <Text style={styles.tooltip}>{bookmarkAddingStatus}</Text>
-      <View style={styles.alignment}>
+      {showHelpDialog && renderHelpDialog()}
+      {isButtonPressed && renderBookmarkStatus()}
+       <View style={styles.alignment}>
         <Animated.View style={[styles.questionBoard]}>
           <View style={styles.customButtonsContainer}>
-            <CustomButton img={questionIcon} color={mainColor} onTouch={() => setShowHelpDialog(true)}/>
+            <CustomButton
+              img={questionIcon}
+              color={mainColor}
+              onTouch={onOpenHelpDialog}
+              setButtonPressed={false}
+            />
             <View style={styles.timer}>
               {(chosenMode === 'Hard') ? timer() : timerless()}
             </View>
-            <CustomButton img={bookmarkIcon} color={mainColor} onTouch={bookmarkSetter} buttonType={'bookmark'}/>
+            <CustomButton
+              img={bookmarkIcon}
+              color={mainColor}
+              onTouch={bookmarkSetter}
+              buttonType={'bookmark'}
+              isBookmarkSet={isBookmarkSet}
+              setButtonPressed={setIsButtonPressed}
+            />
           </View>
           <View style={styles.textContainer}>
             <Text style={[styles.title, {color: mainColor}]}>Question {questionNumber}/{numberOfQuestions - 1}</Text>
@@ -119,9 +131,5 @@ const styles = StyleSheet.create({
   answerContainer: {
     flex: 1,
     flexDirection: 'column',
-  },
-  tooltip: {
-    color: 'black',
-    textAlign: 'center',
   },
 });

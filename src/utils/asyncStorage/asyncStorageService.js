@@ -35,15 +35,11 @@ class AsyncStorageService {
           ...oldBookmarks,
           bookmark
         ]));
-        return 'Question was successfully added!'
-      } else {
-        return 'Question already exists'
-      }
-
+        return true;
+      } else return false;
     } catch(e) {
       console.log('setBookmark error ', e);
     }
-
   }
 
   deleteBookmark = async (question) => {
