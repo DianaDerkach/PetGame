@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {Text, TouchableOpacity, StyleSheet, View} from 'react-native';
 import {CommonActions, useNavigation, useRoute} from '@react-navigation/native';
-import {useAnimatedStyle, useSharedValue, withSpring} from "react-native-reanimated";
+import {useAnimatedStyle, useSharedValue, withSpring} from 'react-native-reanimated';
 import CircularProgress from 'react-native-circular-progress-indicator';
 import {AnswerItem} from './components/answerItem';
 import {GameScreenComponent} from './gameScreen.component';
@@ -33,15 +33,16 @@ export const GameScreenContainer = () => {
   const [isButtonPressed, setIsButtonPressed] = useState(false);
   const translateX = useSharedValue(400)
   useEffect(() => {
-    const filteredQuestion = questions.data.filter((questionItem) => questionItem.text === currentQuestion);
-    const slicedAnswers = Object.values(filteredQuestion[0].answers[0]).slice(3);
-    setCurrentScore(score)
-    setFilteredQuestion(filteredQuestion);
-    setCurrentAnswers(slicedAnswers);
+    const _filteredQuestion = questions.find((questionItem) => questionItem.text === currentQuestion);
+    const [{id, createdAt, updatedAt, ...data}] = _filteredQuestion.answers;
+
+    setCurrentScore(score);
+    setCurrentAnswers(Object.values(data));
+    setFilteredQuestion(_filteredQuestion);
+
     if (questionNumber  === numberOfQuestions ) {
       navigateToGameOver();
     }
-
     translateX.value = withSpring(0);
   }, []);
 
@@ -112,13 +113,17 @@ export const GameScreenContainer = () => {
     return <View style={styles.block}/>;
   };
 
-  const bookmarkSetter = () => {
-    AsyncStorageService.setBookmark({
+  const bookmarkSetter = async () => {
+    try {
+      if (await AsyncStorageService.setBookmark({
       question: currentQuestion,
       help: filteredQuestion[0].help,
       rightAnswer: filteredQuestion[0].rightAnswer,
-    }).then(setIsBookmarkSet)
-      .catch( (e) => console.log('bookmark add error', e));
+    })) setIsBookmarkSet(true);
+      else {setIsBookmarkSet(false)}
+    } catch(e) {
+      console.log('bookmark add error', e)
+    }
   };
 
   const onNextQuestionButton = () => {
@@ -137,10 +142,12 @@ export const GameScreenContainer = () => {
   };
 
   const renderHelpDialog = () => {
+    const [{help: theory}] = filteredQuestion
+
     return <HelpDialog
       onCloseHelpDialog={onCloseHelpDialog}
       mainColor={mainColor}
-      theory={filteredQuestion[0].help}
+      theory={theory}
     />;
   };
   const answersAnimation = useAnimatedStyle(() => {

@@ -1,7 +1,7 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect} from 'react';
 import {Dimensions, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
-import {useApi} from '../../../utils/api';
+import {store} from '../../../store/store';
 
 export const ChooseMode = ({
   chosenQuestionsSet,
@@ -9,11 +9,6 @@ export const ChooseMode = ({
   headerBackground,
 }) => {
   const navigation = useNavigation();
-  const api = useApi();
-  const [questions, setQuestions] = useState([]);
-  useEffect(() => {
-    api.questions(chosenQuestionsSet.name).then(setQuestions);
-  }, []);
 
   const navigateToGameScreen = (chosenMode) => {
     navigation.navigate('Game',
@@ -24,7 +19,7 @@ export const ChooseMode = ({
         chosenMode,
         mainColor,
         headerBackground,
-        questions,
+        questions: store.getQuestions(chosenQuestionsSet.name),
       });
   };
   return (

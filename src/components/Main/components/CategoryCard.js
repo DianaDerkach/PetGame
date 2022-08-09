@@ -1,18 +1,16 @@
-import React, { useEffect } from "react";
-import { ImageBackground, Text, StyleSheet, TouchableOpacity } from "react-native";
-import { useNavigation } from "@react-navigation/native";
+import React, {useEffect} from 'react';
+import {ImageBackground, Text, StyleSheet, TouchableOpacity} from 'react-native';
+import {useNavigation} from '@react-navigation/native';
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
   withSpring,
-} from "react-native-reanimated";
-import { useApi } from "../../../utils/api";
-
+} from 'react-native-reanimated';
+import { store } from '../../../store/store';
 
 export const CategoryCard = ({category}) => {
   const translateY = useSharedValue(-400);
   const navigation = useNavigation();
-  const api = useApi();
 
     useEffect(() => {
       translateY.value = withSpring(0, {duration: 500, damping: 10})
@@ -40,7 +38,7 @@ export const CategoryCard = ({category}) => {
       prevScreen: 'CategoryCard',
     })
   }
-  const getImg = () => api.host + category.img.formats.thumbnail.url;
+  const getImg = () => store.BASE_URL + category.img.formats.thumbnail.url;
 
   return (
     <Animated.View style={categoryAnimatedStyle}>

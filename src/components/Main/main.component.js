@@ -1,14 +1,14 @@
 import React from 'react';
 import {Image, Text, ScrollView, StyleSheet, ImageBackground, TouchableOpacity} from 'react-native';
 import Animated from 'react-native-reanimated';
+import {observer} from 'mobx-react-lite';
 
-export const MainComponent = ({
+export const MainComponent = observer(({
   navigateToBookmarks,
   renderCategoryCard,
   headerAnimatedStyle,
   categories,
 }) => {
-
   return (
     <ScrollView style={styles.background}>
       <Animated.View style={headerAnimatedStyle}>
@@ -22,7 +22,7 @@ export const MainComponent = ({
         </ImageBackground>
       </Animated.View>
       <Animated.View style={[styles.categories]}>
-        {categories?.data.map((item) => renderCategoryCard(item))}
+        {categories.map((item) => renderCategoryCard(item))}
       </Animated.View>
       <TouchableOpacity onPress={navigateToBookmarks} style={styles.bookmarkButton}>
         <Image source={require('../../assets/img/bookmarkIcon.png')}/>
@@ -30,7 +30,7 @@ export const MainComponent = ({
       </TouchableOpacity>
     </ScrollView>
   );
-};
+});
 
 const styles = StyleSheet.create({
   background: {

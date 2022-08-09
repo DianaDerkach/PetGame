@@ -1,19 +1,16 @@
-import React, {useEffect, useState} from 'react';
-import { interpolate, useAnimatedStyle, useSharedValue, withSpring } from "react-native-reanimated";
-import {useApi} from '../../utils/api';
+import React, {useEffect} from 'react';
+import {useAnimatedStyle, useSharedValue, withSpring} from 'react-native-reanimated';
+import {observer} from 'mobx-react-lite';
+import {store} from '../../store/store';
 import {MainComponent} from './main.component';
 import {CategoryCard} from './components/CategoryCard';
 
-export const MainContainer = ({navigation}) => {
-  const [categories, setCategories] = useState();
+export const MainContainer = observer(({navigation}) => {
   const translateY = useSharedValue(-200);
-  const api = useApi();
 
   useEffect(() => {
-    api.categories().then(setCategories);
     translateY.value = withSpring(0, {duration: 400, damping: 10})
   }, []);
-
   const navigateToBookmarks = () => {
     navigation.navigate('Bookmarks');
   };
@@ -36,7 +33,7 @@ export const MainContainer = ({navigation}) => {
       navigateToBookmarks={navigateToBookmarks}
       renderCategoryCard={renderCategoryCard}
       headerAnimatedStyle={headerAnimatedStyle}
-      categories={categories}
+      categories={store.categories}
     />
   );
-};
+});

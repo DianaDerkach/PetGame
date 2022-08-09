@@ -1,21 +1,15 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {StyleSheet, Text, TouchableOpacity} from 'react-native';
 import {useRoute} from '@react-navigation/native';
 import {QuestionsSetScreenComponent} from './questionsSetScreen.component';
 import {ChooseMode} from './components/chooseMode';
-import {useApi} from '../../utils/api';
+import {store} from '../../store/store';
 
 export const QuestionsSetScreenContainer = ({navigation}) => {
   const route = useRoute();
   const {headerTitle, categoryTopics, mainColor, textColor, img, category, prevScreen} = route.params;
   const [isChooseModeDialog, setIsChooseModeDialog] = useState(false);
-  const [questionsSets, setQuestionsSets] = useState([]);
   const [chosenQuestionsSet, setChosenQuestionsSet] = useState();
-  const api = useApi();
-
-  useEffect(() => {
-    api.questionsSets().then( (questionSets) =>  setQuestionsSets(questionSets.data));
-  }, []);
 
   const renderItem = (categoryTopic) => {
     const title = categoryTopic.item.name;
@@ -27,23 +21,20 @@ export const QuestionsSetScreenContainer = ({navigation}) => {
       </TouchableOpacity>);
   };
 
-  const getQuestionsSetsNames = (categoryTopic) => {
-    return questionsSets.filter((questionsSet) => questionsSet.topic.name === categoryTopic.item.name);
-  };
-
   const navigateToNextScreen = (categoryTopic) => {
     if (prevScreen === 'CategoryCard') {
       navigation.push('QuestionsSetScreen',
         {
           headerTitle: 'Choose question set',
-          categoryTopics: getQuestionsSetsNames(categoryTopic),
+          categoryTopics: store.getQuestionsSetsNames(categoryTopic),
           mainColor,
           textColor,
           img,
-          category: questionsSets,
+          category: store.questionSets,
           prevScreen: 'Topics',
         });
     }
+
     if (prevScreen === 'Topics') {
       showChooseModeDialog();
       const defineChosenQuestionsSet = category.find((questionsSet) => questionsSet.name === categoryTopic.item.name);

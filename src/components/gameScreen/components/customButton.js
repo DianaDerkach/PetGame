@@ -1,6 +1,6 @@
-import React from "react";
+import React from 'react';
 import {StyleSheet, TouchableOpacity} from 'react-native';
-import Animated, { useAnimatedStyle, useSharedValue, withSpring, withTiming } from "react-native-reanimated";
+import Animated, {useAnimatedStyle, useSharedValue, withSpring, withTiming} from 'react-native-reanimated';
 import tick from '../../../assets/img/icons/tick.png';
 export const CustomButton = ({
   color,
@@ -37,11 +37,15 @@ export const CustomButton = ({
   const onBookmarkButton = () => {
     setButtonPressed(true);
     onTouch();
-    bookmarkScale.value = withTiming(0, { duration: 900 });
-    bookmarkOpacity.value = withTiming(0, { duration: 600 });
-    tickScale.value = withSpring(1, { duration: 5000, damping: 6 });
-    tickOpacity.value = withTiming(1, { duration: 500 });
-
+    console.log('isBookmarkset', isBookmarkSet);
+    setTimeout(() => {
+      if (isBookmarkSet) {
+        bookmarkScale.value = withTiming(0, { duration: 900 });
+        bookmarkOpacity.value = withTiming(0, { duration: 600 });
+        tickScale.value = withSpring(1, { duration: 5000, damping: 6 });
+        tickOpacity.value = withTiming(1, { duration: 500 });
+      }
+    }, 1000);
   };
 
   return (
