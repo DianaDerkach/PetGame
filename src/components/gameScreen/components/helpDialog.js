@@ -1,23 +1,22 @@
 import React from 'react';
 import {View, StyleSheet, Text, TouchableOpacity, Dimensions} from 'react-native';
+import {store} from '../../../store/store';
 
-export const HelpDialog = ({
-  theory,
-  mainColor,
-  onCloseHelpDialog,
-}) => {
+export const HelpDialog = () => {
+
+  const onCloseHelpDialog = () => store.setShowHelpDialog(false);
 
   return (
     <View style={styles.darkBackground}>
       <View style={styles.container}>
-        <Text style={[styles.title, {color: mainColor}]}>
+        <Text style={[styles.title, {color: store.currentCategory.textColor}]}>
           Help
         </Text>
-        <Text style={[styles.theory, {color: mainColor}]}>
-          {theory}
+        <Text style={[styles.theory, {color: store.currentCategory.textColor}]}>
+          {store.currentQuestion.help}
         </Text>
         <TouchableOpacity
-          style={[styles.button, {backgroundColor: mainColor}]}
+          style={[styles.button, {backgroundColor: store.currentCategory.textColor}]}
           onPress={onCloseHelpDialog}>
           <Text style={styles.buttonText}>
             Continue

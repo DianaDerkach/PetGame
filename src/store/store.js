@@ -1,10 +1,17 @@
 import {makeAutoObservable} from 'mobx';
+
 class Store {
-  categories = [];
-  questionSets;
-  questions;
-  score = 0;
   BASE_URL = 'http://192.168.100.106:1339';
+  categories = [];
+  currentCategory = [];
+  questionSets;
+  chosenQuestionsSet = [];
+  questions;
+  currentQuestion = [];
+  currentAnswers = [];
+  chosenMode = '';
+  showHelpDialog = false;
+  isChooseModeDialog = false;
 
   constructor() {
     (async () => {
@@ -15,26 +22,35 @@ class Store {
     makeAutoObservable(this);
   }
 
-  resetScore() {
-    this.score = 0;
+  setChosenMode = (chosenMode) => this.chosenMode = chosenMode;
+
+  setCurrentQuestion = (question) => this.currentQuestion = question;
+
+  setCurrentAnswers = () => {
+    const [{answers}] = this.questions.filter((question) => question.text === this.currentQuestion.text);
+    const [{createdAt, id, updatedAt, ...answersArr}] = answers;
+    this.currentAnswers = Object.values(answersArr);
   }
 
-  incrementScore() {
-    this.score += 1;
-  }
+  setChosenQuestionsSet = (chosenQuestionsSet) => this.chosenQuestionsSet = chosenQuestionsSet;
 
-  getQuestions = (chosenQuestionsSetName) => {
-    return this.questions.filter(({questions_sets: [question]}) => question?.name === chosenQuestionsSetName);
-  }
+  setCurrentCategory = (category) => this.currentCategory = category;
 
-  getQuestionsSetsNames = (categoryTopic) => {
-    return this.questionSets.filter((questionsSet) => questionsSet.topic.name === categoryTopic.item.name);
-  };
+  setShowHelpDialog = (bool) => this.showHelpDialog = bool;
+
+  getQuestions = (chosenQuestionsSetName) =>
+    this.questions.filter(({questions_sets: [question]}) => question?.name === chosenQuestionsSetName);
+
+  getQuestionsSetsNames = (categoryTopic) =>
+    this.questionSets.filter((questionsSet) => questionsSet.topic.name === categoryTopic.item.name);
+
+  setIsChooseModeDialog = (bool) => this.isChooseModeDialog = bool;
 
   fetchCategories = async () => {
     try {
       const categories = await fetch(`${this.BASE_URL}/api/categories?populate=*`);
       const { data } = await categories.json();
+
       this.categories = data;
     } catch(e) {
       console.log('fetch categories error ', e);
@@ -44,8 +60,9 @@ class Store {
   fetchQuestionSets = async () => {
       try {
         const response = await fetch(`${this.BASE_URL}/api/questions-sets?populate=*`);
-        const { data }  = await response.json();
-        this.questionSets = data;
+        const { data: questionSets }  = await response.json();
+
+        this.questionSets = questionSets;
       } catch(e) {
         console.log('fetch categories error ', e);
       }
@@ -55,6 +72,7 @@ class Store {
     try {
       const response = await fetch(`${this.BASE_URL}/api/questions?populate=*`);
       const { data } = await response.json();
+
       this.questions = data;
     } catch(e) {
       console.log('fetch categories error ', e);

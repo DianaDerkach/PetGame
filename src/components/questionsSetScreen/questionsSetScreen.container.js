@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {StyleSheet, Text, TouchableOpacity} from 'react-native';
 import {useRoute} from '@react-navigation/native';
 import {QuestionsSetScreenComponent} from './questionsSetScreen.component';
@@ -7,17 +7,15 @@ import {store} from '../../store/store';
 
 export const QuestionsSetScreenContainer = ({navigation}) => {
   const route = useRoute();
-  const {headerTitle, categoryTopics, mainColor, textColor, img, category, prevScreen} = route.params;
-  const [isChooseModeDialog, setIsChooseModeDialog] = useState(false);
-  const [chosenQuestionsSet, setChosenQuestionsSet] = useState();
+  const {headerTitle, categoryTopics, img, category, prevScreen} = route.params;
 
   const renderItem = (categoryTopic) => {
     const title = categoryTopic.item.name;
     return (
-      <TouchableOpacity style={[styles.item, {backgroundColor: mainColor}]} onPress={() => {
+      <TouchableOpacity style={[styles.item, {backgroundColor: store.currentCategory.color}]} onPress={() => {
         navigateToNextScreen(categoryTopic);
       }}>
-        <Text style={{color: textColor}}>{title}</Text>
+        <Text style={{color: store.currentCategory.textColor}}>{title}</Text>
       </TouchableOpacity>);
   };
 
@@ -27,8 +25,8 @@ export const QuestionsSetScreenContainer = ({navigation}) => {
         {
           headerTitle: 'Choose question set',
           categoryTopics: store.getQuestionsSetsNames(categoryTopic),
-          mainColor,
-          textColor,
+          mainColor: store.currentCategory.color,
+          textColor: store.currentCategory.textColor,
           img,
           category: store.questionSets,
           prevScreen: 'Topics',
@@ -39,20 +37,16 @@ export const QuestionsSetScreenContainer = ({navigation}) => {
       showChooseModeDialog();
       const defineChosenQuestionsSet = category.find((questionsSet) => questionsSet.name === categoryTopic.item.name);
       if (defineChosenQuestionsSet) {
-        setChosenQuestionsSet(defineChosenQuestionsSet);
+        store.setChosenQuestionsSet(defineChosenQuestionsSet);
       } else {
         throw new Error ('error in defining chosen questions set');
       }
     }
   };
 
-  const showChooseModeDialog = () => {
-    setIsChooseModeDialog(true);
-  };
+  const showChooseModeDialog = () => store.setIsChooseModeDialog(true)
 
-  const renderChooseMode = () => {
-    return <ChooseMode chosenQuestionsSet={chosenQuestionsSet} mainColor={textColor} headerBackground={img}/>;
-  };
+  const renderChooseMode = () => <ChooseMode headerBackground={img}/>;
 
   return (
     <QuestionsSetScreenComponent
@@ -60,7 +54,6 @@ export const QuestionsSetScreenContainer = ({navigation}) => {
       img={img}
       headerTitle={headerTitle}
       categoryTopics={categoryTopics}
-      isChooseModeDialog={isChooseModeDialog}
       renderChooseMode={renderChooseMode}
     />
   );

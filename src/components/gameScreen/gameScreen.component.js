@@ -1,75 +1,68 @@
 import React from 'react';
 import {Text, View, StyleSheet, FlatList} from 'react-native';
 import Animated from 'react-native-reanimated';
+import { observer } from "mobx-react-lite";
 import {CustomButton} from './components/customButton';
+import {store} from '../../store/store';
+import { bookmarkStore } from "../../store/bookmarkStore";
 
-export const GameScreenComponent = ({
+const questionIcon = require('../../assets/img/icons/questionIcon.png');
+const bookmarkIcon = require('../../assets/img/icons/bookmarkIcon.png');
+
+export const GameScreenComponent = observer(({
   questionNumber,
   numberOfQuestions,
-  currentQuestion,
   answersAnimation,
   renderAnswerItem,
-  chosenMode,
   timer,
   nextButton,
   timerless,
-  mainColor,
-  questionIcon,
-  bookmarkIcon,
-  showHelpDialog,
   bookmarkSetter,
   renderHelpDialog,
   onOpenHelpDialog,
-  answers,
-  isBookmarkSet,
-  renderBookmarkStatus,
-  setIsButtonPressed,
-  isButtonPressed
+  renderBookmarkStatus
 }) => {
   return (
     <View style={styles.container}>
-      {showHelpDialog && renderHelpDialog()}
-      {isButtonPressed && renderBookmarkStatus()}
+      {store.showHelpDialog && renderHelpDialog()}
+      {bookmarkStore.isButtonPressed ? renderBookmarkStatus() : <></>}
        <View style={styles.alignment}>
         <Animated.View style={[styles.questionBoard]}>
           <View style={styles.customButtonsContainer}>
             <CustomButton
               img={questionIcon}
-              color={mainColor}
+              color={store.currentCategory.textColor}
               onTouch={onOpenHelpDialog}
               setButtonPressed={false}
             />
             <View style={styles.timer}>
-              {(chosenMode === 'Hard') ? timer() : timerless()}
+              {(store.chosenMode === 'Hard') ? timer() : timerless()}
             </View>
             <CustomButton
               img={bookmarkIcon}
-              color={mainColor}
               onTouch={bookmarkSetter}
               buttonType={'bookmark'}
-              isBookmarkSet={isBookmarkSet}
-              setButtonPressed={setIsButtonPressed}
             />
           </View>
           <View style={styles.textContainer}>
-            <Text style={[styles.title, {color: mainColor}]}>Question {questionNumber}/{numberOfQuestions - 1}</Text>
-            <Text style={[styles.questionText, {color: mainColor}]}>{currentQuestion}</Text>
+            <Text style={[styles.title, {color: store.currentCategory.textColor}]}>Question {questionNumber}/{numberOfQuestions - 1}</Text>
+            <Text style={[styles.questionText, {color: store.currentCategory.textColor}]}>{store.currentQuestion.text}</Text>
           </View>
         </Animated.View>
         <View style={styles.answerContainer}>
           <Animated.View style={answersAnimation}>
             <FlatList
               keyExtractor={(answer, index) => index}
-              data={answers}
+              data={store.currentAnswers}
               renderItem={renderAnswerItem}
             />
           </Animated.View>
-          { (chosenMode === 'Learning') && nextButton() }
+          { (store.chosenMode === 'Learning') && nextButton() }
         </View>
       </View>
     </View>
   );
-};
+});
 
 const styles = StyleSheet.create({
   container: {

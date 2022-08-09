@@ -1,14 +1,14 @@
 import React from 'react';
 import {StyleSheet, TouchableOpacity} from 'react-native';
 import Animated, {useAnimatedStyle, useSharedValue, withSpring, withTiming} from 'react-native-reanimated';
+import {observer} from 'mobx-react-lite';
 import tick from '../../../assets/img/icons/tick.png';
-export const CustomButton = ({
-  color,
+import {bookmarkStore} from '../../../store/bookmarkStore';
+import {store} from '../../../store/store';
+export const CustomButton = observer(({
   img,
   onTouch,
   buttonType,
-  isBookmarkSet,
-  setButtonPressed
 }) => {
   const bookmarkScale = useSharedValue(1);
   const bookmarkOpacity = useSharedValue(1);
@@ -35,22 +35,20 @@ export const CustomButton = ({
   });
 
   const onBookmarkButton = () => {
-    setButtonPressed(true);
+    bookmarkStore.setIsButtonPressed(true);
+    setTimeout(() => bookmarkStore.setIsButtonPressed(false), 1500)
     onTouch();
-    console.log('isBookmarkset', isBookmarkSet);
-    setTimeout(() => {
-      if (isBookmarkSet) {
+      if (bookmarkStore.isBookmarkSet) {
         bookmarkScale.value = withTiming(0, { duration: 900 });
         bookmarkOpacity.value = withTiming(0, { duration: 600 });
         tickScale.value = withSpring(1, { duration: 5000, damping: 6 });
         tickOpacity.value = withTiming(1, { duration: 500 });
       }
-    }, 1000);
   };
 
   return (
     <TouchableOpacity
-      style={[styles.background, {backgroundColor: color}]}
+      style={[styles.background, {backgroundColor: store.currentCategory.textColor}]}
       onPress={buttonType === 'bookmark' ? onBookmarkButton : onTouch}>
       <Animated.Image source={img} style={buttonType === 'bookmark' && decreasingAnimation}/>
       {buttonType === 'bookmark' &&
@@ -60,7 +58,7 @@ export const CustomButton = ({
         />}
     </TouchableOpacity>
   );
-};
+});
 
 const styles = StyleSheet.create({
   background: {

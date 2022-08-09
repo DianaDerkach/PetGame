@@ -1,22 +1,22 @@
 import React from 'react';
 import {ImageBackground, Text, StyleSheet, FlatList, Dimensions} from 'react-native';
+import {observer} from 'mobx-react-lite';
+import {store} from '../../store/store';
 
-export const QuestionsSetScreenComponent = ({
+export const QuestionsSetScreenComponent = observer(({
   headerTitle,
   categoryTopics,
   img,
   renderItem,
-  isChooseModeDialog,
   renderChooseMode,
 }) => {
-
   return (
     <ImageBackground
       source={require('../../assets/img/white_background.png')}
       resizeMode={'cover'}
       style={styles.container}
     >
-      { isChooseModeDialog ? renderChooseMode() : null }
+      { store.isChooseModeDialog ? renderChooseMode() : <></> }
       <ImageBackground
         source={{uri: img}}
         style={styles.header}
@@ -32,7 +32,7 @@ export const QuestionsSetScreenComponent = ({
       />
     </ImageBackground>
   );
-};
+});
 
 const styles = StyleSheet.create({
   container: {

@@ -1,7 +1,6 @@
 import React, {useEffect} from 'react';
 import {useAnimatedStyle, useSharedValue, withSpring} from 'react-native-reanimated';
 import {observer} from 'mobx-react-lite';
-import {store} from '../../store/store';
 import {MainComponent} from './main.component';
 import {CategoryCard} from './components/CategoryCard';
 
@@ -11,9 +10,11 @@ export const MainContainer = observer(({navigation}) => {
   useEffect(() => {
     translateY.value = withSpring(0, {duration: 400, damping: 10})
   }, []);
+
   const navigateToBookmarks = () => {
     navigation.navigate('Bookmarks');
   };
+
   const headerAnimatedStyle = useAnimatedStyle(() => {
     return {
       transform: [
@@ -23,6 +24,7 @@ export const MainContainer = observer(({navigation}) => {
       ],
     };
   });
+
   const renderCategoryCard = (category) => {
     return <CategoryCard category={category} key={category.id}/>;
   };
@@ -33,7 +35,6 @@ export const MainContainer = observer(({navigation}) => {
       navigateToBookmarks={navigateToBookmarks}
       renderCategoryCard={renderCategoryCard}
       headerAnimatedStyle={headerAnimatedStyle}
-      categories={store.categories}
     />
   );
 });

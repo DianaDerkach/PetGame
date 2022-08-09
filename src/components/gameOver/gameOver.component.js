@@ -1,14 +1,13 @@
 import React from 'react';
 import {ImageBackground, Text, View, StyleSheet, TouchableOpacity, Dimensions} from 'react-native';
 import Animated from 'react-native-reanimated';
-
+import {store} from '../../store/store';
+import {scoreStore} from '../../store/scoreStore';
 
 export const GameOverComponent = ({
-  score,
   handleStartAgain,
   scoreCircleAnimation,
   navigateToGameScreen,
-  mainColor,
 }) => {
 
   return (
@@ -20,8 +19,8 @@ export const GameOverComponent = ({
         <View style={[styles.thirdCircle, styles.borderRadius]}>
           <View style={[styles.secondCircle, styles.borderRadius]}>
             <Animated.View style={[styles.scoreCircle, styles.borderRadius, scoreCircleAnimation]}>
-              <Text style={[styles.title, styles.text, {color: mainColor}]}>Your score</Text>
-              <Text style={[styles.scoreText, styles.text, {color: mainColor}]}>{score}</Text>
+              <Text style={[styles.title, styles.text, {color: store.currentCategory.textColor}]}>Your score</Text>
+              <Text style={[styles.scoreText, styles.text, {color: store.currentCategory.textColor}]}>{scoreStore.score}</Text>
             </Animated.View>
           </View>
         </View>
@@ -30,12 +29,12 @@ export const GameOverComponent = ({
         style={[styles.startButton, styles.buttons, styles.borderRadius]}
         onPress={handleStartAgain}
       >
-        <Text style={[styles.startButtonText, {color: mainColor}]}>
+        <Text style={[styles.startButtonText, {color: store.currentCategory.textColor}]}>
         Start again
         </Text>
       </TouchableOpacity>
       <TouchableOpacity
-        style={[styles.backButton, styles.buttons, styles.borderRadius, {backgroundColor: mainColor}]}
+        style={[styles.backButton, styles.buttons, styles.borderRadius, {backgroundColor: store.currentCategory.textColor}]}
         onPress={navigateToGameScreen}
       >
         <Text style={styles.backButtonText}>

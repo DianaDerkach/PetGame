@@ -1,14 +1,13 @@
-import React, {useContext} from 'react';
+import React from 'react';
 import {Text, View, StyleSheet, TouchableOpacity} from 'react-native';
-import {BookmarksContext} from '../../../utils/bookmarks';
 import AsyncStorageService from '../../../utils/asyncStorage/asyncStorageService';
+import {bookmarkStore} from '../../../store/bookmarkStore';
 
 export const BookmarkItem = ({bookmark}) => {
-  const [bookmarks, setBookmarks] = useContext(BookmarksContext);
 
   const deleteBookmark = () => {
     AsyncStorageService.deleteBookmark(bookmark.item.question).then((status) => {
-      setBookmarks(bookmarks.filter((bookmarkItem) => bookmark.item.question !== bookmarkItem.question));
+      bookmarkStore.setBookmarks(bookmarkStore.bookmarks.filter((bookmarkItem) => bookmark.item.question !== bookmarkItem.question));
     }).catch((err) => console.log('deleteBookmark error', err));
 
   };

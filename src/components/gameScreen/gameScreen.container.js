@@ -1,12 +1,15 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect} from 'react';
 import {Text, TouchableOpacity, StyleSheet, View} from 'react-native';
 import {CommonActions, useNavigation, useRoute} from '@react-navigation/native';
 import {useAnimatedStyle, useSharedValue, withSpring} from 'react-native-reanimated';
+import {observer} from 'mobx-react-lite';
 import CircularProgress from 'react-native-circular-progress-indicator';
 import {AnswerItem} from './components/answerItem';
 import {GameScreenComponent} from './gameScreen.component';
 import {HelpDialog} from './components/helpDialog';
 import AsyncStorageService from '../../utils/asyncStorage/asyncStorageService';
+import {store} from '../../store/store';
+import {bookmarkStore} from '../../store/bookmarkStore';
 
 const timerColors = {
   inActiveStrokeColor: '#b2b2d7',
@@ -14,41 +17,29 @@ const timerColors = {
   circleBackgroundColor: '#fff',
 };
 
-export const GameScreenContainer = () => {
-  const [showHelpDialog, setShowHelpDialog] = useState(false);
-  const [currentAnswers, setCurrentAnswers] = useState([]);
-  const [currentScore, setCurrentScore] = useState(0);
-  const [filteredQuestion, setFilteredQuestion] = useState([]);
+export const GameScreenContainer = observer(() => {
   const navigation = useNavigation();
   const route = useRoute();
-  const {chosenQuestionsSet, score, questionNumber, chosenMode, mainColor, headerBackground, questions} = route.params;
-  const numberOfQuestions = chosenQuestionsSet.questions.length;
-  const currentQuestion = chosenQuestionsSet.questions[questionNumber - 1].text;
-  const currentRightAnswer = chosenQuestionsSet.questions[questionNumber - 1].rightAnswer;
-  const currentTimeForAnswer = chosenQuestionsSet.questions[questionNumber - 1].timeForAnswer;
-  const timerDuration = chosenQuestionsSet.questions[0].timeForAnswer;
-  const questionIcon = require('../../assets/img/icons/questionIcon.png');
-  const bookmarkIcon = require('../../assets/img/icons/bookmarkIcon.png');
-  const [isBookmarkSet, setIsBookmarkSet] = useState(false);
-  const [isButtonPressed, setIsButtonPressed] = useState(false);
-  const translateX = useSharedValue(400)
-  useEffect(() => {
-    const _filteredQuestion = questions.find((questionItem) => questionItem.text === currentQuestion);
-    const [{id, createdAt, updatedAt, ...data}] = _filteredQuestion.answers;
+  const {questionNumber, headerBackground, score} = route.params;
+  const numberOfQuestions = store.chosenQuestionsSet.questions.length;
 
-    setCurrentScore(score);
-    setCurrentAnswers(Object.values(data));
-    setFilteredQuestion(_filteredQuestion);
+  const translateX = useSharedValue(400);
+
+  useEffect(() => {
+    (async() => {
+      await store.setCurrentQuestion(store.chosenQuestionsSet.questions[questionNumber - 1]);
+      await store.setCurrentAnswers();
+    })();
 
     if (questionNumber  === numberOfQuestions ) {
       navigateToGameOver();
     }
+
     translateX.value = withSpring(0);
   }, []);
 
-  const handleNextQuestion = (updatedScore, isNextButton) => {
-    setCurrentScore(updatedScore);
-    if ((chosenMode === 'Hard') || isNextButton) {
+  const handleNextQuestion = (isNextButton) => {
+    if ((store.chosenMode === 'Hard') || isNextButton) {
       navigation.dispatch(
         CommonActions.reset({
           index: 1,
@@ -59,12 +50,7 @@ export const GameScreenContainer = () => {
               params: {
                 questionNumber: questionNumber + 1,
                 navigation,
-                chosenQuestionsSet,
-                score: updatedScore,
-                chosenMode,
-                mainColor,
                 headerBackground,
-                questions,
               },
             },
           ],
@@ -73,34 +59,27 @@ export const GameScreenContainer = () => {
     }
   };
 
-  const onCloseHelpDialog = () => setShowHelpDialog(false);
-
   const renderBookmarkStatus = () => {
    return (
        <Text style={styles.tooltip}>
-         {isBookmarkSet ? 'Question was added to bookmarks successfully!' : 'Question already exists'}
+         {bookmarkStore.isBookmarkSet ? 'Question was added to bookmarks successfully!' : 'Question already exists'}
        </Text>
      )
   }
 
   const navigateToGameOver = () => {
     navigation.navigate('GameOver', {
-      navigation: navigation,
-      chosenQuestionsSet: chosenQuestionsSet,
-      score: score,
-      chosenMode: chosenMode,
-      mainColor: mainColor,
-      questions: questions,
+      navigation: navigation
     });
   };
 
   const timer = () => {
     return <CircularProgress
-      value={timerDuration}
+      value={store.currentQuestion.timeForAnswer}
       radius={40}
-      duration={currentTimeForAnswer * 1000}
+      duration={store.currentQuestion.timeForAnswer * 1000}
       progressValueColor={'#9B6ACC'}
-      maxValue={timerDuration}
+      maxValue={store.currentQuestion.timeForAnswer}
       titleStyle={{fontWeight: 'bold'}}
       onAnimationComplete={onTimerAnimationComplete}
       inActiveStrokeColor={timerColors.inActiveStrokeColor}
@@ -115,25 +94,30 @@ export const GameScreenContainer = () => {
 
   const bookmarkSetter = async () => {
     try {
-      if (await AsyncStorageService.setBookmark({
-      question: currentQuestion,
-      help: filteredQuestion[0].help,
-      rightAnswer: filteredQuestion[0].rightAnswer,
-    })) setIsBookmarkSet(true);
-      else {setIsBookmarkSet(false)}
+      const isBookmarkSet = await AsyncStorageService.setBookmark({
+        question: store.currentQuestion.text,
+        help: store.currentQuestion.help,
+        rightAnswer: store.currentQuestion.rightAnswer,
+      })
+
+      isBookmarkSet ?
+        bookmarkStore.setIsBookmarkSet(true)
+        :
+        bookmarkStore.setIsBookmarkSet(false)
+
     } catch(e) {
       console.log('bookmark add error', e)
     }
   };
 
   const onNextQuestionButton = () => {
-    handleNextQuestion(currentScore, true)
+    handleNextQuestion( true)
   }
 
   const nextButton = () => {
     return (
       <TouchableOpacity
-      style={[styles.nextButton, {backgroundColor: mainColor}]}
+      style={[styles.nextButton, {backgroundColor: store.currentCategory.textColor}]}
       onPress={onNextQuestionButton}
       >
         <Text style={styles.buttonText}>Next</Text>
@@ -141,15 +125,8 @@ export const GameScreenContainer = () => {
     )
   };
 
-  const renderHelpDialog = () => {
-    const [{help: theory}] = filteredQuestion
+  const renderHelpDialog = () => <HelpDialog/>;
 
-    return <HelpDialog
-      onCloseHelpDialog={onCloseHelpDialog}
-      mainColor={mainColor}
-      theory={theory}
-    />;
-  };
   const answersAnimation = useAnimatedStyle(() => {
     return {
       flex: 1,
@@ -163,22 +140,23 @@ export const GameScreenContainer = () => {
     if (questionNumber === numberOfQuestions) {
       navigation.navigate('GameOver', {
         navigation,
-        category: chosenQuestionsSet,
         score,
-        chosenMode,
-        mainColor,
       });
     } else {
       handleNextQuestion(score);
     }
   };
-  const onOpenHelpDialog = () => setShowHelpDialog(true);
+
+  const onOpenHelpDialog = () => {
+    store.setShowHelpDialog(true);
+    console.log(store.showHelpDialog);
+  }
 
   const renderAnswerItem = (answer) => {
     return <AnswerItem
       answer={answer.item}
       navigateToGameOver={navigateToGameOver}
-      currentRightAnswer={currentRightAnswer}
+      currentRightAnswer={store.currentQuestion.rightAnswer}
       numberOfQuestions={numberOfQuestions}
       questionNumber={questionNumber}
       score={score}
@@ -188,38 +166,27 @@ export const GameScreenContainer = () => {
 
   return (
     <GameScreenComponent
-      chosenQuestionsSet={chosenQuestionsSet}
       navigation={navigation}
       questionNumber={questionNumber}
-      currentQuestion={currentQuestion}
-      currentTimeForAnswer={currentTimeForAnswer}
-      timerDuration={timerDuration}
+      currentQuestion={store.currentQuestion.text}
+      currentTimeForAnswer={store.currentQuestion.timeForAnswer}
+      timerDuration={store.currentQuestion.timeForAnswer}
       numberOfQuestions={numberOfQuestions}
       answersAnimation={answersAnimation}
       onTimerAnimationComplete={onTimerAnimationComplete}
       timerColors={timerColors}
       renderAnswerItem={renderAnswerItem}
-      chosenMode={chosenMode}
       timer={timer}
       nextButton={nextButton}
       timerless={timerless}
-      mainColor={mainColor}
-      questionIcon={questionIcon}
-      bookmarkIcon={bookmarkIcon}
-      showHelpDialog={showHelpDialog}
       renderHelpDialog={renderHelpDialog}
-      setShowHelpDialog={setShowHelpDialog}
       headerBackground={headerBackground}
-      answers={currentAnswers}
       bookmarkSetter={bookmarkSetter}
-      isBookmarkSet={isBookmarkSet}
       renderBookmarkStatus={renderBookmarkStatus}
-      setIsButtonPressed={setIsButtonPressed}
-      isButtonPressed={isButtonPressed}
       onOpenHelpDialog={onOpenHelpDialog}
     />
   );
-};
+});
 
 const styles = StyleSheet.create({
   block: {

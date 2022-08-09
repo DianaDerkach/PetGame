@@ -2,26 +2,24 @@ import React from 'react';
 import {useRoute} from '@react-navigation/native';
 import {useAnimatedStyle, useSharedValue, withRepeat, withTiming} from 'react-native-reanimated';
 import {GameOverComponent} from './gameOver.component';
+import {scoreStore} from '../../store/scoreStore';
 
 export const GameOverContainer = () => {
   const route = useRoute();
-  const {navigation, score, chosenQuestionsSet, chosenMode, mainColor, questions} = route.params;
   const animation = useSharedValue(1);
+  const {navigation} = route.params;
 
   const handleStartAgain = () => {
+    scoreStore.setScore(0);
     navigation.push('Game',
       {
         questionNumber: 1,
         navigation,
-        score: 0,
-        chosenQuestionsSet,
-        chosenMode,
-        mainColor,
-        questions,
       })
   }
 
   const navigateToGameScreen = () => {
+    scoreStore.setScore(0);
     navigation.navigate('QuizGame');
   };
 
@@ -41,11 +39,9 @@ export const GameOverContainer = () => {
 
   return (
     <GameOverComponent
-      score={score}
       handleStartAgain={handleStartAgain}
       scoreCircleAnimation={scoreCircleAnimation}
       navigateToGameScreen={navigateToGameScreen}
-      mainColor={mainColor}
     />
   );
 };

@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
 import {Text, TouchableOpacity, StyleSheet, View} from 'react-native';
+import {scoreStore} from '../../../store/scoreStore';
 
 const rightAnswerColor = '#b2d092';
 const wrongAnswerColor = '#ff6c6c';
@@ -8,17 +9,17 @@ export const AnswerItem = ({
   answer,
   handleNextQuestion,
   currentRightAnswer,
-  score,
 }) => {
   const [answerBackground, setAnswerBackground] = useState('#fff');
 
   const setAnswerItemBackground = () => {
     if (answer === currentRightAnswer) {
       setAnswerBackground(rightAnswerColor);
-      setTimeout(() => handleNextQuestion(score + 1), 500);
+      scoreStore.setScore(scoreStore.score + 1);
+      setTimeout(() => handleNextQuestion(false), 500);
     } else {
       setAnswerBackground(wrongAnswerColor);
-      setTimeout(() => handleNextQuestion(score), 500);
+      setTimeout(() => handleNextQuestion(false), 500);
     }
   };
   return (

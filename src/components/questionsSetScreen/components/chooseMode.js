@@ -1,38 +1,40 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 import {Dimensions, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {store} from '../../../store/store';
 
 export const ChooseMode = ({
-  chosenQuestionsSet,
-  mainColor,
   headerBackground,
 }) => {
   const navigation = useNavigation();
 
-  const navigateToGameScreen = (chosenMode) => {
+  const onChoseModeButton = (chosenMode) => {
+    store.setChosenMode(chosenMode);
+    store.setIsChooseModeDialog(false);
+    navigateToGameScreen();
+  }
+
+  const navigateToGameScreen = () => {
     navigation.navigate('Game',
       {
-        chosenQuestionsSet,
+        chosenQuestionsSet: store.chosenQuestionsSet,
         score: 0,
         questionNumber: 1,
-        chosenMode,
-        mainColor,
         headerBackground,
-        questions: store.getQuestions(chosenQuestionsSet.name),
+        questions: store.getQuestions(store.chosenQuestionsSet.name),
       });
   };
   return (
     <View style={styles.darkBackground}>
       <View style={styles.container}>
-        <Text style={[styles.title, {color: mainColor}]}>Choose mode</Text>
+        <Text style={[styles.title, {color: store.currentCategory.textColor}]}>Choose mode</Text>
         <View style={styles.textBox}>
-          <Text style={[styles.modeDescription, {color: mainColor}]}>
+          <Text style={[styles.modeDescription, {color: store.currentCategory.textColor}]}>
             Learning mode - mode without timer,
             with opportunity to read theory about
             current question
           </Text>
-          <Text style={[styles.modeDescription, {color: mainColor}]}>
+          <Text style={[styles.modeDescription, {color: store.currentCategory.textColor}]}>
             Hard mode - you have only 10 seconds
             to answer the question
           </Text>
@@ -40,15 +42,15 @@ export const ChooseMode = ({
         <View style={styles.buttonsBox}>
           <TouchableOpacity
             style={[styles.learningButton, styles.button]}
-            onPress={() => navigateToGameScreen('Learning')}
+            onPress={() => onChoseModeButton('Learning')}
           >
-            <Text style={{color: mainColor}}>
+            <Text style={{color: store.currentCategory.textColor}}>
               Learning
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
-            style={[{backgroundColor: mainColor}, styles.button]}
-            onPress={() => navigateToGameScreen('Hard')}
+            style={[{backgroundColor: store.currentCategory.textColor}, styles.button]}
+            onPress={() => onChoseModeButton('Hard')}
           >
             <Text style={styles.hardText}>
               Hard

@@ -1,11 +1,12 @@
 import React from 'react';
 import {FlatList, ImageBackground, StyleSheet, Text, View} from 'react-native';
 import Animated from 'react-native-reanimated';
+import {observer} from 'mobx-react-lite';
+import {bookmarkStore} from '../../store/bookmarkStore';
 
-export const BookmarkScreenComponent = ({
+export const BookmarkScreenComponent = observer(({
   headerAnimatedStyle,
   renderBookmarkItem,
-  bookmarks,
 }) => {
   return (
     <View style={styles.container}>
@@ -23,14 +24,14 @@ export const BookmarkScreenComponent = ({
         </Animated.View>
         <FlatList
           keyExtractor={bookmark => bookmark.question}
-          data={bookmarks}
+          data={bookmarkStore.bookmarks}
           bounces={true}
           renderItem={renderBookmarkItem}
         />
       </ImageBackground>
     </View>
   );
-};
+});
 
 const styles = StyleSheet.create({
   container: {
