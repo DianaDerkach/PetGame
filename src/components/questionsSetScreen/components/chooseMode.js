@@ -1,7 +1,7 @@
 import React from 'react';
 import {Dimensions, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
-import {store} from '../../../store/store';
+import store from '../../../store/store';
 
 export const ChooseMode = ({
   headerBackground,
@@ -12,7 +12,7 @@ export const ChooseMode = ({
     store.setChosenMode(chosenMode);
     store.setIsChooseModeDialog(false);
     navigateToGameScreen();
-  }
+  };
 
   const navigateToGameScreen = () => {
     navigation.navigate('Game',
@@ -114,6 +114,8 @@ const styles = StyleSheet.create({
     position: 'relative',
     shadowColor: '#5e457a',
     shadowOffsetY: 20,
+    shadowOffset: {height: 3, width: 0},
+    shadowOpacity: 0.3,
     elevation: 8,
   },
   learningButton: {

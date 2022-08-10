@@ -1,9 +1,9 @@
 import React, {useEffect} from 'react';
-import { useAnimatedStyle, useSharedValue, withSpring } from "react-native-reanimated";
+import {useAnimatedStyle, useSharedValue, withSpring} from 'react-native-reanimated';
 import {BookmarkScreenComponent} from './bookmarkScreen.component';
 import {BookmarkItem} from './components/bookmarkItem';
 import AsyncStorageService from '../../utils/asyncStorage/asyncStorageService';
-import {bookmarkStore} from '../../store/bookmarkStore';
+import bookmarkStore from '../../store/bookmarkStore';
 
 export const BookmarkScreenContainer = () => {
   const translateY = useSharedValue(-100);
@@ -12,14 +12,14 @@ export const BookmarkScreenContainer = () => {
     AsyncStorageService.getBookmarks()
       .then(bookmarkStore.setBookmarks)
       .catch((e) => console.log('getBookmark error ', e));
-    translateY.value = withSpring(0)
+    translateY.value = withSpring(0);
   }, []);
 
   const headerAnimatedStyle = useAnimatedStyle(() => {
     return {
       transform: [
         {
-          translateY: translateY.value
+          translateY: translateY.value,
         },
       ],
     };

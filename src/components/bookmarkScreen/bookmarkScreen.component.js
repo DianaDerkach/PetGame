@@ -2,7 +2,7 @@ import React from 'react';
 import {FlatList, ImageBackground, StyleSheet, Text, View} from 'react-native';
 import Animated from 'react-native-reanimated';
 import {observer} from 'mobx-react-lite';
-import {bookmarkStore} from '../../store/bookmarkStore';
+import bookmarkStore from '../../store/bookmarkStore';
 
 export const BookmarkScreenComponent = observer(({
   headerAnimatedStyle,

@@ -3,19 +3,12 @@ import {Text, TouchableOpacity, StyleSheet, View} from 'react-native';
 import {CommonActions, useNavigation, useRoute} from '@react-navigation/native';
 import {useAnimatedStyle, useSharedValue, withSpring} from 'react-native-reanimated';
 import {observer} from 'mobx-react-lite';
-import CircularProgress from 'react-native-circular-progress-indicator';
 import {AnswerItem} from './components/answerItem';
 import {GameScreenComponent} from './gameScreen.component';
-import {HelpDialog} from './components/helpDialog';
 import AsyncStorageService from '../../utils/asyncStorage/asyncStorageService';
-import {store} from '../../store/store';
-import {bookmarkStore} from '../../store/bookmarkStore';
+import store from '../../store/store';
+import bookmarkStore from '../../store/bookmarkStore';
 
-const timerColors = {
-  inActiveStrokeColor: '#b2b2d7',
-  activeStrokeColor: '#d9b1ff',
-  circleBackgroundColor: '#fff',
-};
 
 export const GameScreenContainer = observer(() => {
   const navigation = useNavigation();
@@ -27,105 +20,77 @@ export const GameScreenContainer = observer(() => {
 
   useEffect(() => {
     (async() => {
-      await store.setCurrentQuestion(store.chosenQuestionsSet.questions[questionNumber - 1]);
-      await store.setCurrentAnswers();
+      try {
+        await store.setCurrentQuestion(store.chosenQuestionsSet.questions[questionNumber - 1]);
+        await store.setCurrentAnswers();
+      } catch(e) {
+        console.log('setCurrentQuestion or setCurrentAnswer error ', e);
+      }
     })();
-
-    if (questionNumber  === numberOfQuestions ) {
-      navigateToGameOver();
-    }
-
+    store.setIsAnswerHasChosen(false);
     translateX.value = withSpring(0);
   }, []);
 
   const handleNextQuestion = (isNextButton) => {
     if ((store.chosenMode === 'Hard') || isNextButton) {
-      navigation.dispatch(
-        CommonActions.reset({
-          index: 1,
-          routes: [
-            {name: 'QuizGame'},
-            {
-              name: 'Game',
-              params: {
-                questionNumber: questionNumber + 1,
-                navigation,
-                headerBackground,
+      if (questionNumber  === numberOfQuestions ) {
+        navigateToGameOver();
+      } else {
+        navigation.dispatch(
+          CommonActions.reset({
+            index: 1,
+            routes: [
+              {name: 'QuizGame'},
+              {
+                name: 'Game',
+                params: {
+                  questionNumber: questionNumber + 1,
+                  navigation,
+                  headerBackground,
+                },
               },
-            },
-          ],
-        }),
-      );
+            ],
+          }),
+        );
+      }
     }
   };
 
-  const renderBookmarkStatus = () => {
-   return (
-       <Text style={styles.tooltip}>
-         {bookmarkStore.isBookmarkSet ? 'Question was added to bookmarks successfully!' : 'Question already exists'}
-       </Text>
-     )
-  }
 
   const navigateToGameOver = () => {
     navigation.navigate('GameOver', {
-      navigation: navigation
+      navigation: navigation,
     });
   };
 
-  const timer = () => {
-    return <CircularProgress
-      value={store.currentQuestion.timeForAnswer}
-      radius={40}
-      duration={store.currentQuestion.timeForAnswer * 1000}
-      progressValueColor={'#9B6ACC'}
-      maxValue={store.currentQuestion.timeForAnswer}
-      titleStyle={{fontWeight: 'bold'}}
-      onAnimationComplete={onTimerAnimationComplete}
-      inActiveStrokeColor={timerColors.inActiveStrokeColor}
-      activeStrokeColor={timerColors.activeStrokeColor}
-      circleBackgroundColor={timerColors.circleBackgroundColor}
-    />;
-  };
-
-  const timerless = () => {
-    return <View style={styles.block}/>;
-  };
-
-  const bookmarkSetter = async () => {
+  const setBookmarkHandler = async () => {
     try {
       const isBookmarkSet = await AsyncStorageService.setBookmark({
         question: store.currentQuestion.text,
         help: store.currentQuestion.help,
         rightAnswer: store.currentQuestion.rightAnswer,
-      })
-
-      isBookmarkSet ?
-        bookmarkStore.setIsBookmarkSet(true)
-        :
-        bookmarkStore.setIsBookmarkSet(false)
+      });
+      bookmarkStore.setIsBookmarkSet(isBookmarkSet);
 
     } catch(e) {
-      console.log('bookmark add error', e)
+      console.log('bookmark add error', e);
     }
   };
 
-  const onNextQuestionButton = () => {
-    handleNextQuestion( true)
-  }
+  const onNextQuestionPress = () => {
+    handleNextQuestion( true);
+  };
 
   const nextButton = () => {
     return (
       <TouchableOpacity
-      style={[styles.nextButton, {backgroundColor: store.currentCategory.textColor}]}
-      onPress={onNextQuestionButton}
+        style={[styles.nextButton, {backgroundColor: store.currentCategory.textColor}]}
+        onPress={onNextQuestionPress}
       >
         <Text style={styles.buttonText}>Next</Text>
       </TouchableOpacity>
-    )
+    );
   };
-
-  const renderHelpDialog = () => <HelpDialog/>;
 
   const answersAnimation = useAnimatedStyle(() => {
     return {
@@ -149,8 +114,7 @@ export const GameScreenContainer = observer(() => {
 
   const onOpenHelpDialog = () => {
     store.setShowHelpDialog(true);
-    console.log(store.showHelpDialog);
-  }
+  };
 
   const renderAnswerItem = (answer) => {
     return <AnswerItem
@@ -166,33 +130,19 @@ export const GameScreenContainer = observer(() => {
 
   return (
     <GameScreenComponent
-      navigation={navigation}
       questionNumber={questionNumber}
-      currentQuestion={store.currentQuestion.text}
-      currentTimeForAnswer={store.currentQuestion.timeForAnswer}
-      timerDuration={store.currentQuestion.timeForAnswer}
       numberOfQuestions={numberOfQuestions}
       answersAnimation={answersAnimation}
-      onTimerAnimationComplete={onTimerAnimationComplete}
-      timerColors={timerColors}
       renderAnswerItem={renderAnswerItem}
-      timer={timer}
       nextButton={nextButton}
-      timerless={timerless}
-      renderHelpDialog={renderHelpDialog}
-      headerBackground={headerBackground}
-      bookmarkSetter={bookmarkSetter}
-      renderBookmarkStatus={renderBookmarkStatus}
+      setBookmarkHandler={setBookmarkHandler}
       onOpenHelpDialog={onOpenHelpDialog}
+      onTimerAnimationComplete={onTimerAnimationComplete}
     />
   );
 });
 
 const styles = StyleSheet.create({
-  block: {
-    height: 60,
-    width: 60,
-  },
   nextButton: {
     width: 300,
     textAlign: 'center',
@@ -202,16 +152,15 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
     borderRadius: 50,
     position: 'relative',
-    shadowColor: '#0a0a0a',
+    shadowColor: '#262626',
     shadowOffsetY: 20,
+    shadowOffset: {height: 3, width: 0},
+    shadowOpacity: 0.3,
     elevation: 8,
     marginBottom: 80,
   },
+
   buttonText: {
     color: '#fff',
-  },
-  tooltip: {
-    color: 'black',
-    textAlign: 'center',
   },
 });

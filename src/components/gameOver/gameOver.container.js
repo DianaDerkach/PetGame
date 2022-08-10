@@ -2,7 +2,7 @@ import React from 'react';
 import {useRoute} from '@react-navigation/native';
 import {useAnimatedStyle, useSharedValue, withRepeat, withTiming} from 'react-native-reanimated';
 import {GameOverComponent} from './gameOver.component';
-import {scoreStore} from '../../store/scoreStore';
+import scoreStore from '../../store/scoreStore';
 
 export const GameOverContainer = () => {
   const route = useRoute();
@@ -15,8 +15,8 @@ export const GameOverContainer = () => {
       {
         questionNumber: 1,
         navigation,
-      })
-  }
+      });
+  };
 
   const navigateToGameScreen = () => {
     scoreStore.setScore(0);

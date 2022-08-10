@@ -1,7 +1,7 @@
 import React from 'react';
 import {ImageBackground, Text, StyleSheet, FlatList, Dimensions} from 'react-native';
 import {observer} from 'mobx-react-lite';
-import {store} from '../../store/store';
+import store from '../../store/store';
 
 export const QuestionsSetScreenComponent = observer(({
   headerTitle,
@@ -16,9 +16,9 @@ export const QuestionsSetScreenComponent = observer(({
       resizeMode={'cover'}
       style={styles.container}
     >
-      { store.isChooseModeDialog ? renderChooseMode() : <></> }
+      {store.isChooseModeDialog && renderChooseMode()}
       <ImageBackground
-        source={{uri: img}}
+        source={{uri: store.BASE_URL + store.currentCategory.img.formats.thumbnail.url}}
         style={styles.header}
         imageStyle={styles.borderRadius}
       >

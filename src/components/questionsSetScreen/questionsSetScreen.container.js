@@ -3,7 +3,7 @@ import {StyleSheet, Text, TouchableOpacity} from 'react-native';
 import {useRoute} from '@react-navigation/native';
 import {QuestionsSetScreenComponent} from './questionsSetScreen.component';
 import {ChooseMode} from './components/chooseMode';
-import {store} from '../../store/store';
+import store from '../../store/store';
 
 export const QuestionsSetScreenContainer = ({navigation}) => {
   const route = useRoute();
@@ -24,7 +24,7 @@ export const QuestionsSetScreenContainer = ({navigation}) => {
       navigation.push('QuestionsSetScreen',
         {
           headerTitle: 'Choose question set',
-          categoryTopics: store.getQuestionsSetsNames(categoryTopic),
+          categoryTopics: store.getFilteredQuestionsSets(categoryTopic),
           mainColor: store.currentCategory.color,
           textColor: store.currentCategory.textColor,
           img,
@@ -44,7 +44,7 @@ export const QuestionsSetScreenContainer = ({navigation}) => {
     }
   };
 
-  const showChooseModeDialog = () => store.setIsChooseModeDialog(true)
+  const showChooseModeDialog = () => store.setIsChooseModeDialog(true);
 
   const renderChooseMode = () => <ChooseMode headerBackground={img}/>;
 

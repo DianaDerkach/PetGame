@@ -9,11 +9,18 @@ class BookmarkStore {
     makeAutoObservable(this);
   }
 
-  setIsBookmarkSet = (bool) => this.isBookmarkSet = bool;
+  setIsBookmarkSet = (bool) => {
+    this.isBookmarkSet = bool;
+  };
 
-  setIsButtonPressed = (bool) => this.isButtonPressed = bool;
+  setIsButtonPressed = (bool) => {
+    this.isButtonPressed = bool;
+  };
 
-  setBookmarks = (bookmarks) => this.bookmarks = bookmarks;
+  setBookmarks = (bookmarks) => {
+    this.bookmarks = bookmarks;
+  };
 }
 
-export const bookmarkStore = new BookmarkStore();
+const bookmarkStore = new BookmarkStore();
+export default bookmarkStore;

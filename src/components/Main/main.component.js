@@ -2,7 +2,7 @@ import React from 'react';
 import {Image, Text, ScrollView, StyleSheet, ImageBackground, TouchableOpacity} from 'react-native';
 import Animated from 'react-native-reanimated';
 import {observer} from 'mobx-react-lite';
-import {store} from '../../store/store';
+import store from '../../store/store';
 
 export const MainComponent = observer(({
   navigateToBookmarks,
@@ -74,6 +74,8 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
     width: '60%',
     shadowColor: '#000',
+    shadowOpacity: 0.3,
+    shadowOffset: {height: 3, width: 0},
     elevation: 4,
     marginBottom: 30,
   },

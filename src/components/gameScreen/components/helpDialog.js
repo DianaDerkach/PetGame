@@ -1,10 +1,12 @@
 import React from 'react';
 import {View, StyleSheet, Text, TouchableOpacity, Dimensions} from 'react-native';
-import {store} from '../../../store/store';
+import store from '../../../store/store';
 
 export const HelpDialog = () => {
 
-  const onCloseHelpDialog = () => store.setShowHelpDialog(false);
+  const onCloseHelpDialog = () => {
+    store.setShowHelpDialog(false);
+  };
 
   return (
     <View style={styles.darkBackground}>
@@ -68,8 +70,10 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
     borderRadius: 50,
     position: 'relative',
-    shadowColor: 'rgba(9,9,9,0.49)',
+    shadowColor: 'rgba(33,33,33,0.49)',
+    shadowOpacity: 0.3,
     shadowOffsetY: 20,
+    shadowOffset: {height: 3, width: 0},
     elevation: 8,
     marginBottom: 20,
   },
