@@ -1,15 +1,12 @@
 import React from 'react';
 import {View, StyleSheet, Text, TouchableOpacity, Dimensions} from 'react-native';
+import Animated from 'react-native-reanimated';
 import store from '../../../store/store';
 
-export const HelpDialog = () => {
-
-  const onCloseHelpDialog = () => {
-    store.setShowHelpDialog(false);
-  };
+export const HelpDialog = ({onCloseHelpDialog, helpDialogAnimation}) => {
 
   return (
-    <View style={styles.darkBackground}>
+    <Animated.View style={[styles.darkBackground, helpDialogAnimation]}>
       <View style={styles.container}>
         <Text style={[styles.title, {color: store.currentCategory.textColor}]}>
           Help
@@ -25,12 +22,13 @@ export const HelpDialog = () => {
           </Text>
         </TouchableOpacity>
       </View>
-    </View>
+    </Animated.View>
   );
 };
 
 const styles = StyleSheet.create({
   darkBackground: {
+    opacity: 0,
     width: Dimensions.get('window').width,
     height: '100%',
     position: 'absolute',

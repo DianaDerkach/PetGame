@@ -19,11 +19,10 @@ export const AnswerItem = observer(({
       if (answer === currentRightAnswer) {
         setAnswerBackground(rightAnswerColor);
         scoreStore.setScore(scoreStore.score + 1);
-        setTimeout(() => handleNextQuestion(false), 500);
       } else {
         setAnswerBackground(wrongAnswerColor);
-        setTimeout(() => handleNextQuestion(false), 500);
       }
+      setTimeout(() => handleNextQuestion(false), 500);
     }
   };
   return (

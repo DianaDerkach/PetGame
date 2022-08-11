@@ -1,14 +1,13 @@
 import React, {useEffect} from 'react';
-import {Text, TouchableOpacity, StyleSheet, View} from 'react-native';
+import {Text, TouchableOpacity, StyleSheet} from 'react-native';
 import {CommonActions, useNavigation, useRoute} from '@react-navigation/native';
-import {useAnimatedStyle, useSharedValue, withSpring} from 'react-native-reanimated';
+import {useAnimatedStyle, useSharedValue, withSpring, withTiming} from 'react-native-reanimated';
 import {observer} from 'mobx-react-lite';
 import {AnswerItem} from './components/answerItem';
 import {GameScreenComponent} from './gameScreen.component';
 import AsyncStorageService from '../../utils/asyncStorage/asyncStorageService';
 import store from '../../store/store';
 import bookmarkStore from '../../store/bookmarkStore';
-
 
 export const GameScreenContainer = observer(() => {
   const navigation = useNavigation();
@@ -17,6 +16,7 @@ export const GameScreenContainer = observer(() => {
   const numberOfQuestions = store.chosenQuestionsSet.questions.length;
 
   const translateX = useSharedValue(400);
+  const helpOpacity = useSharedValue(0);
 
   useEffect(() => {
     (async() => {
@@ -56,24 +56,36 @@ export const GameScreenContainer = observer(() => {
     }
   };
 
-
   const navigateToGameOver = () => {
     navigation.navigate('GameOver', {
       navigation: navigation,
     });
   };
 
-  const setBookmarkHandler = async () => {
-    try {
-      const isBookmarkSet = await AsyncStorageService.setBookmark({
+  const setBookmarkHandler = () => {
+    const isBookmarkDuplicate = bookmarkStore.bookmarks.find((bookmark) => {
+      return bookmark.question === store.currentQuestion.text;
+    });
+
+    if (!isBookmarkDuplicate) {
+      const newBookmark = {
         question: store.currentQuestion.text,
         help: store.currentQuestion.help,
         rightAnswer: store.currentQuestion.rightAnswer,
-      });
-      bookmarkStore.setIsBookmarkSet(isBookmarkSet);
+      };
 
-    } catch(e) {
-      console.log('bookmark add error', e);
+      bookmarkStore.setIsBookmarkSet(true);
+      bookmarkStore.setBookmarks([...bookmarkStore.bookmarks, newBookmark]);
+
+      (async () => {
+        try {
+          await AsyncStorageService.setBookmark(newBookmark);
+        } catch(e) {
+          console.log('bookmark add error', e);
+        }
+      })();
+    } else {
+      bookmarkStore.setIsBookmarkSet(false);
     }
   };
 
@@ -111,8 +123,19 @@ export const GameScreenContainer = observer(() => {
       handleNextQuestion(score);
     }
   };
+  const onCloseHelpDialog = () => {
+    store.setShowHelpDialog(false);
+    helpOpacity.value = withTiming(0, {duration: 3000});
+  };
+
+  const helpDialogAnimation = useAnimatedStyle(() => {
+    return {
+      opacity: helpOpacity.value,
+    };
+  });
 
   const onOpenHelpDialog = () => {
+    opacity.value = withTiming(1, {duration: 1000});
     store.setShowHelpDialog(true);
   };
 
@@ -138,6 +161,8 @@ export const GameScreenContainer = observer(() => {
       setBookmarkHandler={setBookmarkHandler}
       onOpenHelpDialog={onOpenHelpDialog}
       onTimerAnimationComplete={onTimerAnimationComplete}
+      helpDialogAnimation={helpDialogAnimation}
+      onCloseHelpDialog={onCloseHelpDialog}
     />
   );
 });

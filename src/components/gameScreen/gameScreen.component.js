@@ -1,12 +1,12 @@
 import React from 'react';
 import {Text, View, StyleSheet, FlatList, ImageBackground} from 'react-native';
 import Animated from 'react-native-reanimated';
+import CircularProgress from 'react-native-circular-progress-indicator';
 import {observer} from 'mobx-react-lite';
 import {CustomButton} from './components/customButton';
 import store  from '../../store/store';
 import bookmarkStore from '../../store/bookmarkStore';
 import {HelpDialog} from './components/helpDialog';
-import CircularProgress from 'react-native-circular-progress-indicator';
 
 const questionIcon = require('../../assets/img/icons/questionIcon.png');
 const bookmarkIcon = require('../../assets/img/icons/bookmarkIcon.png');
@@ -17,7 +17,6 @@ const timerColors = {
   circleBackgroundColor: '#fff',
 };
 
-
 export const GameScreenComponent = observer(({
   questionNumber,
   numberOfQuestions,
@@ -27,7 +26,17 @@ export const GameScreenComponent = observer(({
   setBookmarkHandler,
   onOpenHelpDialog,
   onTimerAnimationComplete,
+  helpDialogAnimation,
+  onCloseHelpDialog,
 }) => {
+  const renderStatus = () => {
+    if (bookmarkStore.isBookmarkSet) {
+      return <Text>Question was added to bookmarks successfully!</Text>;
+    }
+    return <Text>Question already exists</Text>;
+
+  };
+
   return (
     <View style={styles.container}>
       <ImageBackground
@@ -35,14 +44,11 @@ export const GameScreenComponent = observer(({
         imageStyle={styles.borderRadius}
         style={styles.header}
         resizeMode={'cover'}/>
-      {store.showHelpDialog && <HelpDialog/>}
+      <HelpDialog helpDialogAnimation={helpDialogAnimation} onCloseHelpDialog={onCloseHelpDialog}/>
       {bookmarkStore.isButtonPressed &&
         <View style={[styles.tooltip]}>
           <Text style={styles.tooltipText}>
-            {bookmarkStore.isBookmarkSet ?
-              'Question was added to bookmarks successfully!'
-              :
-              'Question already exists'}
+            {renderStatus()}
           </Text>
         </View>
       }

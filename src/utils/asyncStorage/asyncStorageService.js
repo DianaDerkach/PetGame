@@ -1,4 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import bookmarkStore from '../../store/bookmarkStore';
 
 class AsyncStorageService {
   constructor() {
@@ -11,7 +12,7 @@ class AsyncStorageService {
     } catch(e) {
       console.log('getBookmarks error', e);
     }
-  }
+  };
 
   clearStorage = async () => {
     try {
@@ -19,7 +20,7 @@ class AsyncStorageService {
     } catch(e) {
       console.log('getBookmarks error', e);
     }
-  }
+  };
 
   setBookmark = async (newBookmark) => {
     try {
@@ -29,18 +30,15 @@ class AsyncStorageService {
         help: newBookmark.help,
       };
       const oldBookmarks = await this.getBookmarks() || [];
-      const isDuplicateBookmark = oldBookmarks.find((question) => question.question === newBookmark.question);
-      if (!isDuplicateBookmark) {
-        await AsyncStorage.setItem('bookmarks', JSON.stringify([
-          ...oldBookmarks,
-          bookmark
-        ]));
-        return true;
-      } else return false;
+
+      await AsyncStorage.setItem('bookmarks', JSON.stringify([
+        ...oldBookmarks,
+        bookmark,
+      ]));
     } catch(e) {
       console.log('setBookmark error ', e);
     }
-  }
+  };
 
   deleteBookmark = async (question) => {
     try {
@@ -51,7 +49,6 @@ class AsyncStorageService {
     } catch(e) {
       console.log('deleteBookmark error', e);
     }
-  }
+  };
 }
-
 export default AsyncStorageService = new AsyncStorageService();
