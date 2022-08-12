@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import {Text, TouchableOpacity, StyleSheet} from 'react-native';
 import {observer} from 'mobx-react-lite';
 import scoreStore from '../../../store/scoreStore';
-import store from '../../../store/store';
+import answersStore from '../../../store/answersStore';
 
 const rightAnswerColor = '#cae1b0';
 const wrongAnswerColor = 'rgba(245,133,133,0.64)';
@@ -14,8 +14,8 @@ export const AnswerItem = observer(({
 }) => {
   const [answerBackground, setAnswerBackground] = useState('#fff');
   const setAnswerItemBackground = () => {
-    if (!store.isAnswerHasChosen) {
-      store.setIsAnswerHasChosen(true);
+    if (!answersStore.isAnswerHasChosen) {
+      answersStore.setIsAnswerHasChosen(true);
       if (answer === currentRightAnswer) {
         setAnswerBackground(rightAnswerColor);
         scoreStore.setScore(scoreStore.score + 1);

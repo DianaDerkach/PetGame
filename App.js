@@ -12,19 +12,50 @@ import {ErrorBoundaryUi} from './src/components/errorBoundary/errorBoundaryUi';
 const Stack = createNativeStackNavigator();
 
 const App = () => {
+  const headerOptions = () => {
+    return {
+      headerStyle: {
+        elevation: 0,
+      },
+    };
+  };
+
   return (
     <ErrorBoundary FallbackComponent={ErrorBoundaryUi}>
       <NavigationContainer>
         <Stack.Navigator>
-          <Stack.Screen name='QuizGame' component={MainContainer}/>
-          <Stack.Screen name='Game' component={GameScreenContainer} />
-          <Stack.Screen name='GameOver' component={GameOverContainer} />
-          <Stack.Screen name='Bookmarks' component={BookmarkScreenContainer} />
-          <Stack.Screen name='QuestionsSetScreen' component={QuestionsSetScreenContainer} />
+          <Stack.Screen
+            name='QuizGame'
+            component={MainContainer}
+            options={headerOptions}
+          />
+          <Stack.Screen
+            name='Game'
+            component={GameScreenContainer}
+            options={headerOptions}
+          />
+          <Stack.Screen
+            name='GameOver'
+            component={GameOverContainer}
+            options={{
+              headerBackVisible: false,
+              headerOptions,
+            }}
+          />
+          <Stack.Screen
+            name='Bookmarks'
+            component={BookmarkScreenContainer}
+            options={headerOptions}
+          />
+          <Stack.Screen
+            name='QuestionsSetScreen'
+            component={QuestionsSetScreenContainer}
+            options={headerOptions}
+          />
         </Stack.Navigator>
       </NavigationContainer>
     </ErrorBoundary>
-      );
+  );
 };
 
 export default App;

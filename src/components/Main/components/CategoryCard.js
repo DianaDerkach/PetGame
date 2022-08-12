@@ -6,7 +6,8 @@ import Animated, {
   useSharedValue,
   withSpring,
 } from 'react-native-reanimated';
-import store from '../../../store/store';
+import {BASE_URL} from '@env';
+import categoriesStore from '../../../store/categoriesStore';
 
 export const CategoryCard = ({category}) => {
   const translateY = useSharedValue(-400);
@@ -36,7 +37,7 @@ export const CategoryCard = ({category}) => {
   };
 
   const onCategory = ()  => {
-    store.setCurrentCategory(category);
+    categoriesStore.setCurrentCategory(category);
     navigateToSetScreen('Choose topic to start');
   };
 
@@ -45,7 +46,7 @@ export const CategoryCard = ({category}) => {
       <TouchableOpacity onPress={onCategory}>
         <ImageBackground
           style={styles.container}
-          source={{uri: store.BASE_URL + category.img.formats.thumbnail.url}}
+          source={{uri: BASE_URL + category.img.formats.thumbnail.url}}
           imageStyle={styles.borderRadius}
         >
           <Text style={styles.title}>{category.text}</Text>

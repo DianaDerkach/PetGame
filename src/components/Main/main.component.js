@@ -1,8 +1,9 @@
 import React from 'react';
-import {Image, Text, ScrollView, StyleSheet, ImageBackground, TouchableOpacity} from 'react-native';
+import {Image, Text, StyleSheet, ImageBackground, TouchableOpacity} from 'react-native';
+import {SafeAreaView} from 'react-navigation';
 import Animated from 'react-native-reanimated';
 import {observer} from 'mobx-react-lite';
-import store from '../../store/store';
+import categoriesStore from '../../store/categoriesStore';
 
 export const MainComponent = observer(({
   navigateToBookmarks,
@@ -10,7 +11,7 @@ export const MainComponent = observer(({
   headerAnimatedStyle,
 }) => {
   return (
-    <ScrollView style={styles.background}>
+    <SafeAreaView style={styles.background}>
       <Animated.View style={headerAnimatedStyle}>
         <ImageBackground
           source={require('../../assets/img/Background.png')}
@@ -22,19 +23,20 @@ export const MainComponent = observer(({
         </ImageBackground>
       </Animated.View>
       <Animated.View style={[styles.categories]}>
-        {store.categories.map(renderCategoryCard)}
+        {categoriesStore.categories.map(renderCategoryCard)}
       </Animated.View>
       <TouchableOpacity onPress={navigateToBookmarks} style={styles.bookmarkButton}>
         <Image source={require('../../assets/img/bookmarkIcon.png')}/>
         <Text style={styles.bookmarkButtonText}> Go to bookmarks </Text>
       </TouchableOpacity>
-    </ScrollView>
+    </SafeAreaView>
   );
 });
 
 const styles = StyleSheet.create({
   background: {
     backgroundColor: '#F5F5F5',
+    flex: 1,
   },
   text: {
     fontSize: 21,
@@ -51,7 +53,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    height: 184,
+    height: 250,
   },
   borderRadius: {
     borderBottomRightRadius: 40,
@@ -62,6 +64,8 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     alignItems: 'center',
     marginBottom: 20,
+    position: 'relative',
+    top: -40,
   },
   bookmarkButton: {
     display: 'flex',

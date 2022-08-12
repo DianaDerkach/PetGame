@@ -12,6 +12,8 @@ export const BookmarkScreenContainer = () => {
 
   const headerAnimatedStyle = useAnimatedStyle(() => {
     return {
+      position: 'relative',
+      top: -20,
       transform: [
         {
           translateY: translateY.value,
