@@ -11,15 +11,15 @@ import {ErrorBoundaryUi} from './src/components/errorBoundary/errorBoundaryUi';
 
 const Stack = createNativeStackNavigator();
 
-const App = () => {
-  const headerOptions = () => {
-    return {
-      headerStyle: {
-        elevation: 0,
-      },
-    };
+const headerOptions = () => {
+  return {
+    headerStyle: {
+      elevation: 0,
+    },
   };
+};
 
+const App = () => {
   return (
     <ErrorBoundary FallbackComponent={ErrorBoundaryUi}>
       <NavigationContainer>
