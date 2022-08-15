@@ -10,9 +10,16 @@ export const MainContainer = observer(({navigation}) => {
   const translateY = useSharedValue(-200);
 
   useEffect(() => {
-    AsyncStorageService.getBookmarks()
-      .then(bookmarkStore.setBookmarks)
-      .catch((e) => console.log('getBookmark error ', e));
+    (async () => {
+      try {
+        const bookmarks = await AsyncStorageService.getBookmarks();
+
+        bookmarkStore.setBookmarks(bookmarks || []);
+      } catch(e) {
+        console.log('getBookmarks from asyncStorage error: ', e);
+      }
+    })();
+
     translateY.value = withSpring(0, {duration: 400, damping: 10});
   }, []);
 
@@ -22,6 +29,8 @@ export const MainContainer = observer(({navigation}) => {
 
   const headerAnimatedStyle = useAnimatedStyle(() => {
     return {
+      position: 'relative',
+      top: -40,
       transform: [
         {
           translateY: translateY.value,

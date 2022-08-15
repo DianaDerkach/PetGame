@@ -53,7 +53,7 @@ const styles = StyleSheet.create({
   },
   deleteButton: {
     textAlign: 'center',
-    color: '#fff',
+    color: '#fcfcfc',
   },
   question: {
     fontWeight: 'bold',

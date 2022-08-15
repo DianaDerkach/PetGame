@@ -6,14 +6,18 @@ import {observer} from 'mobx-react-lite';
 import {AnswerItem} from './components/answerItem';
 import {GameScreenComponent} from './gameScreen.component';
 import AsyncStorageService from '../../utils/asyncStorage/asyncStorageService';
-import store from '../../store/store';
 import bookmarkStore from '../../store/bookmarkStore';
+import questionSetStore from '../../store/questionSetStore';
+import questionsStore from '../../store/questionsStore';
+import answersStore from '../../store/answersStore';
+import dialogsStore from '../../store/dialogsStore';
+import categoriesStore from '../../store/categoriesStore';
 
 export const GameScreenContainer = observer(() => {
   const navigation = useNavigation();
   const route = useRoute();
   const {questionNumber, headerBackground, score} = route.params;
-  const numberOfQuestions = store.chosenQuestionsSet.questions.length;
+  const numberOfQuestions = questionSetStore.chosenQuestionsSet.questions.length;
 
   const translateX = useSharedValue(400);
   const helpOpacity = useSharedValue(0);
@@ -21,18 +25,19 @@ export const GameScreenContainer = observer(() => {
   useEffect(() => {
     (async() => {
       try {
-        await store.setCurrentQuestion(store.chosenQuestionsSet.questions[questionNumber - 1]);
-        await store.setCurrentAnswers();
+        await questionsStore.setCurrentQuestion(questionSetStore.chosenQuestionsSet.questions[questionNumber - 1]);
+        await answersStore.setCurrentAnswers();
       } catch(e) {
         console.log('setCurrentQuestion or setCurrentAnswer error ', e);
       }
     })();
-    store.setIsAnswerHasChosen(false);
+    answersStore.setWasAnswerChosen(false);
     translateX.value = withSpring(0);
   }, []);
 
   const handleNextQuestion = (isNextButton) => {
-    if ((store.chosenMode === 'Hard') || isNextButton) {
+    const isHardMode = dialogsStore.chosenMode === 'Hard';
+    if (isHardMode || isNextButton) {
       if (questionNumber  === numberOfQuestions ) {
         navigateToGameOver();
       } else {
@@ -61,29 +66,31 @@ export const GameScreenContainer = observer(() => {
       navigation: navigation,
     });
   };
+  const setBookmarkToAsyncStorage = async (newBookmark) => {
+    try {
+      await AsyncStorageService.setBookmark(newBookmark);
+    } catch(e) {
+      console.log('bookmark add error', e);
+    }
+  };
 
   const setBookmarkHandler = () => {
     const isBookmarkDuplicate = bookmarkStore.bookmarks.find((bookmark) => {
-      return bookmark.question === store.currentQuestion.text;
+      return bookmark.question === questionsStore.currentQuestion.text;
     });
 
     if (!isBookmarkDuplicate) {
       const newBookmark = {
-        question: store.currentQuestion.text,
-        help: store.currentQuestion.help,
-        rightAnswer: store.currentQuestion.rightAnswer,
+        question: questionsStore.currentQuestion.text,
+        help: questionsStore.currentQuestion.help,
+        rightAnswer: questionsStore.currentQuestion.rightAnswer,
       };
 
       bookmarkStore.setIsBookmarkSet(true);
       bookmarkStore.setBookmarks([...bookmarkStore.bookmarks, newBookmark]);
 
-      (async () => {
-        try {
-          await AsyncStorageService.setBookmark(newBookmark);
-        } catch(e) {
-          console.log('bookmark add error', e);
-        }
-      })();
+      setBookmarkToAsyncStorage(newBookmark).catch((e) => console.log('setBookmarkToAsyncStorage error: ', e));
+
     } else {
       bookmarkStore.setIsBookmarkSet(false);
     }
@@ -96,7 +103,7 @@ export const GameScreenContainer = observer(() => {
   const nextButton = () => {
     return (
       <TouchableOpacity
-        style={[styles.nextButton, {backgroundColor: store.currentCategory.textColor}]}
+        style={[styles.nextButton, {backgroundColor: categoriesStore.currentCategory.textColor}]}
         onPress={onNextQuestionPress}
       >
         <Text style={styles.buttonText}>Next</Text>
@@ -106,6 +113,7 @@ export const GameScreenContainer = observer(() => {
 
   const answersAnimation = useAnimatedStyle(() => {
     return {
+      marginVertical: 20,
       flex: 1,
       transform: [
         {translateX: translateX.value},
@@ -124,8 +132,8 @@ export const GameScreenContainer = observer(() => {
     }
   };
   const onCloseHelpDialog = () => {
-    store.setShowHelpDialog(false);
-    helpOpacity.value = withTiming(0, {duration: 3000});
+    helpOpacity.value = withTiming(0, {duration: 500});
+    setTimeout(() => dialogsStore.setShowHelpDialog(false), 500);
   };
 
   const helpDialogAnimation = useAnimatedStyle(() => {
@@ -135,15 +143,15 @@ export const GameScreenContainer = observer(() => {
   });
 
   const onOpenHelpDialog = () => {
-    opacity.value = withTiming(1, {duration: 1000});
-    store.setShowHelpDialog(true);
+    dialogsStore.setShowHelpDialog(true);
+    helpOpacity.value = withTiming(1, {duration: 500});
   };
 
   const renderAnswerItem = (answer) => {
     return <AnswerItem
       answer={answer.item}
       navigateToGameOver={navigateToGameOver}
-      currentRightAnswer={store.currentQuestion.rightAnswer}
+      currentRightAnswer={questionsStore.currentQuestion.rightAnswer}
       numberOfQuestions={numberOfQuestions}
       questionNumber={questionNumber}
       score={score}

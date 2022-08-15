@@ -3,10 +3,14 @@ import {Text, View, StyleSheet, FlatList, ImageBackground} from 'react-native';
 import Animated from 'react-native-reanimated';
 import CircularProgress from 'react-native-circular-progress-indicator';
 import {observer} from 'mobx-react-lite';
+import {BASE_URL} from '@env';
 import {CustomButton} from './components/customButton';
-import store  from '../../store/store';
 import bookmarkStore from '../../store/bookmarkStore';
 import {HelpDialog} from './components/helpDialog';
+import categoriesStore from '../../store/categoriesStore';
+import dialogsStore from '../../store/dialogsStore';
+import questionsStore from '../../store/questionsStore';
+import answersStore from '../../store/answersStore';
 
 const questionIcon = require('../../assets/img/icons/questionIcon.png');
 const bookmarkIcon = require('../../assets/img/icons/bookmarkIcon.png');
@@ -29,46 +33,54 @@ export const GameScreenComponent = observer(({
   helpDialogAnimation,
   onCloseHelpDialog,
 }) => {
+  const isHardMode = dialogsStore.chosenMode === 'Hard';
+  const isLearningMode = dialogsStore.chosenMode === 'Learning';
   const renderStatus = () => {
-    if (bookmarkStore.isBookmarkSet) {
-      return <Text>Question was added to bookmarks successfully!</Text>;
-    }
-    return <Text>Question already exists</Text>;
+    const text = bookmarkStore.isBookmarkSet
+      ? <Text>Question was added to bookmarks successfully!</Text>
+      : <Text>Question already exists</Text>;
 
+    return text;
   };
 
   return (
     <View style={styles.container}>
       <ImageBackground
-        source={{uri: store.BASE_URL + store.currentCategory.img.formats.thumbnail.url}}
+        source={{uri: BASE_URL + categoriesStore.currentCategory.img.formats.thumbnail.url}}
         imageStyle={styles.borderRadius}
         style={styles.header}
         resizeMode={'cover'}/>
-      <HelpDialog helpDialogAnimation={helpDialogAnimation} onCloseHelpDialog={onCloseHelpDialog}/>
-      {bookmarkStore.isButtonPressed &&
-        <View style={[styles.tooltip]}>
-          <Text style={styles.tooltipText}>
-            {renderStatus()}
-          </Text>
-        </View>
+      {
+        dialogsStore.showHelpDialog && (
+          <HelpDialog helpDialogAnimation={helpDialogAnimation} onCloseHelpDialog={onCloseHelpDialog}/>
+        )
+      }
+      {
+        bookmarkStore.isButtonPressed && (
+          <View style={[styles.tooltip]}>
+            <Text style={styles.tooltipText}>
+              {renderStatus()}
+            </Text>
+          </View>
+        )
       }
       <View style={styles.alignment}>
         <Animated.View style={[styles.questionBoard]}>
           <View style={styles.customButtonsContainer}>
             <CustomButton
               img={questionIcon}
-              color={store.currentCategory.textColor}
+              color={categoriesStore.currentCategory.textColor}
               onTouch={onOpenHelpDialog}
               setButtonPressed={false}
             />
             <View style={styles.timer}>
-              {(store.chosenMode === 'Hard') ?
+              { isHardMode ?
                 <CircularProgress
-                  value={store.currentQuestion.timeForAnswer}
+                  value={questionsStore.currentQuestion.timeForAnswer}
                   radius={40}
-                  duration={store.currentQuestion.timeForAnswer * 1000}
-                  progressValueColor={'#9B6ACC'}
-                  maxValue={store.currentQuestion.timeForAnswer}
+                  duration={questionsStore.currentQuestion.timeForAnswer * 1000}
+                  progressValueColor={categoriesStore.categories.textColor}
+                  maxValue={questionsStore.currentQuestion.timeForAnswer}
                   titleStyle={{fontWeight: 'bold'}}
                   onAnimationComplete={onTimerAnimationComplete}
                   inActiveStrokeColor={timerColors.inActiveStrokeColor}
@@ -86,11 +98,11 @@ export const GameScreenComponent = observer(({
             />
           </View>
           <View style={styles.textContainer}>
-            <Text style={[styles.title, {color: store.currentCategory.textColor}]}>
+            <Text style={[styles.title, {color: categoriesStore.currentCategory.textColor}]}>
               Question {questionNumber}/{numberOfQuestions}
             </Text>
-            <Text style={[styles.questionText, {color: store.currentCategory.textColor}]}>
-              {store.currentQuestion.text}
+            <Text style={[styles.questionText, {color: categoriesStore.currentCategory.textColor}]}>
+              {questionsStore.currentQuestion.text}
             </Text>
           </View>
         </Animated.View>
@@ -98,11 +110,12 @@ export const GameScreenComponent = observer(({
           <Animated.View style={answersAnimation}>
             <FlatList
               keyExtractor={(answer, index) => index}
-              data={store.currentAnswers}
+              data={answersStore.currentAnswers}
               renderItem={renderAnswerItem}
+              showsVerticalScrollIndicator={false}
             />
           </Animated.View>
-          {(store.chosenMode === 'Learning') && nextButton()}
+          {isLearningMode && nextButton()}
         </View>
       </View>
     </View>

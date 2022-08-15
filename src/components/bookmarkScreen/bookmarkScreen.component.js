@@ -16,8 +16,8 @@ export const BookmarkScreenComponent = observer(({
         <Animated.View style={headerAnimatedStyle}>
           <ImageBackground
             source={require('../../assets/img/headerBackground.png')}
-            imageStyle={styles.borderRadius}
-            style={[styles.header]}
+            imageStyle={[styles.borderRadius]}
+            style={[styles.header, styles.borderRadius]}
             resizeMode={'cover'}>
             <Text style={styles.text}>Bookmarks</Text>
           </ImageBackground>
@@ -27,6 +27,8 @@ export const BookmarkScreenComponent = observer(({
           data={bookmarkStore.bookmarks}
           bounces={true}
           renderItem={renderBookmarkItem}
+          style={styles.bookmarks}
+          showsVerticalScrollIndicator={false}
         />
       </ImageBackground>
     </View>
@@ -39,6 +41,9 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     height: '100%',
   },
+  bookmarks: {
+    position: 'relative',
+  },
   background: {
     height: '100%',
     paddingHorizontal: 20,
@@ -46,7 +51,7 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 30,
     fontWeight: 'bold',
-    color: '#FFF',
+    color: '#ffffff',
     width: 200,
     textAlign: 'center',
 
@@ -58,6 +63,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     height: 184,
     width: '100%',
+    opacity: 1,
   },
   borderRadius: {
     borderBottomRightRadius: 40,

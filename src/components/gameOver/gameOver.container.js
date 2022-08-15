@@ -1,10 +1,11 @@
 import React from 'react';
 import {useRoute} from '@react-navigation/native';
 import {useAnimatedStyle, useSharedValue, withRepeat, withTiming} from 'react-native-reanimated';
+import {observer} from 'mobx-react-lite';
 import {GameOverComponent} from './gameOver.component';
 import scoreStore from '../../store/scoreStore';
 
-export const GameOverContainer = () => {
+export const GameOverContainer = observer(() => {
   const route = useRoute();
   const animation = useSharedValue(1);
   const {navigation} = route.params;
@@ -44,4 +45,4 @@ export const GameOverContainer = () => {
       navigateToGameScreen={navigateToGameScreen}
     />
   );
-};
+});
