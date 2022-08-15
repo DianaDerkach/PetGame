@@ -1,4 +1,4 @@
-import { makeAutoObservable } from "mobx";
+import {makeAutoObservable} from 'mobx';
 
 class ScoreStore {
   score = 0;
@@ -8,7 +8,8 @@ class ScoreStore {
 
   setScore = (newScore) => {
     this.score = newScore;
-  }
+  };
 }
 
-export const scoreStore = new ScoreStore();
+const scoreStore = new ScoreStore();
+export default scoreStore;

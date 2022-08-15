@@ -6,47 +6,49 @@ import Animated, {
   useSharedValue,
   withSpring,
 } from 'react-native-reanimated';
-import {store} from '../../../store/store';
+import {BASE_URL} from '@env';
+import categoriesStore from '../../../store/categoriesStore';
 
 export const CategoryCard = ({category}) => {
   const translateY = useSharedValue(-400);
   const navigation = useNavigation();
 
-    useEffect(() => {
-      translateY.value = withSpring(0, {duration: 500, damping: 10})
-    },[])
+  useEffect(() => {
+    translateY.value = withSpring(0, {duration: 500, damping: 10});
+  },[]);
 
   const categoryAnimatedStyle = useAnimatedStyle(() => {
     return {
       transform: [
         {
-          translateY: translateY.value
-        }
-      ]
-    }
-  })
+          translateY: translateY.value,
+        },
+      ],
+    };
+  });
 
   const navigateToSetScreen = (title) => {
     navigation.navigate('QuestionsSetScreen', {
       navigation: navigation,
       headerTitle: title,
       categoryTopics: category.topics,
-      img: getImg(),
       prevScreen: 'CategoryCard',
-    })
-  }
-
-  const getImg = () => store.BASE_URL + category.img.formats.thumbnail.url;
+    });
+  };
 
   const onCategory = ()  => {
-    store.setCurrentCategory(category);
+    categoriesStore.setCurrentCategory(category);
     navigateToSetScreen('Choose topic to start');
-  }
+  };
 
   return (
     <Animated.View style={categoryAnimatedStyle}>
       <TouchableOpacity onPress={onCategory}>
-        <ImageBackground style={styles.container} source={{ uri: getImg() }} imageStyle={styles.borderRadius}>
+        <ImageBackground
+          style={styles.container}
+          source={{uri: BASE_URL + category.img.formats.thumbnail.url}}
+          imageStyle={styles.borderRadius}
+        >
           <Text style={styles.title}>{category.text}</Text>
         </ImageBackground>
       </TouchableOpacity>
@@ -84,5 +86,5 @@ const styles = StyleSheet.create({
   },
   borderRadius: {
     borderRadius: 10,
-  }
+  },
 });

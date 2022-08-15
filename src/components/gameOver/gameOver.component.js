@@ -1,10 +1,11 @@
 import React from 'react';
 import {ImageBackground, Text, View, StyleSheet, TouchableOpacity, Dimensions} from 'react-native';
 import Animated from 'react-native-reanimated';
-import {store} from '../../store/store';
-import {scoreStore} from '../../store/scoreStore';
+import {observer} from 'mobx-react-lite';
+import categoriesStore from '../../store/categoriesStore';
+import scoreStore from '../../store/scoreStore';
 
-export const GameOverComponent = ({
+export const GameOverComponent = observer(({
   handleStartAgain,
   scoreCircleAnimation,
   navigateToGameScreen,
@@ -19,8 +20,12 @@ export const GameOverComponent = ({
         <View style={[styles.thirdCircle, styles.borderRadius]}>
           <View style={[styles.secondCircle, styles.borderRadius]}>
             <Animated.View style={[styles.scoreCircle, styles.borderRadius, scoreCircleAnimation]}>
-              <Text style={[styles.title, styles.text, {color: store.currentCategory.textColor}]}>Your score</Text>
-              <Text style={[styles.scoreText, styles.text, {color: store.currentCategory.textColor}]}>{scoreStore.score}</Text>
+              <Text style={[styles.title, styles.text, {color: categoriesStore.currentCategory.textColor}]}>
+                Your score
+              </Text>
+              <Text style={[styles.scoreText, styles.text, {color: categoriesStore.currentCategory.textColor}]}>
+                {scoreStore.score}
+              </Text>
             </Animated.View>
           </View>
         </View>
@@ -29,21 +34,21 @@ export const GameOverComponent = ({
         style={[styles.startButton, styles.buttons, styles.borderRadius]}
         onPress={handleStartAgain}
       >
-        <Text style={[styles.startButtonText, {color: store.currentCategory.textColor}]}>
+        <Text style={[styles.startButtonText, {color: categoriesStore.currentCategory.textColor}]}>
         Start again
         </Text>
       </TouchableOpacity>
       <TouchableOpacity
-        style={[styles.backButton, styles.buttons, styles.borderRadius, {backgroundColor: store.currentCategory.textColor}]}
+        style={[{backgroundColor: categoriesStore.currentCategory.textColor}, styles.buttons, styles.borderRadius]}
         onPress={navigateToGameScreen}
       >
-        <Text style={styles.backButtonText}>
+        <Text style={[styles.backButtonText]}>
           Back to main screen
         </Text>
       </TouchableOpacity>
     </ImageBackground>
   );
-};
+});
 
 const styles = StyleSheet.create({
   container: {
@@ -73,6 +78,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     elevation: 10,
     shadowColor: 'rgba(9,9,9,0.24)',
+    shadowOpacity: 0.3,
 
   },
   text: {
@@ -93,6 +99,7 @@ const styles = StyleSheet.create({
     height: '80%',
     elevation: 10,
     shadowColor: 'rgba(10,10,10,0.48)',
+    shadowOpacity: 0.3,
   },
   thirdCircle: {
     display: 'flex',
@@ -103,6 +110,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#C6A6E6',
     elevation: 4,
     shadowColor: '#B286DF',
+    shadowOpacity: 0.5,
   },
   buttons: {
     display: 'flex',
@@ -115,9 +123,6 @@ const styles = StyleSheet.create({
   },
   startButton: {
     backgroundColor: '#fff',
-  },
-  backButton: {
-    backgroundColor: '#cfbbee',
   },
   buttonsText: {
     fontFamily: 'Montserrat',
