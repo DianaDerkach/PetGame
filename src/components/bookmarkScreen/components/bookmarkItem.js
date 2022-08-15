@@ -1,29 +1,31 @@
-import React, {useContext} from 'react';
-import {Text, View, StyleSheet, TouchableOpacity} from 'react-native';
-import {BookmarksContext} from '../../../utils/bookmarks';
+import React from 'react';
+import {
+  Text, View, StyleSheet, TouchableOpacity,
+} from 'react-native';
+import {observer} from 'mobx-react-lite';
 import AsyncStorageService from '../../../utils/asyncStorage/asyncStorageService';
+import bookmarkStore from '../../../store/bookmarkStore';
 
-export const BookmarkItem = ({bookmark}) => {
-  const [bookmarks, setBookmarks] = useContext(BookmarksContext);
-
+export const BookmarkItem = observer(({bookmark}) => {
   const deleteBookmark = () => {
     AsyncStorageService.deleteBookmark(bookmark.item.question).then((status) => {
-      setBookmarks(bookmarks.filter((bookmarkItem) => bookmark.item.question !== bookmarkItem.question));
+      bookmarkStore.setBookmarks(bookmarkStore.bookmarks.filter(
+        (bookmarkItem) => bookmark.item.question !== bookmarkItem.question),
+      );
     }).catch((err) => console.log('deleteBookmark error', err));
-
   };
 
   return (
     <View style={styles.container}>
       <Text style={[styles.text, styles.question]}>{bookmark.item.question}</Text>
       <Text style={styles.text}>{bookmark.item.help}</Text>
-      <Text style={styles.text}>{'Right answer: ' + bookmark.item.rightAnswer}</Text>
+      <Text style={styles.text}>{`Right answer: ${bookmark.item.rightAnswer}`}</Text>
       <TouchableOpacity style={styles.button} onPress={deleteBookmark}>
         <Text style={styles.deleteButton}>Delete</Text>
       </TouchableOpacity>
     </View>
   );
-};
+});
 
 const styles = StyleSheet.create({
   container: {
@@ -51,7 +53,7 @@ const styles = StyleSheet.create({
   },
   deleteButton: {
     textAlign: 'center',
-    color: '#fff',
+    color: '#fcfcfc',
   },
   question: {
     fontWeight: 'bold',
