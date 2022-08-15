@@ -1,10 +1,11 @@
 import React from 'react';
 import {ImageBackground, Text, View, StyleSheet, TouchableOpacity, Dimensions} from 'react-native';
 import Animated from 'react-native-reanimated';
-import store from '../../store/store';
+import {observer} from 'mobx-react-lite';
+import categoriesStore from '../../store/categoriesStore';
 import scoreStore from '../../store/scoreStore';
 
-export const GameOverComponent = ({
+export const GameOverComponent = observer(({
   handleStartAgain,
   scoreCircleAnimation,
   navigateToGameScreen,
@@ -19,10 +20,10 @@ export const GameOverComponent = ({
         <View style={[styles.thirdCircle, styles.borderRadius]}>
           <View style={[styles.secondCircle, styles.borderRadius]}>
             <Animated.View style={[styles.scoreCircle, styles.borderRadius, scoreCircleAnimation]}>
-              <Text style={[styles.title, styles.text, {color: store.currentCategory.textColor}]}>
+              <Text style={[styles.title, styles.text, {color: categoriesStore.currentCategory.textColor}]}>
                 Your score
               </Text>
-              <Text style={[styles.scoreText, styles.text, {color: store.currentCategory.textColor}]}>
+              <Text style={[styles.scoreText, styles.text, {color: categoriesStore.currentCategory.textColor}]}>
                 {scoreStore.score}
               </Text>
             </Animated.View>
@@ -33,21 +34,21 @@ export const GameOverComponent = ({
         style={[styles.startButton, styles.buttons, styles.borderRadius]}
         onPress={handleStartAgain}
       >
-        <Text style={[styles.startButtonText, {color: store.currentCategory.textColor}]}>
+        <Text style={[styles.startButtonText, {color: categoriesStore.currentCategory.textColor}]}>
         Start again
         </Text>
       </TouchableOpacity>
       <TouchableOpacity
-        style={[styles.backButton, styles.buttons, styles.borderRadius]}
+        style={[{backgroundColor: categoriesStore.currentCategory.textColor}, styles.buttons, styles.borderRadius]}
         onPress={navigateToGameScreen}
       >
-        <Text style={styles.backButtonText}>
+        <Text style={[styles.backButtonText]}>
           Back to main screen
         </Text>
       </TouchableOpacity>
     </ImageBackground>
   );
-};
+});
 
 const styles = StyleSheet.create({
   container: {
@@ -122,9 +123,6 @@ const styles = StyleSheet.create({
   },
   startButton: {
     backgroundColor: '#fff',
-  },
-  backButton: {
-    backgroundColor: store.currentCategory.textColor,
   },
   buttonsText: {
     fontFamily: 'Montserrat',

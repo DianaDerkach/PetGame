@@ -3,7 +3,7 @@ import {StyleSheet, TouchableOpacity} from 'react-native';
 import Animated, {useAnimatedStyle, useSharedValue, withSpring, withTiming} from 'react-native-reanimated';
 import {observer} from 'mobx-react-lite';
 import bookmarkStore from '../../../store/bookmarkStore';
-import store from '../../../store/store';
+import categoriesStore from '../../../store/categoriesStore';
 
 const tick = require('../../../assets/img/icons/tick.png');
 
@@ -50,7 +50,7 @@ export const CustomButton = observer(({
 
   return (
     <TouchableOpacity
-      style={[styles.background, {backgroundColor: store.currentCategory.textColor}]}
+      style={[styles.background, {backgroundColor: categoriesStore.currentCategory.textColor}]}
       onPress={buttonType === 'bookmark' ? onBookmarkButton : onTouch}>
       <Animated.Image source={img} style={buttonType === 'bookmark' && decreasingAnimation}/>
       {buttonType === 'bookmark' &&

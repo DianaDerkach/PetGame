@@ -1,42 +1,39 @@
 import React from 'react';
 import {View, StyleSheet, Text, TouchableOpacity, Dimensions} from 'react-native';
-import store from '../../../store/store';
+import Animated from 'react-native-reanimated';
+import categoriesStore from '../../../store/categoriesStore';
+import questionsStore from '../../../store/questionsStore';
 
-export const HelpDialog = () => {
-
-  const onCloseHelpDialog = () => {
-    store.setShowHelpDialog(false);
-  };
-
+export const HelpDialog = ({onCloseHelpDialog, helpDialogAnimation}) => {
   return (
-    <View style={styles.darkBackground}>
+    <Animated.View style={[styles.darkBackground, helpDialogAnimation]}>
       <View style={styles.container}>
-        <Text style={[styles.title, {color: store.currentCategory.textColor}]}>
+        <Text style={[styles.title, {color: categoriesStore.currentCategory.textColor}]}>
           Help
         </Text>
-        <Text style={[styles.theory, {color: store.currentCategory.textColor}]}>
-          {store.currentQuestion.help}
+        <Text style={[styles.theory, {color: categoriesStore.currentCategory.textColor}]}>
+          {questionsStore.currentQuestion.help}
         </Text>
         <TouchableOpacity
-          style={[styles.button, {backgroundColor: store.currentCategory.textColor}]}
+          style={[styles.button, {backgroundColor: categoriesStore.currentCategory.textColor}]}
           onPress={onCloseHelpDialog}>
           <Text style={styles.buttonText}>
             Continue
           </Text>
         </TouchableOpacity>
       </View>
-    </View>
+    </Animated.View>
   );
 };
 
 const styles = StyleSheet.create({
   darkBackground: {
+    display: 'flex',
     width: Dimensions.get('window').width,
     height: '100%',
     position: 'absolute',
     zIndex: 2,
     backgroundColor: 'rgba(0,0,0,0.32)',
-    display: 'flex',
     alignItems: 'center',
   },
   container: {

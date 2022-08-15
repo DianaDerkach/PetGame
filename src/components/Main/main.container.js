@@ -3,12 +3,24 @@ import {useAnimatedStyle, useSharedValue, withSpring} from 'react-native-reanima
 import {observer} from 'mobx-react-lite';
 import {MainComponent} from './main.component';
 import {CategoryCard} from './components/CategoryCard';
+import AsyncStorageService from '../../utils/asyncStorage/asyncStorageService';
+import bookmarkStore from '../../store/bookmarkStore';
 
 export const MainContainer = observer(({navigation}) => {
   const translateY = useSharedValue(-200);
 
   useEffect(() => {
-    translateY.value = withSpring(0, {duration: 400, damping: 10})
+    (async () => {
+      try {
+        const bookmarks = await AsyncStorageService.getBookmarks();
+
+        bookmarkStore.setBookmarks(bookmarks || []);
+      } catch(e) {
+        console.log('getBookmarks from asyncStorage error: ', e);
+      }
+    })();
+
+    translateY.value = withSpring(0, {duration: 400, damping: 10});
   }, []);
 
   const navigateToBookmarks = () => {
@@ -17,6 +29,8 @@ export const MainContainer = observer(({navigation}) => {
 
   const headerAnimatedStyle = useAnimatedStyle(() => {
     return {
+      position: 'relative',
+      top: -40,
       transform: [
         {
           translateY: translateY.value,
