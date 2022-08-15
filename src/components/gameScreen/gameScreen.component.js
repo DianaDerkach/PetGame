@@ -33,12 +33,15 @@ export const GameScreenComponent = observer(({
   helpDialogAnimation,
   onCloseHelpDialog,
 }) => {
-  const renderStatus = () =>
-    (bookmarkStore.isBookmarkSet ?
-      <Text>Question was added to bookmarks successfully!</Text>
-      :
-      <Text>Question already exists</Text>
-    );
+  const isHardMode = dialogsStore.chosenMode === 'Hard';
+  const isLearningMode = dialogsStore.chosenMode === 'Learning';
+  const renderStatus = () => {
+    const text = bookmarkStore.isBookmarkSet
+      ? <Text>Question was added to bookmarks successfully!</Text>
+      : <Text>Question already exists</Text>;
+
+    return text;
+  };
 
   return (
     <View style={styles.container}>
@@ -47,14 +50,19 @@ export const GameScreenComponent = observer(({
         imageStyle={styles.borderRadius}
         style={styles.header}
         resizeMode={'cover'}/>
-      {dialogsStore.showHelpDialog &&
-        <HelpDialog helpDialogAnimation={helpDialogAnimation} onCloseHelpDialog={onCloseHelpDialog}/>}
-      {bookmarkStore.isButtonPressed &&
-        <View style={[styles.tooltip]}>
-          <Text style={styles.tooltipText}>
-            {renderStatus()}
-          </Text>
-        </View>
+      {
+        dialogsStore.showHelpDialog && (
+          <HelpDialog helpDialogAnimation={helpDialogAnimation} onCloseHelpDialog={onCloseHelpDialog}/>
+        )
+      }
+      {
+        bookmarkStore.isButtonPressed && (
+          <View style={[styles.tooltip]}>
+            <Text style={styles.tooltipText}>
+              {renderStatus()}
+            </Text>
+          </View>
+        )
       }
       <View style={styles.alignment}>
         <Animated.View style={[styles.questionBoard]}>
@@ -66,7 +74,7 @@ export const GameScreenComponent = observer(({
               setButtonPressed={false}
             />
             <View style={styles.timer}>
-              {(dialogsStore.chosenMode === 'Hard') ?
+              { isHardMode ?
                 <CircularProgress
                   value={questionsStore.currentQuestion.timeForAnswer}
                   radius={40}
@@ -107,7 +115,7 @@ export const GameScreenComponent = observer(({
               showsVerticalScrollIndicator={false}
             />
           </Animated.View>
-          {(dialogsStore.chosenMode === 'Learning') && nextButton()}
+          {isLearningMode && nextButton()}
         </View>
       </View>
     </View>

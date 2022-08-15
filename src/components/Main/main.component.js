@@ -1,5 +1,5 @@
 import React from 'react';
-import {Image, Text, StyleSheet, ImageBackground, TouchableOpacity} from 'react-native';
+import {Image, Text, StyleSheet, ImageBackground, TouchableOpacity, View} from 'react-native';
 import {SafeAreaView} from 'react-navigation';
 import Animated from 'react-native-reanimated';
 import {observer} from 'mobx-react-lite';
@@ -22,9 +22,9 @@ export const MainComponent = observer(({
           <Image source={require('../../assets/img/idea.png')} style={styles.image}/>
         </ImageBackground>
       </Animated.View>
-      <Animated.View style={[styles.categories]}>
+      <View style={styles.categories}>
         {categoriesStore.categories.map(renderCategoryCard)}
-      </Animated.View>
+      </View>
       <TouchableOpacity onPress={navigateToBookmarks} style={styles.bookmarkButton}>
         <Image source={require('../../assets/img/bookmarkIcon.png')}/>
         <Text style={styles.bookmarkButtonText}> Go to bookmarks </Text>

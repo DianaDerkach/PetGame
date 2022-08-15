@@ -14,10 +14,7 @@ export const MainContainer = observer(({navigation}) => {
       try {
         const bookmarks = await AsyncStorageService.getBookmarks();
 
-        bookmarks ?
-          bookmarkStore.setBookmarks(bookmarks)
-          :
-          bookmarkStore.setBookmarks([]);
+        bookmarkStore.setBookmarks(bookmarks || []);
       } catch(e) {
         console.log('getBookmarks from asyncStorage error: ', e);
       }

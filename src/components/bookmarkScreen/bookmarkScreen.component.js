@@ -27,7 +27,7 @@ export const BookmarkScreenComponent = observer(({
           data={bookmarkStore.bookmarks}
           bounces={true}
           renderItem={renderBookmarkItem}
-          style={styles.bookmarkArr}
+          style={styles.bookmarks}
           showsVerticalScrollIndicator={false}
         />
       </ImageBackground>
@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     height: '100%',
   },
-  bookmarkArr: {
+  bookmarks: {
     position: 'relative',
   },
   background: {

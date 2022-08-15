@@ -1,10 +1,11 @@
 import React from 'react';
 import {ImageBackground, Text, View, StyleSheet, TouchableOpacity, Dimensions} from 'react-native';
 import Animated from 'react-native-reanimated';
+import {observer} from 'mobx-react-lite';
 import categoriesStore from '../../store/categoriesStore';
 import scoreStore from '../../store/scoreStore';
 
-export const GameOverComponent = ({
+export const GameOverComponent = observer(({
   handleStartAgain,
   scoreCircleAnimation,
   navigateToGameScreen,
@@ -38,16 +39,16 @@ export const GameOverComponent = ({
         </Text>
       </TouchableOpacity>
       <TouchableOpacity
-        style={[styles.backButton, styles.buttons, styles.borderRadius]}
+        style={[{backgroundColor: categoriesStore.currentCategory.textColor}, styles.buttons, styles.borderRadius]}
         onPress={navigateToGameScreen}
       >
-        <Text style={styles.backButtonText}>
+        <Text style={[styles.backButtonText]}>
           Back to main screen
         </Text>
       </TouchableOpacity>
     </ImageBackground>
   );
-};
+});
 
 const styles = StyleSheet.create({
   container: {
@@ -122,9 +123,6 @@ const styles = StyleSheet.create({
   },
   startButton: {
     backgroundColor: '#fff',
-  },
-  backButton: {
-    backgroundColor: categoriesStore.currentCategory.textColor,
   },
   buttonsText: {
     fontFamily: 'Montserrat',

@@ -3,14 +3,14 @@ import questionsStore from './questionsStore';
 
 class AnswersStore {
   currentAnswers = [];
-  isAnswerHasChosen = false;
+  wasAnswerChosen = false;
 
   constructor() {
     makeAutoObservable(this);
   }
 
-  setIsAnswerHasChosen = (isAnswerHasChosen) => {
-    this.isAnswerHasChosen = isAnswerHasChosen;
+  setWasAnswerChosen = (wasAnswerChosen) => {
+    this.wasAnswerChosen = wasAnswerChosen;
   };
 
   setCurrentAnswers = () => {

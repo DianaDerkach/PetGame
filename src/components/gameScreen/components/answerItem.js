@@ -14,8 +14,8 @@ export const AnswerItem = observer(({
 }) => {
   const [answerBackground, setAnswerBackground] = useState('#fff');
   const setAnswerItemBackground = () => {
-    if (!answersStore.isAnswerHasChosen) {
-      answersStore.setIsAnswerHasChosen(true);
+    if (!answersStore.wasAnswerChosen) {
+      answersStore.setWasAnswerChosen(true);
       if (answer === currentRightAnswer) {
         setAnswerBackground(rightAnswerColor);
         scoreStore.setScore(scoreStore.score + 1);

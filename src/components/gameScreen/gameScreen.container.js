@@ -31,12 +31,13 @@ export const GameScreenContainer = observer(() => {
         console.log('setCurrentQuestion or setCurrentAnswer error ', e);
       }
     })();
-    answersStore.setIsAnswerHasChosen(false);
+    answersStore.setWasAnswerChosen(false);
     translateX.value = withSpring(0);
   }, []);
 
   const handleNextQuestion = (isNextButton) => {
-    if ((dialogsStore.chosenMode === 'Hard') || isNextButton) {
+    const isHardMode = dialogsStore.chosenMode === 'Hard';
+    if (isHardMode || isNextButton) {
       if (questionNumber  === numberOfQuestions ) {
         navigateToGameOver();
       } else {
@@ -133,7 +134,6 @@ export const GameScreenContainer = observer(() => {
   const onCloseHelpDialog = () => {
     helpOpacity.value = withTiming(0, {duration: 500});
     setTimeout(() => dialogsStore.setShowHelpDialog(false), 500);
-
   };
 
   const helpDialogAnimation = useAnimatedStyle(() => {

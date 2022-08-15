@@ -55,7 +55,6 @@ export const QuestionsSetScreenContainer = observer(({navigation}) => {
   };
 
   const chooseModeDialogAnimation = useAnimatedStyle(() => {
-    console.log('in chooseModeDialogOpacity');
     return {
       opacity: chooseModeDialogOpacity.value,
     };
