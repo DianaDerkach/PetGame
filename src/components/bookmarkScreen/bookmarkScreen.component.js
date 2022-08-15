@@ -1,11 +1,12 @@
 import React from 'react';
 import {FlatList, ImageBackground, StyleSheet, Text, View} from 'react-native';
 import Animated from 'react-native-reanimated';
+import {observer} from 'mobx-react-lite';
+import bookmarkStore from '../../store/bookmarkStore';
 
-export const BookmarkScreenComponent = ({
+export const BookmarkScreenComponent = observer(({
   headerAnimatedStyle,
   renderBookmarkItem,
-  bookmarks,
 }) => {
   return (
     <View style={styles.container}>
@@ -15,28 +16,33 @@ export const BookmarkScreenComponent = ({
         <Animated.View style={headerAnimatedStyle}>
           <ImageBackground
             source={require('../../assets/img/headerBackground.png')}
-            imageStyle={styles.borderRadius}
-            style={[styles.header]}
+            imageStyle={[styles.borderRadius]}
+            style={[styles.header, styles.borderRadius]}
             resizeMode={'cover'}>
             <Text style={styles.text}>Bookmarks</Text>
           </ImageBackground>
         </Animated.View>
         <FlatList
           keyExtractor={bookmark => bookmark.question}
-          data={bookmarks}
+          data={bookmarkStore.bookmarks}
           bounces={true}
           renderItem={renderBookmarkItem}
+          style={styles.bookmarks}
+          showsVerticalScrollIndicator={false}
         />
       </ImageBackground>
     </View>
   );
-};
+});
 
 const styles = StyleSheet.create({
   container: {
     display: 'flex',
     flexDirection: 'column',
     height: '100%',
+  },
+  bookmarks: {
+    position: 'relative',
   },
   background: {
     height: '100%',
@@ -45,7 +51,7 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 30,
     fontWeight: 'bold',
-    color: '#FFF',
+    color: '#ffffff',
     width: 200,
     textAlign: 'center',
 
@@ -57,6 +63,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     height: 184,
     width: '100%',
+    opacity: 1,
   },
   borderRadius: {
     borderBottomRightRadius: 40,

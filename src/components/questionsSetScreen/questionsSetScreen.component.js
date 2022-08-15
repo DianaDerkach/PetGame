@@ -1,24 +1,31 @@
 import React from 'react';
 import {ImageBackground, Text, StyleSheet, FlatList, Dimensions} from 'react-native';
+import {observer} from 'mobx-react-lite';
+import {BASE_URL} from '@env';
+import categoriesStore from '../../store/categoriesStore';
+import dialogsStore from '../../store/dialogsStore';
+import {ChooseMode} from './components/chooseMode';
 
-export const QuestionsSetScreenComponent = ({
+export const QuestionsSetScreenComponent = observer(({
   headerTitle,
   categoryTopics,
-  img,
   renderItem,
-  isChooseModeDialog,
-  renderChooseMode,
+  chooseModeDialogAnimation,
+  onDarkBackgroundPress,
 }) => {
-
   return (
     <ImageBackground
       source={require('../../assets/img/white_background.png')}
       resizeMode={'cover'}
       style={styles.container}
     >
-      { isChooseModeDialog ? renderChooseMode() : null }
+      {dialogsStore.isChooseModeDialog &&
+        <ChooseMode
+          chooseModeDialogAnimation={chooseModeDialogAnimation}
+          onDarkBackgroundPress={onDarkBackgroundPress}
+        />}
       <ImageBackground
-        source={{uri: img}}
+        source={{uri: BASE_URL + categoriesStore.currentCategory.img.formats.thumbnail.url}}
         style={styles.header}
         imageStyle={styles.borderRadius}
       >
@@ -32,7 +39,7 @@ export const QuestionsSetScreenComponent = ({
       />
     </ImageBackground>
   );
-};
+});
 
 const styles = StyleSheet.create({
   container: {

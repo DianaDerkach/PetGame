@@ -1,51 +1,54 @@
-import React, { useEffect } from "react";
-import { ImageBackground, Text, StyleSheet, TouchableOpacity } from "react-native";
-import { useNavigation } from "@react-navigation/native";
+import React, {useEffect} from 'react';
+import {ImageBackground, Text, StyleSheet, TouchableOpacity} from 'react-native';
+import {useNavigation} from '@react-navigation/native';
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
   withSpring,
-} from "react-native-reanimated";
-import { useApi } from "../../../utils/api";
-
+} from 'react-native-reanimated';
+import {BASE_URL} from '@env';
+import categoriesStore from '../../../store/categoriesStore';
 
 export const CategoryCard = ({category}) => {
   const translateY = useSharedValue(-400);
   const navigation = useNavigation();
-  const api = useApi();
 
-    useEffect(() => {
-      translateY.value = withSpring(0, {duration: 500, damping: 10})
-    },[])
+  useEffect(() => {
+    translateY.value = withSpring(0, {duration: 500, damping: 10});
+  },[]);
 
   const categoryAnimatedStyle = useAnimatedStyle(() => {
     return {
       transform: [
         {
-          translateY: translateY.value
-        }
-      ]
-    }
-  })
+          translateY: translateY.value,
+        },
+      ],
+    };
+  });
 
   const navigateToSetScreen = (title) => {
     navigation.navigate('QuestionsSetScreen', {
       navigation: navigation,
       headerTitle: title,
       categoryTopics: category.topics,
-      mainColor: category.color,
-      textColor: category.textColor,
-      img: getImg(),
-      category: category,
       prevScreen: 'CategoryCard',
-    })
-  }
-  const getImg = () => api.host + category.img.formats.thumbnail.url;
+    });
+  };
+
+  const onCategory = ()  => {
+    categoriesStore.setCurrentCategory(category);
+    navigateToSetScreen('Choose topic to start');
+  };
 
   return (
     <Animated.View style={categoryAnimatedStyle}>
-      <TouchableOpacity onPress={() => navigateToSetScreen('Choose topic to start')}>
-        <ImageBackground style={styles.container} source={{ uri: getImg() }} imageStyle={styles.borderRadius}>
+      <TouchableOpacity onPress={onCategory}>
+        <ImageBackground
+          style={styles.container}
+          source={{uri: BASE_URL + category.img.formats.thumbnail.url}}
+          imageStyle={styles.borderRadius}
+        >
           <Text style={styles.title}>{category.text}</Text>
         </ImageBackground>
       </TouchableOpacity>
@@ -83,5 +86,5 @@ const styles = StyleSheet.create({
   },
   borderRadius: {
     borderRadius: 10,
-  }
+  },
 });

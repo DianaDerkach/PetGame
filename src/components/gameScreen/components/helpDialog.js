@@ -1,41 +1,39 @@
 import React from 'react';
 import {View, StyleSheet, Text, TouchableOpacity, Dimensions} from 'react-native';
+import Animated from 'react-native-reanimated';
+import categoriesStore from '../../../store/categoriesStore';
+import questionsStore from '../../../store/questionsStore';
 
-export const HelpDialog = ({
-  theory,
-  mainColor,
-  onCloseHelpDialog,
-}) => {
-
+export const HelpDialog = ({onCloseHelpDialog, helpDialogAnimation}) => {
   return (
-    <View style={styles.darkBackground}>
+    <Animated.View style={[styles.darkBackground, helpDialogAnimation]}>
       <View style={styles.container}>
-        <Text style={[styles.title, {color: mainColor}]}>
+        <Text style={[styles.title, {color: categoriesStore.currentCategory.textColor}]}>
           Help
         </Text>
-        <Text style={[styles.theory, {color: mainColor}]}>
-          {theory}
+        <Text style={[styles.theory, {color: categoriesStore.currentCategory.textColor}]}>
+          {questionsStore.currentQuestion.help}
         </Text>
         <TouchableOpacity
-          style={[styles.button, {backgroundColor: mainColor}]}
+          style={[styles.button, {backgroundColor: categoriesStore.currentCategory.textColor}]}
           onPress={onCloseHelpDialog}>
           <Text style={styles.buttonText}>
             Continue
           </Text>
         </TouchableOpacity>
       </View>
-    </View>
+    </Animated.View>
   );
 };
 
 const styles = StyleSheet.create({
   darkBackground: {
+    display: 'flex',
     width: Dimensions.get('window').width,
     height: '100%',
     position: 'absolute',
     zIndex: 2,
     backgroundColor: 'rgba(0,0,0,0.32)',
-    display: 'flex',
     alignItems: 'center',
   },
   container: {
@@ -69,8 +67,10 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
     borderRadius: 50,
     position: 'relative',
-    shadowColor: 'rgba(9,9,9,0.49)',
+    shadowColor: 'rgba(33,33,33,0.49)',
+    shadowOpacity: 0.3,
     shadowOffsetY: 20,
+    shadowOffset: {height: 3, width: 0},
     elevation: 8,
     marginBottom: 20,
   },

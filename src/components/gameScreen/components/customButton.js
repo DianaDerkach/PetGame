@@ -1,14 +1,16 @@
-import React from "react";
+import React from 'react';
 import {StyleSheet, TouchableOpacity} from 'react-native';
-import Animated, { useAnimatedStyle, useSharedValue, withSpring, withTiming } from "react-native-reanimated";
-import tick from '../../../assets/img/icons/tick.png';
-export const CustomButton = ({
-  color,
+import Animated, {useAnimatedStyle, useSharedValue, withSpring, withTiming} from 'react-native-reanimated';
+import {observer} from 'mobx-react-lite';
+import bookmarkStore from '../../../store/bookmarkStore';
+import categoriesStore from '../../../store/categoriesStore';
+
+const tick = require('../../../assets/img/icons/tick.png');
+
+export const CustomButton = observer(({
   img,
   onTouch,
   buttonType,
-  isBookmarkSet,
-  setButtonPressed
 }) => {
   const bookmarkScale = useSharedValue(1);
   const bookmarkOpacity = useSharedValue(1);
@@ -20,9 +22,9 @@ export const CustomButton = ({
       opacity: bookmarkOpacity.value,
       transform: [{
         scale: bookmarkScale.value,
-      }]
+      }],
 
-    }
+    };
   });
 
   const increasingAnimation = useAnimatedStyle(() => {
@@ -30,23 +32,25 @@ export const CustomButton = ({
       opacity: tickOpacity.value,
       transform: [{
         scale: tickScale.value,
-      }]
-    }
+      }],
+    };
   });
 
   const onBookmarkButton = () => {
-    setButtonPressed(true);
+    bookmarkStore.setIsButtonPressed(true);
+    setTimeout(() => bookmarkStore.setIsButtonPressed(false), 1500);
     onTouch();
-    bookmarkScale.value = withTiming(0, { duration: 900 });
-    bookmarkOpacity.value = withTiming(0, { duration: 600 });
-    tickScale.value = withSpring(1, { duration: 5000, damping: 6 });
-    tickOpacity.value = withTiming(1, { duration: 500 });
-
+    if (bookmarkStore.isBookmarkSet) {
+      bookmarkScale.value = withTiming(0, {duration: 900});
+      bookmarkOpacity.value = withTiming(0, {duration: 600});
+      tickScale.value = withSpring(1, {duration: 5000, damping: 6});
+      tickOpacity.value = withTiming(1, {duration: 500});
+    }
   };
 
   return (
     <TouchableOpacity
-      style={[styles.background, {backgroundColor: color}]}
+      style={[styles.background, {backgroundColor: categoriesStore.currentCategory.textColor}]}
       onPress={buttonType === 'bookmark' ? onBookmarkButton : onTouch}>
       <Animated.Image source={img} style={buttonType === 'bookmark' && decreasingAnimation}/>
       {buttonType === 'bookmark' &&
@@ -56,7 +60,7 @@ export const CustomButton = ({
         />}
     </TouchableOpacity>
   );
-};
+});
 
 const styles = StyleSheet.create({
   background: {
@@ -71,12 +75,14 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     width: 36,
     height: 36,
-    shadowColor: '#0a0a0a',
+    shadowColor: '#3b3b3b',
+    shadowOpacity: 0.3,
     shadowOffsetY: 20,
+    shadowOffset: {height: 3, width: 0},
     elevation: 8,
     marginHorizontal: 15,
   },
   bookmarkAdded: {
-    position: 'absolute'
+    position: 'absolute',
   },
 });
