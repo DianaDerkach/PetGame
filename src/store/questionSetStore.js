@@ -1,5 +1,5 @@
 import {makeAutoObservable} from 'mobx';
-import {BASE_URL} from '@env';
+//import {BASE_URL} from '@env';
 
 class QuestionSetStore {
   questionSets;
@@ -16,7 +16,8 @@ class QuestionSetStore {
 
   fetchQuestionSets = async () => {
     try {
-      const response = await fetch(`${BASE_URL}/api/questions-sets?populate=*`);
+      // const response = await fetch(`${BASE_URL}/api/questions-sets?populate=*`);
+      const response = await fetch('https://quiz-game-progger.herokuapp.com/api/questions-sets?populate=*');
       const {data: questionSets} = await response.json();
 
       this.questionSets = questionSets;
