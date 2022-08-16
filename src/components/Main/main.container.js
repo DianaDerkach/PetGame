@@ -5,12 +5,11 @@ import {MainComponent} from './main.component';
 import {CategoryCard} from './components/CategoryCard';
 import AsyncStorageService from '../../utils/asyncStorage/asyncStorageService';
 import bookmarkStore from '../../store/bookmarkStore';
-//import {BASE_URL} from '@env';
+
 export const MainContainer = observer(({navigation}) => {
   const translateY = useSharedValue(-200);
 
   useEffect(() => {
-    //console.log(BASE_URL)
     (async () => {
       try {
         const bookmarks = await AsyncStorageService.getBookmarks();

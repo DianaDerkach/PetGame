@@ -1,7 +1,6 @@
 import React from 'react';
 import {ImageBackground, Text, StyleSheet, FlatList, Dimensions} from 'react-native';
 import {observer} from 'mobx-react-lite';
-//import {BASE_URL} from '@env';
 import categoriesStore from '../../store/categoriesStore';
 import dialogsStore from '../../store/dialogsStore';
 import {ChooseMode} from './components/chooseMode';
