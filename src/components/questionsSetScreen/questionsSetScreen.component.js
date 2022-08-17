@@ -1,6 +1,7 @@
 import React from 'react';
 import {ImageBackground, Text, StyleSheet, FlatList, Dimensions} from 'react-native';
 import {observer} from 'mobx-react-lite';
+import {BASE_URL} from '@env';
 import categoriesStore from '../../store/categoriesStore';
 import dialogsStore from '../../store/dialogsStore';
 import {ChooseMode} from './components/chooseMode';
@@ -24,7 +25,7 @@ export const QuestionsSetScreenComponent = observer(({
           onDarkBackgroundPress={onDarkBackgroundPress}
         />}
       <ImageBackground
-        source={{uri: categoriesStore.currentCategory.image}}
+        source={{uri: BASE_URL + categoriesStore.currentCategory.img.formats.thumbnail.url}}
         style={styles.header}
         imageStyle={styles.borderRadius}
       >
