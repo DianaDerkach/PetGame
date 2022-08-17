@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, StyleSheet, Text, TouchableOpacity, Dimensions} from 'react-native';
+import {View, StyleSheet, Text, TouchableOpacity, Dimensions, ScrollView} from 'react-native';
 import Animated from 'react-native-reanimated';
 import categoriesStore from '../../../store/categoriesStore';
 import questionsStore from '../../../store/questionsStore';
@@ -11,9 +11,11 @@ export const HelpDialog = ({onCloseHelpDialog, helpDialogAnimation}) => {
         <Text style={[styles.title, {color: categoriesStore.currentCategory.textColor}]}>
           Help
         </Text>
-        <Text style={[styles.theory, {color: categoriesStore.currentCategory.textColor}]}>
-          {questionsStore.currentQuestion.help}
-        </Text>
+        <ScrollView style={styles.scrollView}>
+          <Text style={[styles.theory, {color: categoriesStore.currentCategory.textColor}]}>
+            {questionsStore.currentQuestion.help}
+          </Text>
+        </ScrollView>
         <TouchableOpacity
           style={[styles.button, {backgroundColor: categoriesStore.currentCategory.textColor}]}
           onPress={onCloseHelpDialog}>
@@ -42,8 +44,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     position: 'relative',
-    top: '20%',
+    top: '15%',
     paddingHorizontal: 20,
+    paddingVertical: 20,
     paddingTop: 20,
     width: '80%',
     backgroundColor: '#fff',
@@ -56,6 +59,10 @@ const styles = StyleSheet.create({
   },
   theory: {
     fontSize: 15,
+    marginBottom: 20,
+  },
+  scrollView: {
+    height: '40%',
     marginBottom: 20,
   },
   button: {
@@ -72,7 +79,6 @@ const styles = StyleSheet.create({
     shadowOffsetY: 20,
     shadowOffset: {height: 3, width: 0},
     elevation: 8,
-    marginBottom: 20,
   },
   buttonText: {
     color: '#fff',
