@@ -3,7 +3,6 @@ import {Text, View, StyleSheet, FlatList, ImageBackground} from 'react-native';
 import Animated from 'react-native-reanimated';
 import CircularProgress from 'react-native-circular-progress-indicator';
 import {observer} from 'mobx-react-lite';
-import {BASE_URL} from '@env';
 import {CustomButton} from './components/customButton';
 import bookmarkStore from '../../store/bookmarkStore';
 import {HelpDialog} from './components/helpDialog';
@@ -46,7 +45,7 @@ export const GameScreenComponent = observer(({
   return (
     <View style={styles.container}>
       <ImageBackground
-        source={{uri: BASE_URL + categoriesStore.currentCategory.img.formats.thumbnail.url}}
+        source={{uri: categoriesStore.currentCategory.image}}
         imageStyle={styles.borderRadius}
         style={styles.header}
         resizeMode={'cover'}/>

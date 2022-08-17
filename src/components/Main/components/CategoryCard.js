@@ -6,7 +6,6 @@ import Animated, {
   useSharedValue,
   withSpring,
 } from 'react-native-reanimated';
-import {BASE_URL} from '@env';
 import categoriesStore from '../../../store/categoriesStore';
 
 export const CategoryCard = ({category}) => {
@@ -46,7 +45,7 @@ export const CategoryCard = ({category}) => {
       <TouchableOpacity onPress={onCategory}>
         <ImageBackground
           style={styles.container}
-          source={{uri: BASE_URL + category.img.formats.thumbnail.url}}
+          source={{uri: category.image}}
           imageStyle={styles.borderRadius}
         >
           <Text style={styles.title}>{category.text}</Text>
