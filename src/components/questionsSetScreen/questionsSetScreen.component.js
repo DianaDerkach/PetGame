@@ -5,6 +5,8 @@ import categoriesStore from '../../store/categoriesStore';
 import dialogsStore from '../../store/dialogsStore';
 import {ChooseMode} from './components/chooseMode';
 
+const whiteBackground = require('../../assets/img/white_background.png');
+
 export const QuestionsSetScreenComponent = observer(({
   headerTitle,
   categoryTopics,
@@ -20,7 +22,7 @@ export const QuestionsSetScreenComponent = observer(({
           onDarkBackgroundPress={onDarkBackgroundPress}
         />}
       <ImageBackground
-        source={require('../../assets/img/white_background.png')}
+        source={whiteBackground}
         resizeMode={'cover'}
         style={styles.container}
       >
