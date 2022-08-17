@@ -5,6 +5,8 @@ import categoriesStore from '../../store/categoriesStore';
 import dialogsStore from '../../store/dialogsStore';
 import {ChooseMode} from './components/chooseMode';
 
+const whiteBackground = require('../../assets/img/white_background.png');
+
 export const QuestionsSetScreenComponent = observer(({
   headerTitle,
   categoryTopics,
@@ -13,40 +15,42 @@ export const QuestionsSetScreenComponent = observer(({
   onDarkBackgroundPress,
 }) => {
   return (
-    <ImageBackground
-      source={require('../../assets/img/white_background.png')}
-      resizeMode={'cover'}
-      style={styles.container}
-    >
+    <>
       {dialogsStore.isChooseModeDialog &&
         <ChooseMode
           chooseModeDialogAnimation={chooseModeDialogAnimation}
           onDarkBackgroundPress={onDarkBackgroundPress}
         />}
       <ImageBackground
-        source={{uri: categoriesStore.currentCategory.image}}
-        style={styles.header}
-        imageStyle={styles.borderRadius}
+        source={whiteBackground}
+        resizeMode={'cover'}
+        style={styles.container}
       >
-        <Text style={styles.headerText}>{headerTitle}</Text>
+        <ImageBackground
+          source={{uri: categoriesStore.currentCategory.image}}
+          style={styles.header}
+          imageStyle={styles.borderRadius}
+        >
+          <Text style={styles.headerText}>{headerTitle}</Text>
+        </ImageBackground>
+        <FlatList
+          keyExtractor={(topic) => topic.id}
+          style={styles.item}
+          data={categoryTopics}
+          renderItem={renderItem}
+        />
       </ImageBackground>
-      <FlatList
-        keyExtractor={(topic) => topic.id}
-        style={styles.item}
-        data={categoryTopics}
-        renderItem={renderItem}
-      />
-    </ImageBackground>
+    </>
   );
 });
 
 const styles = StyleSheet.create({
   container: {
-    paddingHorizontal: 20,
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'center',
     height: Dimensions.get('window').height,
+    paddingHorizontal: 20,
   },
   header: {
     display: 'flex',
@@ -68,5 +72,4 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
     paddingHorizontal: 10,
   },
-
 });
