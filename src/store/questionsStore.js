@@ -16,12 +16,12 @@ class QuestionsStore {
 
   fetchQuestions = async () => {
     try {
-      const response = await fetch(`${BASE_URL}/api/questions?populate=*`);
+      const response = await fetch(`${BASE_URL}/api/questions?populate=*&pagination[page]=1&pagination[pageSize]=100`);
       const {data: questions} = await response.json();
 
       this.questions = questions;
     } catch (e) {
-      console.log('fetch categories error ', e);
+      console.log('fetch questions error ', e);
     }
   };
 
