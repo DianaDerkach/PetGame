@@ -1,5 +1,5 @@
 import React from 'react';
-import {Image, Text, StyleSheet, ImageBackground, TouchableOpacity, View} from 'react-native';
+import {Image, Text, StyleSheet, ImageBackground, TouchableOpacity, View, ActivityIndicator} from 'react-native';
 import {SafeAreaView} from 'react-navigation';
 import Animated from 'react-native-reanimated';
 import {observer} from 'mobx-react-lite';
@@ -10,6 +10,9 @@ export const MainComponent = observer(({
   renderCategoryCard,
   headerAnimatedStyle,
 }) => {
+  const isCategoriesEmpty = categoriesStore.categories.length === 0;
+  const activityIndicatorColor = '#9C62D6';
+
   return (
     <SafeAreaView style={styles.background}>
       <Animated.View style={headerAnimatedStyle}>
@@ -22,6 +25,7 @@ export const MainComponent = observer(({
           <Image source={require('../../assets/img/idea.png')} style={styles.image}/>
         </ImageBackground>
       </Animated.View>
+      {isCategoriesEmpty && <ActivityIndicator size="large" color={activityIndicatorColor} />}
       <View style={styles.categories}>
         {categoriesStore.categories.map(renderCategoryCard)}
       </View>
